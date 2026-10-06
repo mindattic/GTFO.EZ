@@ -37,9 +37,27 @@ generates after first launch (`BepInEx/config/MindAttic.GtfoEZ.cfg`), without re
 Everyone in the lobby needs the same mod and config. Use Thunderstore Mod Manager or r2modman,
 or import the zip manually and share a profile code.
 
-## Credit
+## Attributions
 
-Default values were cross-referenced against several existing GTFO easy-mode mods' changelogs and
-settled-on balance choices, including Mendu's [EasyMode](https://thunderstore.io/c/gtfo/p/Mendu/EasyMode/),
-GTFriendlyO, and Friendly GTFO. This mod is an independent reimplementation as a code plugin rather
-than datablock JSON, built to survive game updates without needing a rebuild for every patch.
+This mod is an independent, from-scratch implementation (no code or data copied from any of the
+projects below) built as a code plugin rather than datablock JSON, specifically so it survives
+game updates without needing a rebuild for every patch. Its design still owes a real debt to
+others' prior work:
+
+- **[Mendu](https://thunderstore.io/c/gtfo/p/Mendu/EasyMode/)** — creator of EasyMode, the original
+  datablock-JSON mod whose feature list (health, regen, stamina, fall damage, ammo, flashlights,
+  detection range) this mod reimplements.
+- **GTFriendlyO** (Carb_Crusaders / Heaveness) and **Friendly GTFO** (EcoLight) — their published
+  changelogs and balance iterations (including a health multiplier that was tried higher and
+  walked back) are what this mod's default values are tuned against, rather than guessing.
+- **Team_Chicken**, creator of *Health And Melee Tweaks* — demonstrated the core technique this
+  mod is built on: editing the game's own loaded `PlayerDataBlock` from a plugin instead of
+  shipping replacement JSON, so the game's built-in systems keep doing the work.
+- **atime1pm**, creator of *LowSpecGaming* — reference example for iterating every
+  `FlashlightSettingsDataBlock` via `GameDataBlockBase<T>.GetAllBlocks()`.
+- **The [GTFO-Modding](https://github.com/GTFO-Modding) community** — the GTDO wiki's datablock
+  reference and the GTFO-API source are what made it possible to find the real field names
+  (`health`, `movementDetectionDistance`, etc.) and the `GameDataInit.Initialize` hook point this
+  mod relies on, instead of guessing at an undocumented API.
+- **The [BepInEx](https://github.com/BepInEx/BepInEx) team** — the modding framework and loader
+  this mod (and essentially every other GTFO mod) runs on.
