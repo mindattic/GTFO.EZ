@@ -4,6 +4,6 @@
   "website_url": "",
   "description": "Health x2, faster regen, less fall damage, more ammo, brighter lights, shorter enemy detection range.",
   "dependencies": [
-    "BepInEx-BepInExPack_GTFO-3.2.1"
+    "BepInEx-BepInExPack_GTFO-3.2.3"
   ]
 }

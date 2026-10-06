@@ -41,28 +41,26 @@ internal static class GameDataInit_Initialize_Patch
         var healthMult = Plugin.HealthMultiplier.Value;
         player.health *= healthMult;
 
-        var regenMult = Plugin.HealthRegenMultiplier.Value;
-        player.healthRegenPerSecond *= regenMult;
-        player.healthRegenRelMax = Math.Min(1f, player.healthRegenRelMax * regenMult);
-        if (regenMult > 0f)
-        {
-            player.healthRegenStartDelayAfterDamage /= regenMult;
-            player.healthRegenDelay /= regenMult;
-        }
+        // Rate and cap are deliberately separate multipliers: vanilla under-regens relative to
+        // its own cap, so hitting both target numbers (1.0/s against a 40% cap) needs different
+        // factors. Regen delay after damage is left untouched on purpose - see config comment.
+        player.healthRegenPerSecond *= Plugin.HealthRegenRateMultiplier.Value;
+        player.healthRegenRelMax = Math.Min(1f, player.healthRegenRelMax * Plugin.HealthRegenCapMultiplier.Value);
 
-        var staminaMult = Plugin.StaminaRegenMultiplier.Value;
-        player.StaminaRegenRestingInCombat *= staminaMult;
-        player.StaminaRegenNotRestingInCombat *= staminaMult;
-        player.StaminaRegenRestingOutOfCombat *= staminaMult;
-        player.StaminaRegenNotRestingOutOfCombat *= staminaMult;
+        // Equalize rather than multiply: vanilla's "in combat" rate is an approximate research
+        // figure, but copying the known-good "out of combat" rate is exact regardless of the
+        // real vanilla numbers and stays correct if Overkill rebalances them later.
+        if (Plugin.RemoveCombatStaminaPenalty.Value)
+        {
+            player.StaminaRegenNotRestingInCombat = player.StaminaRegenNotRestingOutOfCombat;
+        }
 
         var fallDamageMult = Plugin.FallDamageMultiplier.Value;
         player.fallDamageMin *= fallDamageMult;
         player.fallDamageMax *= fallDamageMult;
 
-        var fallHeightMult = Plugin.FallDamageHeightMultiplier.Value;
-        player.fallDamageMinHeight *= fallHeightMult;
-        player.fallDamageMaxHeight *= fallHeightMult;
+        player.fallDamageMinHeight *= Plugin.FallDamageMinHeightMultiplier.Value;
+        player.fallDamageMaxHeight *= Plugin.FallDamageMaxHeightMultiplier.Value;
 
         var ammoMult = Plugin.AmmoMultiplier.Value;
         player.AmmoStandardInitial = ScaleInt(player.AmmoStandardInitial, ammoMult);
@@ -77,14 +75,16 @@ internal static class GameDataInit_Initialize_Patch
     }
 
     // Covers both headlamps and weapon-mounted lights: both reference the same datablock type.
+    // Angle + intensity only, not range - a longer beam reaches further into the dark than the
+    // level's lighting was designed for, while angle/intensity just make the existing cone better.
     private static void ApplyFlashlightTweaks()
     {
-        var rangeMult = Plugin.FlashlightRangeMultiplier.Value;
+        var angleMult = Plugin.FlashlightAngleMultiplier.Value;
         var intensityMult = Plugin.FlashlightIntensityMultiplier.Value;
 
         foreach (var block in GameDataBlockBase<FlashlightSettingsDataBlock>.GetAllBlocks())
         {
-            block.range *= rangeMult;
+            block.angle *= angleMult;
             block.intensity *= intensityMult;
         }
     }
