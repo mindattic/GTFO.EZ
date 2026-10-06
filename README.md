@@ -16,18 +16,25 @@ package/              exactly what ships to Thunderstore / gets zipped for shari
   manifest.json
   README.md           becomes the Thunderstore page
   CHANGELOG.md
-  icon.png            TODO: add a 256x256 icon before publishing
+  icon.png            256x256, resized from reference/logo-1254x1254.png
 reference/            (gitignored) local-only: EasyMode's files, vanilla data dumps, notes
 build.ps1             builds the plugin and packages dist/GtfoEZ-<version>.zip
 ```
 
 ## Building
 
-Requires BepInExPack_GTFO already installed in a Thunderstore Mod Manager / r2modman profile.
+Requires BepInExPack_GTFO already installed, and launched at least once ("Modded" start), in a
+Thunderstore Mod Manager or r2modman profile.
 
 ```powershell
-.\build.ps1                      # uses profile "Default"
+.\build.ps1                      # uses the Thunderstore Mod Manager profile "Easy Mode"
 .\build.ps1 -Profile MyProfile
+```
+
+If you're on the older r2modman app instead of Thunderstore Mod Manager, its profiles live under
+a different path — pass it directly instead:
+```powershell
+dotnet build .\src\GtfoEZ\GtfoEZ.csproj -p:BepInEx="$env:AppData\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
 ```
 
 This builds straight into that profile's `BepInEx/plugins/GtfoEZ/` folder (so you can launch the

@@ -6,8 +6,9 @@ obj/
 # Research/reference material — not redistributed (game data dumps, EasyMode's files, etc.)
 reference/
 
-# Built Thunderstore zip
+# Built Thunderstore zip, and the compiled DLL build.ps1 stages into package/ before zipping
 dist/
+package/*.dll
 
 # IDE
 .vs/

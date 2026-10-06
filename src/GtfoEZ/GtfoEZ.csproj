@@ -1,8 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Which r2modman/Thunderstore Mod Manager profile to build against and deploy into. -->
-    <Profile>Default</Profile>
+    <!--
+    Which mod manager profile to build against and deploy into.
+    Thunderstore Mod Manager (the current official app) stores profiles under
+    "Thunderstore Mod Manager\DataFolder\<Game>\profiles\<Game> - <Profile>". If you're on the
+    older r2modman app instead, override BepInEx directly, e.g.:
+      dotnet build -p:BepInEx="%AppData%\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
+    -->
+    <GameName>GTFO</GameName>
+    <Profile>Easy Mode</Profile>
 
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,7 +19,7 @@
     <AssemblyName>GtfoEZ</AssemblyName>
     <RootNamespace>GtfoEZ</RootNamespace>
 
-    <BepInEx>$(AppData)\r2modmanPlus-local\GTFO\profiles\$(Profile)\BepInEx</BepInEx>
+    <BepInEx>$(AppData)\Thunderstore Mod Manager\DataFolder\$(GameName)\profiles\$(GameName) - $(Profile)\BepInEx</BepInEx>
     <OutputPath>$(BepInEx)\plugins\GtfoEZ\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
