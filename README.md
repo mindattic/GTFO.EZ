@@ -45,6 +45,13 @@ game and test immediately) and also produces `dist/GtfoEZ-<version>.zip` for sha
 All tweaks are multipliers, tunable after first launch in
 `BepInEx/config/MindAttic.GtfoEZ.cfg` — no rebuild needed to retune values.
 
+## Versioning
+
+v1, v2, v3... — major-only bumps, matching the convention across other MindAttic projects.
+Thunderstore requires `manifest.json`'s `version_number` to be strict `x.y.z`, so "v1" is
+`1.0.0`, "v2" is `2.0.0`, and so on (minor/patch stay 0). `package/CHANGELOG.md` headers use the
+short `vN` form; the manifest keeps the `N.0.0` form Thunderstore requires.
+
 ## Sharing with friends
 
 - **Private:** Import the zip from `dist/` as a local mod in your mod manager, then
