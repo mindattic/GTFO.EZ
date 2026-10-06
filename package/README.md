@@ -10,30 +10,53 @@ in memory at load time, so it keeps working across game patches that only change
 ## What it changes
 
 Defaults follow community-consensus balance values (several independent GTFO easy-mode mods'
-settled-on numbers), not arbitrary multipliers:
+settled-on numbers), not arbitrary multipliers. "Default" is the value after this mod's default
+config is applied; `-` means left at vanilla:
 
 | Stat | Vanilla | Default |
 |---|---|---|
-| Max health | 25 | 50 (x2) |
-| Health regen rate | 0.2/s | 1.0/s (x5) |
-| Health regen cap (no med kit) | 20% | 40% (x2) |
-| Health regen delay after damage | 5s | unchanged |
+| Max health | 25 | 50 (+100%) |
+| Health regen rate | 0.2/s | 1.0/s (+400%) |
+| Health regen cap (no med kit) | 20% | 40% (+100%) |
+| Health regen delay after damage | 5s | - |
 | Stamina regen while in combat | lower than out-of-combat | equal to out-of-combat |
-| Fall damage amount | 2-15 | unchanged |
-| Fall height before any damage | 4m | 8m (x2) |
-| Fall height where damage maxes out | 20m | 30m (x1.5) |
-| Weapon/tool ammo (reserve, starting, refill packs) | x1 | x1.5 |
-| Flashlight angle & intensity | x1 | x1.25 |
-| Enemy movement-noise detection distance | 8m | 6m (x0.75) |
+| Fall damage amount | 2-15 | - |
+| Fall height before any damage | 4m | 8m (+100%) |
+| Fall height where damage maxes out | 20m | 30m (+50%) |
+| Weapon/tool ammo (reserve, starting, refill packs) | x1 | x1.5 (+50%) |
+| Enemy movement-noise detection distance | 8m | 6m (-25%) |
 
-A few deliberate non-changes: regen delay after damage is left at vanilla (fast regen with no
-delay makes you nearly unkillable in a slow fight), ammo isn't paired with a damage buff (that
-combination was reported as overtuned by another mod's author), and flashlight range is untouched
-(a longer beam reaches past where the level's lighting was designed to work - angle/intensity
-improve the same cone without that side effect).
+A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
+(fast regen with no delay makes you nearly unkillable in a slow fight), fall damage amount itself
+is untouched (the height changes above already do most of the work), and ammo isn't paired with a
+damage buff (that combination was reported as overtuned by another mod's author).
 
 Every value above is a multiplier (or on/off switch) you can retune in the config file BepInEx
 generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without recompiling anything.
+
+## Also exposed, but left at vanilla by default
+
+These are tunable in the same config file, but ship unchanged — either because vanilla was
+already fine (flashlights), or because there's no community consensus they need adjusting for an
+easier game, unlike the stats above:
+
+| Stat | Vanilla | Default |
+|---|---|---|
+| Flashlight angle | x1 | - |
+| Flashlight intensity | x1 | - |
+| Walk speed | 3.5 m/s | - |
+| Run speed | 6 m/s | - |
+| Air (mid-air) move speed | 3 m/s | - |
+| Crouch move speed | 2 m/s | - |
+| Ladder climb speed | 1.5 m/s | - |
+| Jump height (initial jump velocity) | 9 m/s | - |
+| Friendly fire damage multiplier | x0.5 | - |
+| Battery capacity (flashlights/tools) | 100 | - |
+| Small tool battery drain rate | 0.25/s | - |
+| Medium tool battery drain rate | 0.5/s | - |
+| Large tool battery drain rate | 3/s | - |
+| No-air (suffocation) damage rate | 0.15 | - |
+| No-air meter depletion time | 90s | - |
 
 ## Install
 

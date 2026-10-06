@@ -12,7 +12,12 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "1.0.0";
+    public const string VERSION = "4.0.0";
+
+    // Shared between the rundown-select header and the in-level warden-intel message so the two
+    // in-game surfaces never drift apart the way they did before this was pulled out. Major
+    // version only, per the project's vN convention, rather than the full x.y.z.
+    internal static readonly string EasterEggMessage = $"GTFO.EZ v{VERSION.Split('.')[0]} Active - Goo goo. Gah gah.";
 
     internal static ManualLogSource Logger = null!;
 
@@ -27,6 +32,19 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> FlashlightAngleMultiplier = null!;
     internal static ConfigEntry<float> FlashlightIntensityMultiplier = null!;
     internal static ConfigEntry<float> DetectionDistanceMultiplier = null!;
+    internal static ConfigEntry<float> WalkSpeedMultiplier = null!;
+    internal static ConfigEntry<float> RunSpeedMultiplier = null!;
+    internal static ConfigEntry<float> AirSpeedMultiplier = null!;
+    internal static ConfigEntry<float> CrouchSpeedMultiplier = null!;
+    internal static ConfigEntry<float> LadderSpeedMultiplier = null!;
+    internal static ConfigEntry<float> JumpHeightMultiplier = null!;
+    internal static ConfigEntry<float> FriendlyFireMultiplier = null!;
+    internal static ConfigEntry<float> BatteryCapacityMultiplier = null!;
+    internal static ConfigEntry<float> SmallBatteryDrainMultiplier = null!;
+    internal static ConfigEntry<float> MediumBatteryDrainMultiplier = null!;
+    internal static ConfigEntry<float> LargeBatteryDrainMultiplier = null!;
+    internal static ConfigEntry<float> NoAirDamageMultiplier = null!;
+    internal static ConfigEntry<float> NoAirDepletionTimeMultiplier = null!;
 
     public override void Load()
     {
@@ -69,13 +87,55 @@ public class Plugin : BasePlugin
         AmmoMultiplier = Config.Bind("Ammo", "Weapon Ammo Multiplier", 1.5f,
             "Multiplies max reserve ammo, starting ammo, and resource pack refill amounts for standard/special/consumable ammo. Deliberately not paired with a damage buff - that combination was reported as overtuned.");
 
-        FlashlightAngleMultiplier = Config.Bind("Lighting", "Flashlight Angle Multiplier", 1.25f,
-            "Multiplies the cone angle of headlamps and weapon-mounted lights.");
+        FlashlightAngleMultiplier = Config.Bind("Lighting", "Flashlight Angle Multiplier", 1.0f,
+            "Multiplies the cone angle of headlamps and weapon-mounted lights. Left at vanilla (1.0) by default.");
 
-        FlashlightIntensityMultiplier = Config.Bind("Lighting", "Flashlight Intensity Multiplier", 1.25f,
-            "Multiplies the brightness of headlamps and weapon-mounted lights. Kept modest - brighter lights make you more visible to enemies too.");
+        FlashlightIntensityMultiplier = Config.Bind("Lighting", "Flashlight Intensity Multiplier", 1.0f,
+            "Multiplies the brightness of headlamps and weapon-mounted lights. Left at vanilla (1.0) by default - brighter lights make you more visible to enemies too.");
 
         DetectionDistanceMultiplier = Config.Bind("Enemy Detection", "Movement Detection Distance Multiplier", 0.75f,
             "Multiplies how far enemies can detect player movement noise. 0.75 on an 8m base gives 6m.");
+
+        // Exposed for players who want to retune feel/difficulty further, but every one of these
+        // defaults to 1.0 (vanilla, no change) - unlike the stats above, there's no community
+        // consensus that these need adjusting for an easier game, so we're not guessing.
+        WalkSpeedMultiplier = Config.Bind("Movement", "Walk Speed Multiplier", 1.0f,
+            "Multiplies walking move speed. Left at vanilla (1.0) by default.");
+
+        RunSpeedMultiplier = Config.Bind("Movement", "Run Speed Multiplier", 1.0f,
+            "Multiplies sprinting move speed. Left at vanilla (1.0) by default.");
+
+        AirSpeedMultiplier = Config.Bind("Movement", "Air Speed Multiplier", 1.0f,
+            "Multiplies mid-air move speed (control while jumping/falling). Left at vanilla (1.0) by default.");
+
+        CrouchSpeedMultiplier = Config.Bind("Movement", "Crouch Speed Multiplier", 1.0f,
+            "Multiplies crouched move speed. Left at vanilla (1.0) by default.");
+
+        LadderSpeedMultiplier = Config.Bind("Movement", "Ladder Speed Multiplier", 1.0f,
+            "Multiplies ladder climb speed. Left at vanilla (1.0) by default.");
+
+        JumpHeightMultiplier = Config.Bind("Movement", "Jump Height Multiplier", 1.0f,
+            "Multiplies jump height (initial jump velocity). Left at vanilla (1.0) by default.");
+
+        FriendlyFireMultiplier = Config.Bind("Combat", "Friendly Fire Multiplier", 1.0f,
+            "Multiplies damage taken from teammates' weapons. Left at vanilla (1.0) by default.");
+
+        BatteryCapacityMultiplier = Config.Bind("Utility", "Battery Capacity Multiplier", 1.0f,
+            "Multiplies max battery charge for flashlights and powered tools. Left at vanilla (1.0) by default.");
+
+        SmallBatteryDrainMultiplier = Config.Bind("Utility", "Small Battery Drain Multiplier", 1.0f,
+            "Multiplies battery drain per second for small powered tools. Left at vanilla (1.0) by default.");
+
+        MediumBatteryDrainMultiplier = Config.Bind("Utility", "Medium Battery Drain Multiplier", 1.0f,
+            "Multiplies battery drain per second for medium powered tools. Left at vanilla (1.0) by default.");
+
+        LargeBatteryDrainMultiplier = Config.Bind("Utility", "Large Battery Drain Multiplier", 1.0f,
+            "Multiplies battery drain per second for large powered tools. Left at vanilla (1.0) by default.");
+
+        NoAirDamageMultiplier = Config.Bind("Environment", "No-Air Damage Multiplier", 1.0f,
+            "Multiplies the damage rate from suffocating in no-air zones once your air runs out. Left at vanilla (1.0) by default.");
+
+        NoAirDepletionTimeMultiplier = Config.Bind("Environment", "No-Air Depletion Time Multiplier", 1.0f,
+            "Multiplies how long your air meter lasts in no-air zones before it empties. Left at vanilla (1.0) by default.");
     }
 }

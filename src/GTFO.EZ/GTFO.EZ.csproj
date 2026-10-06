@@ -9,7 +9,7 @@
       dotnet build -p:BepInEx="%AppData%\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
     -->
     <GameName>GTFO</GameName>
-    <Profile>Easy Mode</Profile>
+    <Profile>Easy Mode DEV</Profile>
 
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

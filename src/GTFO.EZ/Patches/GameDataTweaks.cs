@@ -72,6 +72,23 @@ internal static class GameDataInit_Initialize_Patch
         player.AmmoClassInitial = ScaleInt(player.AmmoClassInitial, ammoMult);
         player.AmmoClassMaxCap = ScaleInt(player.AmmoClassMaxCap, ammoMult);
         player.AmmoClassResourcePackMaxCap = ScaleInt(player.AmmoClassResourcePackMaxCap, ammoMult);
+
+        player.walkMoveSpeed *= Plugin.WalkSpeedMultiplier.Value;
+        player.runMoveSpeed *= Plugin.RunSpeedMultiplier.Value;
+        player.airMoveSpeed *= Plugin.AirSpeedMultiplier.Value;
+        player.crouchMoveSpeed *= Plugin.CrouchSpeedMultiplier.Value;
+        player.ladderMoveSpeed *= Plugin.LadderSpeedMultiplier.Value;
+        player.jumpVelInitial *= Plugin.JumpHeightMultiplier.Value;
+
+        player.friendlyFireMulti *= Plugin.FriendlyFireMultiplier.Value;
+
+        player.battery = ScaleInt(player.battery, Plugin.BatteryCapacityMultiplier.Value);
+        player.smallBatteryConsumtionPerSec *= Plugin.SmallBatteryDrainMultiplier.Value;
+        player.mediumBatteryConsumtionPerSec *= Plugin.MediumBatteryDrainMultiplier.Value;
+        player.largeBatteryConsumtionPerSec *= Plugin.LargeBatteryDrainMultiplier.Value;
+
+        player.noAirDamageRel *= Plugin.NoAirDamageMultiplier.Value;
+        player.noAirTimeToEmpty *= Plugin.NoAirDepletionTimeMultiplier.Value;
     }
 
     // Covers both headlamps and weapon-mounted lights: both reference the same datablock type.

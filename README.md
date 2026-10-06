@@ -29,7 +29,7 @@ Requires BepInExPack_GTFO already installed, and launched at least once ("Modded
 Thunderstore Mod Manager or r2modman profile.
 
 ```powershell
-.\build.ps1                      # uses the Thunderstore Mod Manager profile "Easy Mode"
+.\build.ps1                      # uses the Thunderstore Mod Manager profile "Easy Mode DEV"
 .\build.ps1 -Profile MyProfile
 ```
 

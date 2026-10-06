@@ -1,7 +1,7 @@
 param(
     [string]$Configuration = "Release",
     [string]$GameName = "GTFO",
-    [string]$Profile = "Easy Mode"
+    [string]$Profile = "Easy Mode DEV"
 )
 
 $ErrorActionPreference = "Stop"
