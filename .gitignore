@@ -1,0 +1,13 @@
+# Build output
+bin/
+obj/
+*.user
+
+# Research/reference material — not redistributed (game data dumps, EasyMode's files, etc.)
+reference/
+
+# Built Thunderstore zip
+dist/
+
+# IDE
+.vs/
