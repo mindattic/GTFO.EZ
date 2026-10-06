@@ -4,14 +4,14 @@ using BepInEx.Unity.IL2CPP;
 using BepInEx.Logging;
 using HarmonyLib;
 
-namespace GtfoEZ;
+namespace GTFO.EZ;
 
 [BepInPlugin(GUID, NAME, VERSION)]
 [BepInProcess("GTFO.exe")]
 public class Plugin : BasePlugin
 {
-    public const string GUID = "MindAttic.GtfoEZ";
-    public const string NAME = "GtfoEZ";
+    public const string GUID = "MindAttic.GTFO.EZ";
+    public const string NAME = "GTFO.EZ";
     public const string VERSION = "1.0.0";
 
     internal static ManualLogSource Logger = null!;

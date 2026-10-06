@@ -1,6 +1,6 @@
-# GTFO-EZ
+# GTFO.EZ
 
-Dev repo for **GtfoEZ**, a BepInEx IL2CPP plugin for GTFO that tunes player stats (health, regen,
+Dev repo for **GTFO.EZ**, a BepInEx IL2CPP plugin for GTFO that tunes player stats (health, regen,
 stamina, fall damage, ammo, flashlights, enemy detection range) for an easier co-op experience.
 
 Unlike Mendu's EasyMode (a datablock-JSON mod via MTFO), this ships no copies of the game's data
@@ -11,14 +11,14 @@ of going stale.
 ## Layout
 
 ```
-src/GtfoEZ/           the plugin project
+src/GTFO.EZ/          the plugin project
 package/              exactly what ships to Thunderstore / gets zipped for sharing
-  manifest.json
+  manifest.json       Thunderstore package name is "GtfoEZ" (no period allowed there)
   README.md           becomes the Thunderstore page
   CHANGELOG.md
   icon.png            256x256, resized from reference/logo-1254x1254.png
 reference/            (gitignored) local-only: EasyMode's files, vanilla data dumps, notes
-build.ps1             builds the plugin and packages dist/GtfoEZ-<version>.zip
+build.ps1             builds the plugin and packages dist/GTFO.EZ-<version>.zip
 ```
 
 ## Building
@@ -34,16 +34,16 @@ Thunderstore Mod Manager or r2modman profile.
 If you're on the older r2modman app instead of Thunderstore Mod Manager, its profiles live under
 a different path — pass it directly instead:
 ```powershell
-dotnet build .\src\GtfoEZ\GtfoEZ.csproj -p:BepInEx="$env:AppData\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
+dotnet build .\src\GTFO.EZ\GTFO.EZ.csproj -p:BepInEx="$env:AppData\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
 ```
 
-This builds straight into that profile's `BepInEx/plugins/GtfoEZ/` folder (so you can launch the
-game and test immediately) and also produces `dist/GtfoEZ-<version>.zip` for sharing or upload.
+This builds straight into that profile's `BepInEx/plugins/GTFO.EZ/` folder (so you can launch the
+game and test immediately) and also produces `dist/GTFO.EZ-<version>.zip` for sharing or upload.
 
 ## Config
 
 All tweaks are multipliers, tunable after first launch in
-`BepInEx/config/MindAttic.GtfoEZ.cfg` — no rebuild needed to retune values.
+`BepInEx/config/MindAttic.GTFO.EZ.cfg` — no rebuild needed to retune values.
 
 ## Versioning
 

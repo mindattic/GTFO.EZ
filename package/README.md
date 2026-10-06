@@ -1,4 +1,7 @@
-# GtfoEZ
+# GTFO.EZ
+
+*(Listed on Thunderstore as `GtfoEZ` — package names there are restricted to letters, numbers,
+and underscores, so they can't contain a period.)*
 
 A small, config-driven BepInEx plugin for GTFO that tunes player stats for an easier, more
 relaxed co-op experience. No datablock JSON files are shipped — it patches the game's own data
@@ -30,7 +33,7 @@ combination was reported as overtuned by another mod's author), and flashlight r
 improve the same cone without that side effect).
 
 Every value above is a multiplier (or on/off switch) you can retune in the config file BepInEx
-generates after first launch (`BepInEx/config/MindAttic.GtfoEZ.cfg`), without recompiling anything.
+generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without recompiling anything.
 
 ## Install
 

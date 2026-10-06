@@ -16,11 +16,11 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <DebugType>none</DebugType>
-    <AssemblyName>GtfoEZ</AssemblyName>
-    <RootNamespace>GtfoEZ</RootNamespace>
+    <AssemblyName>GTFO.EZ</AssemblyName>
+    <RootNamespace>GTFO.EZ</RootNamespace>
 
     <BepInEx>$(AppData)\Thunderstore Mod Manager\DataFolder\$(GameName)\profiles\$(GameName) - $(Profile)\BepInEx</BepInEx>
-    <OutputPath>$(BepInEx)\plugins\GtfoEZ\</OutputPath>
+    <OutputPath>$(BepInEx)\plugins\GTFO.EZ\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 

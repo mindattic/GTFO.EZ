@@ -2,7 +2,7 @@ using System;
 using CellMenu;
 using HarmonyLib;
 
-namespace GtfoEZ.Patches;
+namespace GTFO.EZ.Patches;
 
 /// <summary>
 /// Appends a small confirmation line under the rundown title on the rundown-select screen, so
@@ -22,6 +22,6 @@ internal static class CM_PageRundown_New_UpdateHeaderText_Patch
         if (header == null) return;
 
         var title = header.text.Contains("<br>") ? header.text.Split(BreakTag, StringSplitOptions.None)[0] : header.text;
-        header.SetText($"{title}<br><size=50%>GtfoEZ active - Goo goo. Gah gah.</size>");
+        header.SetText($"{title}<br><size=50%>GTFO.EZ active - Goo goo. Gah gah.</size>");
     }
 }

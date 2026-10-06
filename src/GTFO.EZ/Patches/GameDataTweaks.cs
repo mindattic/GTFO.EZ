@@ -2,7 +2,7 @@ using System;
 using GameData;
 using HarmonyLib;
 
-namespace GtfoEZ.Patches;
+namespace GTFO.EZ.Patches;
 
 /// <summary>
 /// Applies all stat tweaks as multipliers against whatever GameDataInit just loaded, instead of
@@ -20,11 +20,11 @@ internal static class GameDataInit_Initialize_Patch
             ApplyPlayerTweaks();
             ApplyFlashlightTweaks();
             ApplyDetectionTweaks();
-            Plugin.Logger.LogInfo("GtfoEZ tweaks applied. Goo goo. Gah gah.");
+            Plugin.Logger.LogInfo("GTFO.EZ tweaks applied. Goo goo. Gah gah.");
         }
         catch (Exception e)
         {
-            Plugin.Logger.LogError($"GtfoEZ failed to apply tweaks: {e}");
+            Plugin.Logger.LogError($"GTFO.EZ failed to apply tweaks: {e}");
         }
     }
 
