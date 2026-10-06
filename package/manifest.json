@@ -1,7 +1,7 @@
 {
   "name": "GtfoEZ",
   "version_number": "1.0.0",
-  "website_url": "",
+  "website_url": "https://github.com/mindattic/GTFO.EZ",
   "description": "Health x2, faster regen, less fall damage, more ammo, brighter lights, shorter enemy detection range.",
   "dependencies": [
     "BepInEx-BepInExPack_GTFO-3.2.3"

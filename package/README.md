@@ -37,8 +37,9 @@ generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without r
 
 ## Install
 
-Everyone in the lobby needs the same mod and config. Use Thunderstore Mod Manager or r2modman,
-or import the zip manually and share a profile code.
+Install via [Thunderstore Mod Manager or r2modman](https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/),
+or import the zip manually and share a profile code. Everyone in the lobby needs the same mod and
+config.
 
 ## Attributions
 

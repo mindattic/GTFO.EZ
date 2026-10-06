@@ -3,6 +3,8 @@
 Dev repo for **GTFO.EZ**, a BepInEx IL2CPP plugin for GTFO that tunes player stats (health, regen,
 stamina, fall damage, ammo, flashlights, enemy detection range) for an easier co-op experience.
 
+Published on Thunderstore: https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/
+
 Unlike Mendu's EasyMode (a datablock-JSON mod via MTFO), this ships no copies of the game's data
 files. It patches `GameDataInit.Initialize` and adjusts fields on the game's own loaded datablocks
 at runtime as multipliers, so it keeps working across patches that rebalance base values instead
@@ -56,5 +58,5 @@ short `vN` form; the manifest keeps the `N.0.0` form Thunderstore requires.
 
 - **Private:** Import the zip from `dist/` as a local mod in your mod manager, then
   `Settings -> Profile -> Export profile as code` and send friends the code.
-- **Public:** Upload the zip to Thunderstore under your own team. Everyone in a lobby needs the
-  identical mod + config.
+- **Public:** Published on Thunderstore at https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/.
+  Everyone in a lobby needs the identical mod + config.
