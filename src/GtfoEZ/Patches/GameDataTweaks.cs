@@ -20,7 +20,7 @@ internal static class GameDataInit_Initialize_Patch
             ApplyPlayerTweaks();
             ApplyFlashlightTweaks();
             ApplyDetectionTweaks();
-            Plugin.Logger.LogInfo("GtfoEZ tweaks applied.");
+            Plugin.Logger.LogInfo("GtfoEZ tweaks applied. Goo goo. Gah gah.");
         }
         catch (Exception e)
         {
