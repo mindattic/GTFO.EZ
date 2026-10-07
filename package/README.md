@@ -57,6 +57,12 @@ easier game, unlike the stats above:
 | Large tool battery drain rate | 3/s | - |
 | No-air (suffocation) damage rate | 0.15 | - |
 | No-air meter depletion time | 90s | - |
+| Enemy max health | varies by enemy type | - |
+| Enemy melee attack damage | varies by enemy type | - |
+| Enemy tentacle attack damage (Striker/Tank grabs, Scout tentacles, etc.) | varies by enemy type | - |
+| Consumable spawns per zone (med/ammo packs, syringes) | varies by zone | - |
+| Big pickup spawns per zone (fog turbines, artifacts, etc.) | varies by zone | - |
+| Revive duration (time to revive a downed teammate) | vanilla | - |
 
 ## Install
 

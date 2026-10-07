@@ -1,5 +1,13 @@
 # Changelog
 
+## v5
+
+- Exposed more stats as config options, all left at vanilla by default: enemy max health, enemy
+  melee/tentacle attack damage, consumable spawn rate per zone, big pickup spawn rate per zone,
+  and revive duration.
+- Trimmed two config descriptions (Health Regen Cap Multiplier, Weapon Ammo Multiplier) that
+  exceeded the in-game config editor's 200-character limit and were getting cut off.
+
 ## v4
 
 - In-level warden-intel confirmation message now shows 90 seconds after spawn instead of 30, so

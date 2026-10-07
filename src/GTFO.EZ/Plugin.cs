@@ -12,7 +12,7 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "4.0.0";
+    public const string VERSION = "5.0.0";
 
     // Shared between the rundown-select header and the in-level warden-intel message so the two
     // in-game surfaces never drift apart the way they did before this was pulled out. Major
@@ -45,6 +45,12 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> LargeBatteryDrainMultiplier = null!;
     internal static ConfigEntry<float> NoAirDamageMultiplier = null!;
     internal static ConfigEntry<float> NoAirDepletionTimeMultiplier = null!;
+    internal static ConfigEntry<float> EnemyHealthMultiplier = null!;
+    internal static ConfigEntry<float> EnemyMeleeDamageMultiplier = null!;
+    internal static ConfigEntry<float> EnemyTentacleDamageMultiplier = null!;
+    internal static ConfigEntry<float> ConsumableSpawnMultiplier = null!;
+    internal static ConfigEntry<float> BigPickupSpawnMultiplier = null!;
+    internal static ConfigEntry<float> ReviveDurationMultiplier = null!;
 
     public override void Load()
     {
@@ -70,7 +76,7 @@ public class Plugin : BasePlugin
             "Multiplies health regen per second. Vanilla 0.2/s -> 1.0/s at the default 5.0 (about 2% of max health per second).");
 
         HealthRegenCapMultiplier = Config.Bind("Health", "Health Regen Cap Multiplier", 2.0f,
-            "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 40% at the default 2.0. Regen delay after damage is left at vanilla on purpose: fast regen with no delay makes you nearly unkillable in a slow fight.");
+            "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 40% at the default 2.0. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
 
         RemoveCombatStaminaPenalty = Config.Bind("Stamina", "Remove Combat Stamina Penalty", true,
             "Makes stamina regen while in combat as fast as while out of combat, instead of the vanilla combat penalty.");
@@ -85,7 +91,7 @@ public class Plugin : BasePlugin
             "Multiplies the fall height at which damage maxes out. Vanilla 20m -> 30m at the default 1.5.");
 
         AmmoMultiplier = Config.Bind("Ammo", "Weapon Ammo Multiplier", 1.5f,
-            "Multiplies max reserve ammo, starting ammo, and resource pack refill amounts for standard/special/consumable ammo. Deliberately not paired with a damage buff - that combination was reported as overtuned.");
+            "Multiplies max reserve ammo, starting ammo, and refill amounts for standard/special/consumable ammo. Deliberately not paired with a damage buff - that combination was reported as overtuned.");
 
         FlashlightAngleMultiplier = Config.Bind("Lighting", "Flashlight Angle Multiplier", 1.0f,
             "Multiplies the cone angle of headlamps and weapon-mounted lights. Left at vanilla (1.0) by default.");
@@ -137,5 +143,23 @@ public class Plugin : BasePlugin
 
         NoAirDepletionTimeMultiplier = Config.Bind("Environment", "No-Air Depletion Time Multiplier", 1.0f,
             "Multiplies how long your air meter lasts in no-air zones before it empties. Left at vanilla (1.0) by default.");
+
+        EnemyHealthMultiplier = Config.Bind("Enemy Balance", "Enemy Health Multiplier", 1.0f,
+            "Multiplies max health for every enemy type. Left at vanilla (1.0) by default.");
+
+        EnemyMeleeDamageMultiplier = Config.Bind("Enemy Balance", "Enemy Melee Damage Multiplier", 1.0f,
+            "Multiplies melee attack damage for every enemy type. Left at vanilla (1.0) by default.");
+
+        EnemyTentacleDamageMultiplier = Config.Bind("Enemy Balance", "Enemy Tentacle Damage Multiplier", 1.0f,
+            "Multiplies tentacle attack damage (Striker/Tank grabs, Scout tentacles, etc.) for every enemy type. Left at vanilla (1.0) by default.");
+
+        ConsumableSpawnMultiplier = Config.Bind("Loot", "Consumable Spawn Multiplier", 1.0f,
+            "Multiplies how many consumables (med/ammo packs, syringes, etc.) spawn per zone. Left at vanilla (1.0) by default.");
+
+        BigPickupSpawnMultiplier = Config.Bind("Loot", "Big Pickup Spawn Multiplier", 1.0f,
+            "Multiplies how many big pickups (fog turbines, artifacts, etc.) spawn per zone. Left at vanilla (1.0) by default.");
+
+        ReviveDurationMultiplier = Config.Bind("Interactions", "Revive Duration Multiplier", 1.0f,
+            "Multiplies how long it takes to revive a downed teammate. Lower is faster. Left at vanilla (1.0) by default.");
     }
 }

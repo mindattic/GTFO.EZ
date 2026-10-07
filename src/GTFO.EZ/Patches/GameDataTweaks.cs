@@ -20,6 +20,8 @@ internal static class GameDataInit_Initialize_Patch
             ApplyPlayerTweaks();
             ApplyFlashlightTweaks();
             ApplyDetectionTweaks();
+            ApplyEnemyBalanceTweaks();
+            ApplyLootTweaks();
             Plugin.Logger.LogInfo("GTFO.EZ tweaks applied. Goo goo. Gah gah.");
         }
         catch (Exception e)
@@ -114,6 +116,42 @@ internal static class GameDataInit_Initialize_Patch
         foreach (var block in GameDataBlockBase<EnemyDetectionDataBlock>.GetAllBlocks())
         {
             block.movementDetectionDistance *= mult;
+        }
+    }
+
+    // One EnemyBalancingDataBlock per enemy type. Health is a nested struct, so it's copied out,
+    // modified, and written back rather than mutated in place.
+    private static void ApplyEnemyBalanceTweaks()
+    {
+        var healthMult = Plugin.EnemyHealthMultiplier.Value;
+        var meleeMult = Plugin.EnemyMeleeDamageMultiplier.Value;
+        var tentacleMult = Plugin.EnemyTentacleDamageMultiplier.Value;
+
+        foreach (var block in GameDataBlockBase<EnemyBalancingDataBlock>.GetAllBlocks())
+        {
+            var health = block.Health;
+            health.HealthMax *= healthMult;
+            block.Health = health;
+
+            block.MeleeAttackDamage *= meleeMult;
+            block.TentacleAttackDamage *= tentacleMult;
+        }
+    }
+
+    // Consumables (med/ammo packs, syringes) and big pickups (fog turbines, artifacts) are
+    // separate distribution datablocks, each with its own spawns-per-zone count.
+    private static void ApplyLootTweaks()
+    {
+        var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
+        foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
+        {
+            block.SpawnsPerZone = ScaleInt(block.SpawnsPerZone, consumableMult);
+        }
+
+        var bigPickupMult = Plugin.BigPickupSpawnMultiplier.Value;
+        foreach (var block in GameDataBlockBase<BigPickupDistributionDataBlock>.GetAllBlocks())
+        {
+            block.SpawnsPerZone = ScaleInt(block.SpawnsPerZone, bigPickupMult);
         }
     }
 
