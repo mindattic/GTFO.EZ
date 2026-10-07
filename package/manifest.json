@@ -2,7 +2,7 @@
   "name": "GtfoEZ",
   "version_number": "5.0.0",
   "website_url": "https://github.com/mindattic/GTFO.EZ",
-  "description": "Health x2, faster regen, less fall damage, more ammo, shorter enemy detection range. Movement speed, jump height, flashlights, friendly fire, battery, no-air damage, enemy health/damage, loot spawn rates, and revive speed are also exposed in config but left at vanilla by default.",
+  "description": "Health x2, faster regen, no combat stamina penalty, 90% less fall damage, more ammo, shorter enemy detection range, no glow sticks. 150+ more stats (movement, enemy balance, loot, melee weapons, per-difficulty resource budgets) are also exposed in config but left at vanilla by default.",
   "dependencies": [
     "BepInEx-BepInExPack_GTFO-3.2.3"
   ]

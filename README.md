@@ -1,7 +1,10 @@
 # GTFO.EZ
 
 Dev repo for **GTFO.EZ**, a BepInEx IL2CPP plugin for GTFO that tunes player stats (health, regen,
-stamina, fall damage, ammo, flashlights, enemy detection range) for an easier co-op experience.
+stamina, fall damage, ammo, enemy detection range) for an easier co-op experience. A curated set
+of defaults covers that core experience; underneath it, 155 config entries expose nearly every
+other per-zone, per-enemy, and per-weapon balance value the game has, for players who want to go
+further — see `package/README.md` for the full breakdown.
 
 Published on Thunderstore: https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/
 

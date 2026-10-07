@@ -2,11 +2,27 @@
 
 ## v5
 
-- Exposed more stats as config options, all left at vanilla by default: enemy max health, enemy
-  melee/tentacle attack damage, consumable spawn rate per zone, big pickup spawn rate per zone,
-  and revive duration.
+- **Bug fix:** Remove Combat Stamina Penalty previously equalized a pair of fields that are both
+  0 at vanilla regardless of combat state, so it did nothing. It now correctly equalizes the real
+  penalty (0.15/s vs 0.25/s regen while resting) and removes the 90% stamina cap while in combat.
+- Fall damage amount is now actually cut to 10% of normal, on top of the unchanged no-damage
+  height (previously only the height was touched, not the damage itself).
+- Exposed more stats as config options, all left at vanilla by default unless noted: enemy max
+  health, enemy melee/tentacle attack damage, consumable spawn rate per zone, big pickup spawn
+  rate per zone, revive duration, 8 more individual consumable spawn-odds stats, the full
+  per-difficulty-tier `ExpeditionBalanceDataBlock` (~40 stats covering resources, enemies, level
+  generation, and doors), and every melee weapon stat (76 entries: 4 weapons x 19 stats each,
+  organized by weapon then by action type).
+- Glow Stick spawn odds now default to disabled (0) instead of vanilla — a real tuned default,
+  not just exposed.
+- Corrected several "vanilla" values in the docs that were placeholders or incomplete: revive
+  duration (4s), flashlight angle/intensity (vary by light type, not a flat x1), and enemy
+  detection distance (there's a second, 20m sleeper profile alongside the 8m normal one).
 - Trimmed two config descriptions (Health Regen Cap Multiplier, Weapon Ammo Multiplier) that
   exceeded the in-game config editor's 200-character limit and were getting cut off.
+- Pre-release cleanup: removed a leftover debug log line that fired on every revive, consolidated
+  a redundant double-iteration over the consumable loot table, and brought both READMEs and the
+  manifest description up to date with everything above.
 
 ## v4
 

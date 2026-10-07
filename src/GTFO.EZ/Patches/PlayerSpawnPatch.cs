@@ -12,13 +12,13 @@ namespace GTFO.EZ.Patches;
 [HarmonyPatch(typeof(PlayerAgent), nameof(PlayerAgent.Setup))]
 internal static class PlayerAgent_Setup_Patch
 {
-    private const float DelaySeconds = 90f;
-    private const float DurationSeconds = 5f;
+    private const float EasyModeAnnouncementDelaySeconds = 90f;
+    private const float EasyModeAnnouncementDurationSeconds = 15f;
 
     [HarmonyPostfix]
     private static void Postfix(PlayerAgent __instance)
     {
         if (!__instance.IsLocallyOwned) return;
-        GuiManager.PlayerLayer?.ShowWardenIntel(Plugin.EasterEggMessage, DelaySeconds, DurationSeconds);
+        GuiManager.PlayerLayer?.ShowWardenIntel(Plugin.EasterEggMessage, EasyModeAnnouncementDelaySeconds, EasyModeAnnouncementDurationSeconds);
     }
 }

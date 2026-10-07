@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
@@ -51,6 +52,96 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> ConsumableSpawnMultiplier = null!;
     internal static ConfigEntry<float> BigPickupSpawnMultiplier = null!;
     internal static ConfigEntry<float> ReviveDurationMultiplier = null!;
+    internal static ConfigEntry<float> FlashlightItemSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> GlowstickSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> CFoamGrenadeSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> FogRepellerSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> LockMelterSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> ExplosiveTripMineSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> MeleeBuffSyringeSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> HealthSyringeSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<float> CFoamTripmineSpawnWeightMultiplier = null!;
+
+    // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
+    internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
+    internal static ConfigEntry<float> DisinfectionResourceMultiplier = null!;
+    internal static ConfigEntry<float> WeaponAmmoResourceMultiplier = null!;
+    internal static ConfigEntry<float> ToolAmmoResourceMultiplier = null!;
+    internal static ConfigEntry<float> CommodityValueMultiplier = null!;
+    internal static ConfigEntry<float> CommodityInContainerChanceMultiplier = null!;
+    internal static ConfigEntry<float> ArtifactInContainerChanceMultiplier = null!;
+    internal static ConfigEntry<float> LargeCommodityPackChanceMultiplier = null!;
+    internal static ConfigEntry<float> MediumCommodityPackChanceMultiplier = null!;
+    internal static ConfigEntry<float> ResourceContainerReuseChanceMultiplier = null!;
+    internal static ConfigEntry<float> MaxPacksPerContainerMultiplier = null!;
+    internal static ConfigEntry<float> EmptyWeakContainersPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> EmptySecureContainersPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> LootPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> AirPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> AirPerZoneInNoAirZoneMultiplier = null!;
+    internal static ConfigEntry<float> TerminalsPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> LockedWeakContainerWithPackChanceMultiplier = null!;
+    internal static ConfigEntry<float> ResourcePackSizeMultiplier = null!;
+
+    internal static ConfigEntry<float> EnemyPatrolGroupsPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> StaticEnemiesMaxPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> StaticEnemiesMaxSmallAreaMultiplier = null!;
+    internal static ConfigEntry<float> StaticEnemiesMaxMediumAreaMultiplier = null!;
+    internal static ConfigEntry<float> StaticEnemiesMaxLargeAreaMultiplier = null!;
+    internal static ConfigEntry<float> StaticEnemiesMaxHugeAreaMultiplier = null!;
+    internal static ConfigEntry<float> EnemyPopulationPerZoneMultiplier = null!;
+
+    internal static ConfigEntry<float> LevelGenVoxelCoverageMultiplier = null!;
+    internal static ConfigEntry<float> LevelGenVoxelCoverageRandomnessMultiplier = null!;
+    internal static ConfigEntry<float> ArtifactsPerSegmentMultiplier = null!;
+    internal static ConfigEntry<float> ArtifactsPerLayerMultiplier = null!;
+
+    internal static ConfigEntry<float> WeakDoor4x4HealthMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoor8x4HealthMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoorNoLockWeightMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoorMeleeLockWeightMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoorHackableLockWeightMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoorUnlockedOpenChanceMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoorWallRemoverOpenChanceMultiplier = null!;
+    internal static ConfigEntry<float> WeakDoorLockHealthMultiplier = null!;
+    internal static ConfigEntry<float> GlueVolumeToDoorHealthConversionMultiplier = null!;
+    internal static ConfigEntry<float> GlueVolumeForDoorMaxStateMultiplier = null!;
+
+    // MeleeArchetypeDataBlock - one entry per melee weapon type: Bat, Hammer, Knife, Spear (real
+    // in-game names, confirmed from PublicName - "Hammer" covers what's commonly called the
+    // sledgehammer). Organized by archetype, then by action type (Light/Charged/Push/General),
+    // so with 4 archetypes x 19 stats each this is a lookup table rather than 76 named fields.
+    internal static readonly Dictionary<string, ConfigEntry<float>> MeleeMultipliers = new();
+
+    internal static readonly string[] MeleeArchetypes = { "Bat", "Hammer", "Knife", "Spear" };
+
+    // FieldKey matches the MeleeArchetypeDataBlock property name this multiplies, so
+    // GameDataTweaks can look it up directly without a second mapping table.
+    private static readonly (string FieldKey, string ActionType, string DisplayName, string Description)[] MeleeStatDefs =
+    {
+        ("LightAttackDamage", "Light Attack", "Damage Multiplier", "Multiplies light-attack damage."),
+        ("LightStaggerMulti", "Light Attack", "Stagger Multiplier", "Multiplies stagger force from a light attack."),
+        ("LightPrecisionMulti", "Light Attack", "Precision Damage Multiplier", "Multiplies the weak-point damage bonus on a light attack."),
+        ("LightEnvironmentMulti", "Light Attack", "Environment Damage Multiplier", "Multiplies light-attack damage dealt to doors/props/environment."),
+        ("LightBackstabberMulti", "Light Attack", "Backstab Damage Multiplier", "Multiplies the backstab damage bonus on a light attack."),
+        ("LightSleeperMulti", "Light Attack", "Sleeper Damage Multiplier", "Multiplies the sleeping-enemy damage bonus on a light attack."),
+        ("LightAttackStaminaCost", "Light Attack", "Stamina Cost Multiplier", "Multiplies stamina cost for a light attack."),
+
+        ("ChargedAttackDamage", "Charged Attack", "Damage Multiplier", "Multiplies charged (heavy) attack damage."),
+        ("ChargedStaggerMulti", "Charged Attack", "Stagger Multiplier", "Multiplies stagger force from a charged attack."),
+        ("ChargedPrecisionMulti", "Charged Attack", "Precision Damage Multiplier", "Multiplies the weak-point damage bonus on a charged attack."),
+        ("ChargedEnvironmentMulti", "Charged Attack", "Environment Damage Multiplier", "Multiplies charged-attack damage dealt to doors/props/environment."),
+        ("ChargedBackstabberMulti", "Charged Attack", "Backstab Damage Multiplier", "Multiplies the backstab damage bonus on a charged attack."),
+        ("ChargedSleeperMulti", "Charged Attack", "Sleeper Damage Multiplier", "Multiplies the sleeping-enemy damage bonus on a charged attack."),
+        ("ChargedAttackStaminaCost", "Charged Attack", "Stamina Cost Multiplier", "Multiplies stamina cost for a charged attack."),
+
+        ("PushDamageSphereRadius", "Push", "Hit Detection Radius Multiplier", "Multiplies the hit-detection radius of the push attack."),
+        ("PushStaminaCost", "Push", "Stamina Cost Multiplier", "Multiplies stamina cost for a push."),
+
+        ("CameraDamageRayLength", "General", "Reach Multiplier", "Multiplies attack reach."),
+        ("AttackSphereRadius", "General", "Hit Detection Radius Multiplier", "Multiplies the hit-detection radius of light and charged attacks."),
+        ("PlayerRunSpeedMultiWhileCharging", "General", "Charge Move Speed Multiplier", "Multiplies move speed while charging a heavy attack."),
+    };
 
     public override void Load()
     {
@@ -79,13 +170,13 @@ public class Plugin : BasePlugin
             "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 40% at the default 2.0. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
 
         RemoveCombatStaminaPenalty = Config.Bind("Stamina", "Remove Combat Stamina Penalty", true,
-            "Makes stamina regen while in combat as fast as while out of combat, instead of the vanilla combat penalty.");
+            "Makes stamina regen while in combat as fast as out of combat, and removes the 90% stamina cap while in combat.");
 
-        FallDamageMultiplier = Config.Bind("Fall Damage", "Fall Damage Multiplier", 1.0f,
-            "Multiplies fall damage dealt once you're past the no-damage height. Left at vanilla (1.0) by default - the height change below already does most of the work.");
+        FallDamageMultiplier = Config.Bind("Fall Damage", "Fall Damage Multiplier", 0.1f,
+            "Multiplies fall damage dealt once you're past the no-damage height. Default 0.1 (10% of normal) on top of the height change below.");
 
-        FallDamageMinHeightMultiplier = Config.Bind("Fall Damage", "Fall Damage Min Height Multiplier", 2.0f,
-            "Multiplies the minimum fall height before any damage is taken. Vanilla 4m -> 8m at the default 2.0.");
+        FallDamageMinHeightMultiplier = Config.Bind("Fall Damage", "Fall Damage Min Height Multiplier", 1.0f,
+            "Multiplies the minimum fall height before any damage is taken. Left at vanilla (1.0) - the 10% damage multiplier above already does the work.");
 
         FallDamageMaxHeightMultiplier = Config.Bind("Fall Damage", "Fall Damage Max Height Multiplier", 1.5f,
             "Multiplies the fall height at which damage maxes out. Vanilla 20m -> 30m at the default 1.5.");
@@ -161,5 +252,173 @@ public class Plugin : BasePlugin
 
         ReviveDurationMultiplier = Config.Bind("Interactions", "Revive Duration Multiplier", 1.0f,
             "Multiplies how long it takes to revive a downed teammate. Lower is faster. Left at vanilla (1.0) by default.");
+
+        // Each consumable is picked from a shared weighted lottery, so these retune the odds
+        // between them rather than the total amount of loot (that's ConsumableSpawnMultiplier
+        // above). Glow Stick defaults to 0 (disabled) - every other item here is left at vanilla.
+        FlashlightItemSpawnWeightMultiplier = Config.Bind("Loot", "Long Range Flashlight Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a Long Range Flashlight is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        GlowstickSpawnWeightMultiplier = Config.Bind("Loot", "Glow Stick Spawn Weight Multiplier", 0.0f,
+            "Multiplies how likely a glow stick (either color) is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+
+        CFoamGrenadeSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Grenade Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a Lock Melter is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        ExplosiveTripMineSpawnWeightMultiplier = Config.Bind("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        MeleeBuffSyringeSpawnWeightMultiplier = Config.Bind("Loot", "Melee Buff Syringe Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a IIx (melee buff) Syringe is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        HealthSyringeSpawnWeightMultiplier = Config.Bind("Loot", "Health Syringe Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a I2-LP (health) Syringe is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 1.0f,
+            "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        // ExpeditionBalanceDataBlock: the per-difficulty-tier resource/enemy/door budget table.
+        // Every entry here is left at vanilla (1.0) by default - this is a much bigger tuning
+        // surface than the rest of the mod, exposed for players who want to go further themselves.
+        HealthPackResourceMultiplier = Config.Bind("Expedition Resources", "Health Pack Resource Multiplier", 1.0f,
+            "Multiplies the health-pack resource budget distributed per zone. Left at vanilla (1.0) by default.");
+
+        DisinfectionResourceMultiplier = Config.Bind("Expedition Resources", "Disinfection Resource Multiplier", 1.0f,
+            "Multiplies the infection-cure resource budget distributed per zone. Left at vanilla (1.0) by default.");
+
+        WeaponAmmoResourceMultiplier = Config.Bind("Expedition Resources", "Weapon Ammo Resource Multiplier", 1.0f,
+            "Multiplies the weapon ammo-pack resource budget distributed per zone. Left at vanilla (1.0) by default.");
+
+        ToolAmmoResourceMultiplier = Config.Bind("Expedition Resources", "Tool Ammo Resource Multiplier", 1.0f,
+            "Multiplies the tool ammo (sentries, C-foam launcher, etc.) resource budget per zone. Left at vanilla (1.0) by default.");
+
+        CommodityValueMultiplier = Config.Bind("Expedition Resources", "Commodity Value Multiplier", 1.0f,
+            "Multiplies the total commodity (crafting material) value distributed per zone. Left at vanilla (1.0) by default.");
+
+        CommodityInContainerChanceMultiplier = Config.Bind("Expedition Resources", "Commodity In Container Chance Multiplier", 1.0f,
+            "Multiplies the chance a resource container holds a commodity. Left at vanilla (1.0) by default.");
+
+        ArtifactInContainerChanceMultiplier = Config.Bind("Expedition Resources", "Artifact In Container Chance Multiplier", 1.0f,
+            "Multiplies the chance a resource container holds an artifact. Left at vanilla (1.0) by default.");
+
+        LargeCommodityPackChanceMultiplier = Config.Bind("Expedition Resources", "Large Commodity Pack Chance Multiplier", 1.0f,
+            "Multiplies the chance a commodity spawn is a large pack instead of small. Left at vanilla (1.0) by default.");
+
+        MediumCommodityPackChanceMultiplier = Config.Bind("Expedition Resources", "Medium Commodity Pack Chance Multiplier", 1.0f,
+            "Multiplies the chance a commodity spawn is a medium pack instead of small. Left at vanilla (1.0) by default.");
+
+        ResourceContainerReuseChanceMultiplier = Config.Bind("Expedition Resources", "Resource Container Reuse Chance Multiplier", 1.0f,
+            "Multiplies the chance a resource container gets reused for a second pack. Left at vanilla (1.0) by default.");
+
+        MaxPacksPerContainerMultiplier = Config.Bind("Expedition Resources", "Max Packs Per Container Multiplier", 1.0f,
+            "Multiplies the max number of packs a single resource container can hold. Left at vanilla (1.0) by default.");
+
+        EmptyWeakContainersPerZoneMultiplier = Config.Bind("Expedition Resources", "Empty Weak Containers Per Zone Multiplier", 1.0f,
+            "Multiplies how many empty weak (cardboard box) containers spawn per zone. Left at vanilla (1.0) by default.");
+
+        EmptySecureContainersPerZoneMultiplier = Config.Bind("Expedition Resources", "Empty Secure Containers Per Zone Multiplier", 1.0f,
+            "Multiplies how many empty secure (locker) containers spawn per zone. Left at vanilla (1.0) by default.");
+
+        LootPerZoneMultiplier = Config.Bind("Expedition Resources", "Loot Per Zone Multiplier", 1.0f,
+            "Multiplies the general loot budget distributed per zone. Left at vanilla (1.0) by default.");
+
+        AirPerZoneMultiplier = Config.Bind("Expedition Resources", "Air Per Zone Multiplier", 1.0f,
+            "Multiplies the breathable-air resource budget per zone. Left at vanilla (1.0) by default.");
+
+        AirPerZoneInNoAirZoneMultiplier = Config.Bind("Expedition Resources", "Air Per Zone In No-Air Zone Multiplier", 1.0f,
+            "Multiplies the air resource budget per zone specifically inside no-air areas. Left at vanilla (1.0) by default.");
+
+        TerminalsPerZoneMultiplier = Config.Bind("Expedition Resources", "Terminals Per Zone Multiplier", 1.0f,
+            "Multiplies how many terminals spawn per zone. Left at vanilla (1.0) by default.");
+
+        LockedWeakContainerWithPackChanceMultiplier = Config.Bind("Expedition Resources", "Locked Weak Container With Pack Chance Multiplier", 1.0f,
+            "Multiplies the chance a weak container holding a pack is locked. Left at vanilla (1.0) by default.");
+
+        ResourcePackSizeMultiplier = Config.Bind("Expedition Resources", "Resource Pack Size Multiplier", 1.0f,
+            "Multiplies the size of every resource pack tier (small/medium/large). Left at vanilla (1.0) by default.");
+
+        EnemyPatrolGroupsPerZoneMultiplier = Config.Bind("Expedition Enemies", "Enemy Patrol Groups Per Zone Multiplier", 1.0f,
+            "Multiplies how many roaming enemy patrol groups spawn per zone. Left at vanilla (1.0) by default.");
+
+        StaticEnemiesMaxPerZoneMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Per Zone Multiplier", 1.0f,
+            "Multiplies the max number of stationary (sleeper) enemies per zone. Left at vanilla (1.0) by default.");
+
+        StaticEnemiesMaxSmallAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Small Area Multiplier", 1.0f,
+            "Multiplies the max stationary enemies allowed in a small area. Left at vanilla (1.0) by default.");
+
+        StaticEnemiesMaxMediumAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Medium Area Multiplier", 1.0f,
+            "Multiplies the max stationary enemies allowed in a medium area. Left at vanilla (1.0) by default.");
+
+        StaticEnemiesMaxLargeAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Large Area Multiplier", 1.0f,
+            "Multiplies the max stationary enemies allowed in a large area. Left at vanilla (1.0) by default.");
+
+        StaticEnemiesMaxHugeAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Huge Area Multiplier", 1.0f,
+            "Multiplies the max stationary enemies allowed in a huge area. Left at vanilla (1.0) by default.");
+
+        EnemyPopulationPerZoneMultiplier = Config.Bind("Expedition Enemies", "Enemy Population Per Zone Multiplier", 1.0f,
+            "Multiplies the overall enemy population budget per zone. Left at vanilla (1.0) by default.");
+
+        // Internal level-generation tuning, not a gameplay-difficulty stat - exposed for
+        // completeness, but retuning it changes how levels get built, not just how hard they are.
+        LevelGenVoxelCoverageMultiplier = Config.Bind("Expedition Level Gen", "Voxel Coverage Area Multiplier", 1.0f,
+            "Multiplies an internal level-generation area-coverage factor. Left at vanilla (1.0) by default.");
+
+        LevelGenVoxelCoverageRandomnessMultiplier = Config.Bind("Expedition Level Gen", "Voxel Coverage Area Randomness Multiplier", 1.0f,
+            "Multiplies the randomness factor in that same level-generation coverage scoring. Left at vanilla (1.0) by default.");
+
+        ArtifactsPerSegmentMultiplier = Config.Bind("Expedition Level Gen", "Artifacts Per Segment Multiplier", 1.0f,
+            "Multiplies how many artifacts can spawn per level segment. Left at vanilla (1.0) by default.");
+
+        ArtifactsPerLayerMultiplier = Config.Bind("Expedition Level Gen", "Artifacts Per Layer Multiplier", 1.0f,
+            "Multiplies how many artifacts can spawn per level layer. Left at vanilla (1.0) by default.");
+
+        WeakDoor4x4HealthMultiplier = Config.Bind("Expedition Doors", "Weak Door 4x4 Health Multiplier", 1.0f,
+            "Multiplies the health of small (4x4) weak doors. Left at vanilla (1.0) by default.");
+
+        WeakDoor8x4HealthMultiplier = Config.Bind("Expedition Doors", "Weak Door 8x4 Health Multiplier", 1.0f,
+            "Multiplies the health of large (8x4) weak doors. Left at vanilla (1.0) by default.");
+
+        WeakDoorNoLockWeightMultiplier = Config.Bind("Expedition Doors", "Weak Door No-Lock Weight Multiplier", 1.0f,
+            "Multiplies the odds a weak door spawns with no lock at all. Left at vanilla (1.0) by default.");
+
+        WeakDoorMeleeLockWeightMultiplier = Config.Bind("Expedition Doors", "Weak Door Melee Lock Weight Multiplier", 1.0f,
+            "Multiplies the odds a weak door spawns with a melee-breakable lock. Left at vanilla (1.0) by default.");
+
+        WeakDoorHackableLockWeightMultiplier = Config.Bind("Expedition Doors", "Weak Door Hackable Lock Weight Multiplier", 1.0f,
+            "Multiplies the odds a weak door spawns with a hackable lock. Left at vanilla (1.0) by default.");
+
+        WeakDoorUnlockedOpenChanceMultiplier = Config.Bind("Expedition Doors", "Weak Door Unlocked Open Chance Multiplier", 1.0f,
+            "Multiplies the chance an unlocked weak door starts already open. Left at vanilla (1.0) by default.");
+
+        WeakDoorWallRemoverOpenChanceMultiplier = Config.Bind("Expedition Doors", "Weak Door Wall Remover Open Chance Multiplier", 1.0f,
+            "Multiplies the chance a door starts open where a wall-remover charge was used. Left at vanilla (1.0) by default.");
+
+        WeakDoorLockHealthMultiplier = Config.Bind("Expedition Doors", "Weak Door Lock Health Multiplier", 1.0f,
+            "Multiplies the health of a weak door's lock itself (separate from the door). Left at vanilla (1.0) by default.");
+
+        GlueVolumeToDoorHealthConversionMultiplier = Config.Bind("Expedition Doors", "Glue Volume To Door Health Conversion Multiplier", 1.0f,
+            "Multiplies how effectively C-Foam volume converts into door damage. Left at vanilla (1.0) by default.");
+
+        GlueVolumeForDoorMaxStateMultiplier = Config.Bind("Expedition Doors", "Glue Volume For Door Max State Multiplier", 1.0f,
+            "Multiplies how much C-Foam volume is needed to fully seal a door. Left at vanilla (1.0) by default.");
+
+        // MeleeArchetypeDataBlock: one weapon type per archetype (Bat, Hammer, Knife, Spear),
+        // one section per archetype+action-type combination. Every entry defaults to vanilla (1.0).
+        foreach (var archetype in MeleeArchetypes)
+        {
+            foreach (var stat in MeleeStatDefs)
+            {
+                var section = $"Melee - {archetype} - {stat.ActionType}";
+                var entry = Config.Bind(section, stat.DisplayName, 1.0f,
+                    $"{stat.Description} Left at vanilla (1.0) by default.");
+                MeleeMultipliers[$"{archetype}.{stat.FieldKey}"] = entry;
+            }
+        }
     }
 }
