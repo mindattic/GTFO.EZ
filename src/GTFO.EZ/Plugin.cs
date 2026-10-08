@@ -91,6 +91,25 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> StaticEnemiesMaxHugeAreaMultiplier = null!;
     internal static ConfigEntry<float> EnemyPopulationPerZoneMultiplier = null!;
 
+    // TentacleTraps and ParasiteNests on ExpeditionBalanceDataBlock are each a StaticEnemyData
+    // reference - the same 7-field shape (Health/AttackDamage/MaxPerZone/MaxSmallArea/
+    // MaxMediumArea/MaxLargeArea/MaxHugeArea) already used for roaming/sleeper enemies above.
+    internal static ConfigEntry<float> TentacleTrapHealthMultiplier = null!;
+    internal static ConfigEntry<float> TentacleTrapAttackDamageMultiplier = null!;
+    internal static ConfigEntry<float> TentacleTrapMaxPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> TentacleTrapMaxSmallAreaMultiplier = null!;
+    internal static ConfigEntry<float> TentacleTrapMaxMediumAreaMultiplier = null!;
+    internal static ConfigEntry<float> TentacleTrapMaxLargeAreaMultiplier = null!;
+    internal static ConfigEntry<float> TentacleTrapMaxHugeAreaMultiplier = null!;
+
+    internal static ConfigEntry<float> ParasiteNestHealthMultiplier = null!;
+    internal static ConfigEntry<float> ParasiteNestAttackDamageMultiplier = null!;
+    internal static ConfigEntry<float> ParasiteNestMaxPerZoneMultiplier = null!;
+    internal static ConfigEntry<float> ParasiteNestMaxSmallAreaMultiplier = null!;
+    internal static ConfigEntry<float> ParasiteNestMaxMediumAreaMultiplier = null!;
+    internal static ConfigEntry<float> ParasiteNestMaxLargeAreaMultiplier = null!;
+    internal static ConfigEntry<float> ParasiteNestMaxHugeAreaMultiplier = null!;
+
     internal static ConfigEntry<float> LevelGenVoxelCoverageMultiplier = null!;
     internal static ConfigEntry<float> LevelGenVoxelCoverageRandomnessMultiplier = null!;
     internal static ConfigEntry<float> ArtifactsPerSegmentMultiplier = null!;
@@ -363,6 +382,48 @@ public class Plugin : BasePlugin
 
         EnemyPopulationPerZoneMultiplier = Config.Bind("Expedition Enemies", "Enemy Population Per Zone Multiplier", 1.0f,
             "Multiplies the overall enemy population budget per zone. Left at vanilla (1.0) by default.");
+
+        TentacleTrapHealthMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Health Multiplier", 1.0f,
+            "Multiplies max health for tentacle traps. Left at vanilla (1.0) by default.");
+
+        TentacleTrapAttackDamageMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Attack Damage Multiplier", 1.0f,
+            "Multiplies attack damage dealt by tentacle traps. Left at vanilla (1.0) by default.");
+
+        TentacleTrapMaxPerZoneMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Per Zone Multiplier", 1.0f,
+            "Multiplies the max number of tentacle traps per zone. Left at vanilla (1.0) by default.");
+
+        TentacleTrapMaxSmallAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Small Area Multiplier", 1.0f,
+            "Multiplies the max tentacle traps allowed in a small area. Left at vanilla (1.0) by default.");
+
+        TentacleTrapMaxMediumAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Medium Area Multiplier", 1.0f,
+            "Multiplies the max tentacle traps allowed in a medium area. Left at vanilla (1.0) by default.");
+
+        TentacleTrapMaxLargeAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Large Area Multiplier", 1.0f,
+            "Multiplies the max tentacle traps allowed in a large area. Left at vanilla (1.0) by default.");
+
+        TentacleTrapMaxHugeAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Huge Area Multiplier", 1.0f,
+            "Multiplies the max tentacle traps allowed in a huge area. Left at vanilla (1.0) by default.");
+
+        ParasiteNestHealthMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Health Multiplier", 1.0f,
+            "Multiplies max health for parasite nests. Left at vanilla (1.0) by default.");
+
+        ParasiteNestAttackDamageMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Attack Damage Multiplier", 1.0f,
+            "Multiplies attack damage dealt by parasite nests. Left at vanilla (1.0) by default.");
+
+        ParasiteNestMaxPerZoneMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Per Zone Multiplier", 1.0f,
+            "Multiplies the max number of parasite nests per zone. Left at vanilla (1.0) by default.");
+
+        ParasiteNestMaxSmallAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Small Area Multiplier", 1.0f,
+            "Multiplies the max parasite nests allowed in a small area. Left at vanilla (1.0) by default.");
+
+        ParasiteNestMaxMediumAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Medium Area Multiplier", 1.0f,
+            "Multiplies the max parasite nests allowed in a medium area. Left at vanilla (1.0) by default.");
+
+        ParasiteNestMaxLargeAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Large Area Multiplier", 1.0f,
+            "Multiplies the max parasite nests allowed in a large area. Left at vanilla (1.0) by default.");
+
+        ParasiteNestMaxHugeAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Huge Area Multiplier", 1.0f,
+            "Multiplies the max parasite nests allowed in a huge area. Left at vanilla (1.0) by default.");
 
         // Internal level-generation tuning, not a gameplay-difficulty stat - exposed for
         // completeness, but retuning it changes how levels get built, not just how hard they are.

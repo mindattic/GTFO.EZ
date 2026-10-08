@@ -248,9 +248,42 @@ internal static class GameDataInit_Initialize_Patch
             block.GlueVolumeToDoorHealthConversion *= Plugin.GlueVolumeToDoorHealthConversionMultiplier.Value;
             block.GlueVolumeForDoorGlueMaxState *= Plugin.GlueVolumeForDoorMaxStateMultiplier.Value;
 
-            // TentacleTraps and ParasiteNests (StaticEnemyData) are left untouched - they're
-            // nested structs that need their own field-by-field exploration, not done yet.
+            ApplyStaticEnemyData(block.TentacleTraps,
+                Plugin.TentacleTrapHealthMultiplier.Value,
+                Plugin.TentacleTrapAttackDamageMultiplier.Value,
+                Plugin.TentacleTrapMaxPerZoneMultiplier.Value,
+                Plugin.TentacleTrapMaxSmallAreaMultiplier.Value,
+                Plugin.TentacleTrapMaxMediumAreaMultiplier.Value,
+                Plugin.TentacleTrapMaxLargeAreaMultiplier.Value,
+                Plugin.TentacleTrapMaxHugeAreaMultiplier.Value);
+
+            ApplyStaticEnemyData(block.ParasiteNests,
+                Plugin.ParasiteNestHealthMultiplier.Value,
+                Plugin.ParasiteNestAttackDamageMultiplier.Value,
+                Plugin.ParasiteNestMaxPerZoneMultiplier.Value,
+                Plugin.ParasiteNestMaxSmallAreaMultiplier.Value,
+                Plugin.ParasiteNestMaxMediumAreaMultiplier.Value,
+                Plugin.ParasiteNestMaxLargeAreaMultiplier.Value,
+                Plugin.ParasiteNestMaxHugeAreaMultiplier.Value);
         }
+    }
+
+    // TentacleTraps/ParasiteNests are each a StaticEnemyData reference, not every tier has one
+    // (e.g. tiers with no tentacle traps leave the property null), so this is a reference type
+    // mutated in place rather than a struct copied out and written back like EnemyBalancingDataBlock.Health.
+    private static void ApplyStaticEnemyData(
+        StaticEnemyData? data, float healthMult, float attackDamageMult, float maxPerZoneMult,
+        float maxSmallAreaMult, float maxMediumAreaMult, float maxLargeAreaMult, float maxHugeAreaMult)
+    {
+        if (data == null) return;
+
+        data.Health *= healthMult;
+        data.AttackDamage *= attackDamageMult;
+        data.MaxPerZone = ScaleInt(data.MaxPerZone, maxPerZoneMult);
+        data.MaxSmallArea = ScaleInt(data.MaxSmallArea, maxSmallAreaMult);
+        data.MaxMediumArea = ScaleInt(data.MaxMediumArea, maxMediumAreaMult);
+        data.MaxLargeArea = ScaleInt(data.MaxLargeArea, maxLargeAreaMult);
+        data.MaxHugeArea = ScaleInt(data.MaxHugeArea, maxHugeAreaMult);
     }
 
     // One MeleeArchetypeDataBlock per weapon type - real PublicName values are Bat, Hammer,

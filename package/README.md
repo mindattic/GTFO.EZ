@@ -121,16 +121,16 @@ expect it to matter more for players who want to go deeper than the defaults, no
 **Consumable spawn odds** — Glow Stick is covered above (it's disabled by default); these other
 items share the same weighted lottery but are all left at vanilla:
 
-| Stat | Default |
-|---|---|
-| Long Range Flashlight spawn odds | - |
-| C-Foam Grenade spawn odds | - |
-| Fog Repeller spawn odds | - |
-| Lock Melter spawn odds | - |
-| Explosive Trip Mine spawn odds | - |
-| Melee Buff (IIx) Syringe spawn odds | - |
-| Health (I2-LP) Syringe spawn odds | - |
-| C-Foam Tripmine spawn odds | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Long Range Flashlight spawn odds | varies by zone | - |
+| C-Foam Grenade spawn odds | varies by zone | - |
+| Fog Repeller spawn odds | varies by zone | - |
+| Lock Melter spawn odds | varies by zone | - |
+| Explosive Trip Mine spawn odds | varies by zone | - |
+| Melee Buff (IIx) Syringe spawn odds | varies by zone | - |
+| Health (I2-LP) Syringe spawn odds | varies by zone | - |
+| C-Foam Tripmine spawn odds | varies by zone | - |
 
 These spawn-odds stats (glow stick included) all retune the same weighted lottery that decides
 *which* consumable fills a spawn slot — they don't change *how many* consumables spawn (that's
@@ -143,66 +143,82 @@ surface in the mod and none of it is retuned by default:
 
 *Resources*
 
-| Stat | Default |
-|---|---|
-| Health-pack resource budget per zone | - |
-| Infection-cure resource budget per zone | - |
-| Weapon ammo-pack resource budget per zone | - |
-| Tool ammo (sentries, C-foam launcher, etc.) budget per zone | - |
-| Commodity (crafting material) value per zone | - |
-| Chance a container holds a commodity | - |
-| Chance a container holds an artifact | - |
-| Chance a commodity spawn is a large pack | - |
-| Chance a commodity spawn is a medium pack | - |
-| Chance a resource container gets reused for a second pack | - |
-| Max packs per resource container | - |
-| Empty weak (cardboard box) containers per zone | - |
-| Empty secure (locker) containers per zone | - |
-| General loot budget per zone | - |
-| Air (breathable) budget per zone | - |
-| Air budget per zone inside no-air areas | - |
-| Terminals per zone | - |
-| Chance a weak container holding a pack is locked | - |
-| Resource pack size (small/medium/large tiers) | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Health-pack resource budget per zone | varies by tier | - |
+| Infection-cure resource budget per zone | varies by tier | - |
+| Weapon ammo-pack resource budget per zone | varies by tier | - |
+| Tool ammo (sentries, C-foam launcher, etc.) budget per zone | varies by tier | - |
+| Commodity (crafting material) value per zone | varies by tier | - |
+| Chance a container holds a commodity | varies by tier | - |
+| Chance a container holds an artifact | varies by tier | - |
+| Chance a commodity spawn is a large pack | varies by tier | - |
+| Chance a commodity spawn is a medium pack | varies by tier | - |
+| Chance a resource container gets reused for a second pack | varies by tier | - |
+| Max packs per resource container | varies by tier | - |
+| Empty weak (cardboard box) containers per zone | varies by tier | - |
+| Empty secure (locker) containers per zone | varies by tier | - |
+| General loot budget per zone | varies by tier | - |
+| Air (breathable) budget per zone | varies by tier | - |
+| Air budget per zone inside no-air areas | varies by tier | - |
+| Terminals per zone | varies by tier | - |
+| Chance a weak container holding a pack is locked | varies by tier | - |
+| Resource pack size (small/medium/large tiers) | varies by tier | - |
 
 *Enemies*
 
-| Stat | Default |
-|---|---|
-| Roaming enemy patrol groups per zone | - |
-| Max stationary (sleeper) enemies per zone | - |
-| Max stationary enemies in a small area | - |
-| Max stationary enemies in a medium area | - |
-| Max stationary enemies in a large area | - |
-| Max stationary enemies in a huge area | - |
-| Overall enemy population budget per zone | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Roaming enemy patrol groups per zone | varies by tier | - |
+| Max stationary (sleeper) enemies per zone | varies by tier | - |
+| Max stationary enemies in a small area | varies by tier | - |
+| Max stationary enemies in a medium area | varies by tier | - |
+| Max stationary enemies in a large area | varies by tier | - |
+| Max stationary enemies in a huge area | varies by tier | - |
+| Overall enemy population budget per zone | varies by tier | - |
+| Tentacle Trap health | varies by tier | - |
+| Tentacle Trap attack damage | varies by tier | - |
+| Tentacle Trap max per zone | varies by tier | - |
+| Tentacle Trap max in a small area | varies by tier | - |
+| Tentacle Trap max in a medium area | varies by tier | - |
+| Tentacle Trap max in a large area | varies by tier | - |
+| Tentacle Trap max in a huge area | varies by tier | - |
+| Parasite Nest health | varies by tier | - |
+| Parasite Nest attack damage | varies by tier | - |
+| Parasite Nest max per zone | varies by tier | - |
+| Parasite Nest max in a small area | varies by tier | - |
+| Parasite Nest max in a medium area | varies by tier | - |
+| Parasite Nest max in a large area | varies by tier | - |
+| Parasite Nest max in a huge area | varies by tier | - |
+
+Tentacle Trap and Parasite Nest each expose the same 7-stat shape as roaming/sleeper enemies
+above (Health, Attack Damage, Max Per Zone, Max Small/Medium/Large/Huge Area) via their own
+`StaticEnemyData` reference on the datablock — confirmed by IL-inspecting `Modules-ASM.dll` rather
+than guessing at an undocumented nested type.
 
 *Level generation* (internal tuning, not difficulty — changes how levels are built)
 
-| Stat | Default |
-|---|---|
-| Voxel coverage area factor | - |
-| Voxel coverage area randomness factor | - |
-| Artifacts per level segment | - |
-| Artifacts per level layer | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Voxel coverage area factor | varies by tier | - |
+| Voxel coverage area randomness factor | varies by tier | - |
+| Artifacts per level segment | varies by tier | - |
+| Artifacts per level layer | varies by tier | - |
 
 *Doors*
 
-| Stat | Default |
-|---|---|
-| Small (4x4) weak door health | - |
-| Large (8x4) weak door health | - |
-| Odds a weak door has no lock | - |
-| Odds a weak door has a melee-breakable lock | - |
-| Odds a weak door has a hackable lock | - |
-| Chance an unlocked weak door starts open | - |
-| Chance a door starts open after a wall-remover charge | - |
-| Weak door lock health | - |
-| C-Foam volume -> door health conversion rate | - |
-| C-Foam volume needed to fully seal a door | - |
-
-Not yet exposed: `TentacleTraps` and `ParasiteNests` on the same datablock are nested structs
-that need their own field-by-field investigation.
+| Stat | Vanilla | Default |
+|---|---|---|
+| Small (4x4) weak door health | varies by tier | - |
+| Large (8x4) weak door health | varies by tier | - |
+| Odds a weak door has no lock | varies by tier | - |
+| Odds a weak door has a melee-breakable lock | varies by tier | - |
+| Odds a weak door has a hackable lock | varies by tier | - |
+| Chance an unlocked weak door starts open | varies by tier | - |
+| Chance a door starts open after a wall-remover charge | varies by tier | - |
+| Weak door lock health | varies by tier | - |
+| C-Foam volume -> door health conversion rate | varies by tier | - |
+| C-Foam volume needed to fully seal a door | varies by tier | - |
 
 **Melee weapons** — `MeleeArchetypeDataBlock` has one entry per weapon type: **Bat**, **Hammer**
 (the sledgehammer), **Knife**, and **Spear** — real in-game names, confirmed from the data rather
@@ -214,42 +230,42 @@ attack does 2 damage, a Hammer's does 3, for example:
 
 *Light Attack*
 
-| Stat | Default |
-|---|---|
-| Damage | - |
-| Stagger Multiplier | - |
-| Precision Damage Multiplier | - |
-| Environment Damage Multiplier | - |
-| Backstab Damage Multiplier | - |
-| Sleeper Damage Multiplier | - |
-| Stamina Cost Multiplier | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Damage | varies by weapon (see table below) | - |
+| Stagger Multiplier | varies by weapon | - |
+| Precision Damage Multiplier | varies by weapon | - |
+| Environment Damage Multiplier | varies by weapon | - |
+| Backstab Damage Multiplier | varies by weapon | - |
+| Sleeper Damage Multiplier | varies by weapon | - |
+| Stamina Cost Multiplier | varies by weapon | - |
 
 *Charged Attack*
 
-| Stat | Default |
-|---|---|
-| Damage | - |
-| Stagger Multiplier | - |
-| Precision Damage Multiplier | - |
-| Environment Damage Multiplier | - |
-| Backstab Damage Multiplier | - |
-| Sleeper Damage Multiplier | - |
-| Stamina Cost Multiplier | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Damage | varies by weapon (see table below) | - |
+| Stagger Multiplier | varies by weapon | - |
+| Precision Damage Multiplier | varies by weapon | - |
+| Environment Damage Multiplier | varies by weapon | - |
+| Backstab Damage Multiplier | varies by weapon | - |
+| Sleeper Damage Multiplier | varies by weapon | - |
+| Stamina Cost Multiplier | varies by weapon | - |
 
 *Push*
 
-| Stat | Default |
-|---|---|
-| Hit Detection Radius Multiplier | - |
-| Stamina Cost Multiplier | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Hit Detection Radius Multiplier | varies by weapon | - |
+| Stamina Cost Multiplier | varies by weapon | - |
 
 *General*
 
-| Stat | Default |
-|---|---|
-| Reach Multiplier | - |
-| Hit Detection Radius Multiplier | - |
-| Charge Move Speed Multiplier | - |
+| Stat | Vanilla | Default |
+|---|---|---|
+| Reach Multiplier | varies by weapon | - |
+| Hit Detection Radius Multiplier | varies by weapon | - |
+| Charge Move Speed Multiplier | varies by weapon | - |
 
 That's 19 stats x 4 weapons = 76 config entries, all left at vanilla. For reference, here's what
 "vanilla" actually is per weapon (light / charged attack damage only, the two most legible
@@ -296,8 +312,21 @@ others' prior work:
   mod relies on, instead of guessing at an undocumented API.
 - **The [BepInEx](https://github.com/BepInEx/BepInEx) team** — the modding framework and loader
   this mod (and essentially every other GTFO mod) runs on.
+- **Claude Opus 5.5** (Anthropic) — AI assistant used throughout development: implementing the
+  patches, reverse-engineering datablock fields, and writing/auditing this documentation.
 
 ## Changelog
+
+### v6
+
+- Added a Vanilla column to every remaining table that was missing one (consumable spawn odds,
+  all four Expedition Balance subsections, all four melee weapon action types), so every exposed
+  stat now shows what it's being compared against instead of just its tuned/default value.
+- Exposed `TentacleTraps` and `ParasiteNests` (on `ExpeditionBalanceDataBlock`) as 14 new config
+  options, all left at vanilla (1.0) by default: both are `StaticEnemyData` references with the
+  same 7-field shape already exposed for roaming/sleeper enemies (Health, Attack Damage, Max Per
+  Zone, Max Small/Medium/Large/Huge Area), confirmed via IL inspection of the game's own assembly.
+- Credited Claude Opus 5.5 in Attributions for its role throughout development.
 
 ### v5
 
