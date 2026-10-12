@@ -13,7 +13,7 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "5.0.0";
+    public const string VERSION = "8.0.0";
 
     // Shared between the rundown-select header and the in-level warden-intel message so the two
     // in-game surfaces never drift apart the way they did before this was pulled out. Major
@@ -46,6 +46,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> LargeBatteryDrainMultiplier = null!;
     internal static ConfigEntry<float> NoAirDamageMultiplier = null!;
     internal static ConfigEntry<float> NoAirDepletionTimeMultiplier = null!;
+    internal static ConfigEntry<float> FogDensityMultiplier = null!;
     internal static ConfigEntry<float> EnemyHealthMultiplier = null!;
     internal static ConfigEntry<float> EnemyMeleeDamageMultiplier = null!;
     internal static ConfigEntry<float> EnemyTentacleDamageMultiplier = null!;
@@ -61,6 +62,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> MeleeBuffSyringeSpawnWeightMultiplier = null!;
     internal static ConfigEntry<float> HealthSyringeSpawnWeightMultiplier = null!;
     internal static ConfigEntry<float> CFoamTripmineSpawnWeightMultiplier = null!;
+    internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
 
     // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
     internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
@@ -162,6 +164,123 @@ public class Plugin : BasePlugin
         ("PlayerRunSpeedMultiWhileCharging", "General", "Charge Move Speed Multiplier", "Multiplies move speed while charging a heavy attack."),
     };
 
+    // ArchetypeDataBlock - ranged weapons (guns and sentries share this block type). Core combat
+    // stats get a two-tier multiplier instead of melee's single tier, because ranged weapons span
+    // ~20 types and ~50 individual fire-mode archetypes rather than melee's 4: a weapon TYPE slider
+    // (shared by every fire-mode variant in that family, e.g. all of "Rifle") multiplied by an
+    // INDIVIDUAL slider (one specific archetype, e.g. "Rifle - Burst"), both default 1.0 and
+    // cumulative. Category/archetype IDs, ownership, and vanilla stats confirmed by logging
+    // GameDataBlockBase<GearCategoryDataBlock>/<ArchetypeDataBlock>.GetAllBlocks() at boot - not
+    // documented anywhere official. An archetype belongs to whichever named GearCategory first
+    // claims it (categories can share archetypes between fire-mode slots, e.g. "SMG_Special" reuses
+    // plain "SMG"'s Semi/Burst/Auto archetypes, so only the first/base category exposes a slider for
+    // them). Sentries and other tools don't route through GearCategoryDataBlock at all, so they
+    // aren't covered by this two-tier system - only their flat multipliers below apply to them.
+    internal static readonly string[] WeaponTypeCategories =
+    {
+        "Bullpup", "DMR", "Gauss_Rifle", "HEL_Shotgun", "HighCalPistol", "MachineGun",
+        "MachineGun_LowRPM", "Pistol", "Pistol_Stagger", "Precision_Rifle", "Revolver", "Rifle",
+        "RifleCQB", "RifleHeavy", "SMG", "SMGHeavy", "SMG_PDW", "SawedOffShotgun", "Scattergun",
+        "Shotgun", "Sniper",
+    };
+
+    internal static readonly (uint ArchetypeId, string TypeCategory, string Label)[] WeaponArchetypes =
+    {
+        (51, "Bullpup", "Bullpup Semi"),
+        (50, "Bullpup", "Bullpup Burst"),
+        (49, "Bullpup", "Bullpup Auto"),
+        (53, "Bullpup", "Bullpup SemiBurst"),
+        (25, "DMR", "DMR Semi"),
+        (26, "DMR", "DMR Burst"),
+        (27, "DMR", "DMR Auto (Long gun)"),
+        (28, "DMR", "DMR SemiBurst"),
+        (65, "Gauss_Rifle", "Gauss Rifle Semi"),
+        (81, "HEL_Shotgun", "HEL Shotgun Semi"),
+        (78, "HEL_Shotgun", "HEL Shotgun Burst"),
+        (80, "HighCalPistol", "HighCalPistol"),
+        (59, "MachineGun", "MachineGun Auto"),
+        (21, "MachineGun_LowRPM", "MachineGun LowRPM Semi"),
+        (22, "MachineGun_LowRPM", "MachineGun LowRPM Burst"),
+        (23, "MachineGun_LowRPM", "MachineGun LowRPM Auto"),
+        (24, "MachineGun_LowRPM", "MachineGun LowRPM SemiBurst"),
+        (41, "Pistol", "Pistol Semi"),
+        (42, "Pistol", "Pistol Burst"),
+        (43, "Pistol", "Pistol Auto"),
+        (44, "Pistol", "Pistol SemiBurst"),
+        (66, "Pistol_Stagger", "Pistol Stagger Auto"),
+        (79, "Precision_Rifle", "Precision Rifle"),
+        (37, "Revolver", "Revolver Semi"),
+        (38, "Revolver", "Revolver Burst"),
+        (39, "Revolver", "Revolver Auto (Autorevolver)"),
+        (40, "Revolver", "Revolver SemiBurst"),
+        (1, "Rifle", "Rifle Semi"),
+        (3, "Rifle", "Rifle Burst"),
+        (5, "Rifle", "Rifle Auto"),
+        (16, "Rifle", "Rifle SemiBurst (Semi Burst Rifle)"),
+        (76, "RifleCQB", "RifleCQB"),
+        (73, "RifleHeavy", "RifleHeavy Auto"),
+        (17, "SMG", "SMG Semi"),
+        (18, "SMG", "SMG Burst"),
+        (19, "SMG", "SMG Auto"),
+        (20, "SMG", "SMG SemiBurst"),
+        (69, "SMGHeavy", "SMGHeavy Auto"),
+        (77, "SMG_PDW", "SMG PDW"),
+        (45, "SawedOffShotgun", "SawedOffShotgun Semi"),
+        (72, "Scattergun", "Scattergun Burst"),
+        (33, "Shotgun", "Shotgun Semi"),
+        (34, "Shotgun", "Shotgun Burst"),
+        (35, "Shotgun", "Shotgun Auto"),
+        (36, "Shotgun", "Shotgun SemiBurst"),
+        (29, "Sniper", "Sniper Semi"),
+        (30, "Sniper", "Sniper Burst (Railgun)"),
+        (31, "Sniper", "Sniper Auto (Coilgun)"),
+        (32, "Sniper", "Sniper SemiBurst"),
+    };
+
+    private static readonly (string FieldKey, string DisplayName, string Description)[] WeaponCoreStatDefs =
+    {
+        ("Damage", "Damage Multiplier", "Multiplies this weapon's base damage per hit."),
+        ("StaggerDamageMulti", "Stagger Multiplier", "Multiplies stagger force dealt per hit."),
+        ("PrecisionDamageMulti", "Precision Damage Multiplier", "Multiplies the weak-point/headshot damage bonus."),
+        ("DefaultClipSize", "Clip Size Multiplier", "Multiplies magazine/clip size."),
+        ("DefaultReloadTime", "Reload Time Multiplier", "Multiplies time to reload."),
+    };
+
+    internal static readonly Dictionary<string, ConfigEntry<float>> WeaponTypeMultipliers = new();
+    internal static readonly Dictionary<string, ConfigEntry<float>> WeaponIndividualMultipliers = new();
+
+    // Remaining ArchetypeDataBlock stats are left as one flat multiplier shared by every archetype
+    // (guns, sentries, and other tools alike) rather than getting the type x individual treatment
+    // above, to keep the config from tripling in size again for stats nobody asked to tune per-gun.
+    internal static ConfigEntry<float> WeaponCostOfBulletMultiplier = null!;
+    internal static ConfigEntry<float> WeaponShotDelayMultiplier = null!;
+    internal static ConfigEntry<float> WeaponHipFireSpreadMultiplier = null!;
+    internal static ConfigEntry<float> WeaponAimSpreadMultiplier = null!;
+    internal static ConfigEntry<float> WeaponPiercingDamageCountLimitMultiplier = null!;
+    internal static ConfigEntry<float> WeaponBurstDelayMultiplier = null!;
+    internal static ConfigEntry<float> WeaponBurstShotCountMultiplier = null!;
+    internal static ConfigEntry<float> WeaponShotgunBulletCountMultiplier = null!;
+    internal static ConfigEntry<float> WeaponShotgunConeSizeMultiplier = null!;
+    internal static ConfigEntry<float> WeaponShotgunBulletSpreadMultiplier = null!;
+    internal static ConfigEntry<float> WeaponSpecialChargetupTimeMultiplier = null!;
+    internal static ConfigEntry<float> WeaponSpecialCooldownTimeMultiplier = null!;
+    internal static ConfigEntry<float> WeaponSpecialSemiBurstCountTimeoutMultiplier = null!;
+    internal static ConfigEntry<float> WeaponEquipTransitionTimeMultiplier = null!;
+    internal static ConfigEntry<float> WeaponAimTransitionTimeMultiplier = null!;
+    internal static ConfigEntry<float> WeaponShellCasingSizeMultiplier = null!;
+    internal static ConfigEntry<float> SentryStartFireDelayMultiplier = null!;
+    internal static ConfigEntry<float> SentryRotationSpeedMultiplier = null!;
+    internal static ConfigEntry<float> SentryDetectionMaxRangeMultiplier = null!;
+    internal static ConfigEntry<float> SentryDetectionMaxAngleMultiplier = null!;
+    internal static ConfigEntry<float> SentryLongRangeThresholdMultiplier = null!;
+    internal static ConfigEntry<float> SentryShortRangeThresholdMultiplier = null!;
+    internal static ConfigEntry<float> SentryStartFireDelayTagMultiplier = null!;
+    internal static ConfigEntry<float> SentryRotationSpeedTagMultiplier = null!;
+    internal static ConfigEntry<float> SentryDamageTagMultiplier = null!;
+    internal static ConfigEntry<float> SentryStaggerDamageTagMultiplier = null!;
+    internal static ConfigEntry<float> SentryCostOfBulletTagMultiplier = null!;
+    internal static ConfigEntry<float> SentryShotDelayTagMultiplier = null!;
+
     public override void Load()
     {
         Logger = Log;
@@ -182,11 +301,11 @@ public class Plugin : BasePlugin
         HealthMultiplier = Config.Bind("Health", "Max Health Multiplier", 2.0f,
             "Multiplies player max health. Vanilla 25 -> 50 at the default 2.0.");
 
-        HealthRegenRateMultiplier = Config.Bind("Health", "Health Regen Rate Multiplier", 5.0f,
-            "Multiplies health regen per second. Vanilla 0.2/s -> 1.0/s at the default 5.0 (about 2% of max health per second).");
+        HealthRegenRateMultiplier = Config.Bind("Health", "Health Regen Rate Multiplier", 0.5f,
+            "Multiplies health regen per second. Vanilla 0.2/s -> 0.1/s at the default 0.5.");
 
-        HealthRegenCapMultiplier = Config.Bind("Health", "Health Regen Cap Multiplier", 2.0f,
-            "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 40% at the default 2.0. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
+        HealthRegenCapMultiplier = Config.Bind("Health", "Health Regen Cap Multiplier", 0.5f,
+            "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 10% at the default 0.5. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
 
         RemoveCombatStaminaPenalty = Config.Bind("Stamina", "Remove Combat Stamina Penalty", true,
             "Makes stamina regen while in combat as fast as out of combat, and removes the 90% stamina cap while in combat.");
@@ -254,6 +373,9 @@ public class Plugin : BasePlugin
         NoAirDepletionTimeMultiplier = Config.Bind("Environment", "No-Air Depletion Time Multiplier", 1.0f,
             "Multiplies how long your air meter lasts in no-air zones before it empties. Left at vanilla (1.0) by default.");
 
+        FogDensityMultiplier = Config.Bind("Environment", "Fog Density Multiplier", 0.1f,
+            "Multiplies the density of the visual fog that limits visibility. Default 0.1 (90% reduction) - vanilla fog was judged more annoying than fun.");
+
         EnemyHealthMultiplier = Config.Bind("Enemy Balance", "Enemy Health Multiplier", 1.0f,
             "Multiplies max health for every enemy type. Left at vanilla (1.0) by default.");
 
@@ -269,8 +391,8 @@ public class Plugin : BasePlugin
         BigPickupSpawnMultiplier = Config.Bind("Loot", "Big Pickup Spawn Multiplier", 1.0f,
             "Multiplies how many big pickups (fog turbines, artifacts, etc.) spawn per zone. Left at vanilla (1.0) by default.");
 
-        ReviveDurationMultiplier = Config.Bind("Interactions", "Revive Duration Multiplier", 1.0f,
-            "Multiplies how long it takes to revive a downed teammate. Lower is faster. Left at vanilla (1.0) by default.");
+        ReviveDurationMultiplier = Config.Bind("Interactions", "Revive Duration Multiplier", 0.33f,
+            "Multiplies how long it takes to revive a downed teammate. Lower is faster. Default 0.33 (33% of vanilla).");
 
         // Each consumable is picked from a shared weighted lottery, so these retune the odds
         // between them rather than the total amount of loot (that's ConsumableSpawnMultiplier
@@ -281,14 +403,14 @@ public class Plugin : BasePlugin
         GlowstickSpawnWeightMultiplier = Config.Bind("Loot", "Glow Stick Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a glow stick (either color) is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
-        CFoamGrenadeSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Grenade Spawn Weight Multiplier", 1.0f,
-            "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+        CFoamGrenadeSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Grenade Spawn Weight Multiplier", 0.0f,
+            "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
         FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
-        LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 1.0f,
-            "Multiplies how likely a Lock Melter is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+        LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
+            "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
         ExplosiveTripMineSpawnWeightMultiplier = Config.Bind("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Left at vanilla (1.0) by default.");
@@ -301,6 +423,11 @@ public class Plugin : BasePlugin
 
         CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+
+        BotsAlwaysEquipSentryGun = Config.Bind("Bots", "Bots Always Equip Sentry Gun", false,
+            "Forces any bot's Tool slot to the basic Sentry Gun the moment it gets gear, whether it's " +
+            "filling an empty slot or replacing a player. Off by default - bot loadouts can already be set " +
+            "manually in COMS; this is here for anyone who wants it automatic instead.");
 
         // ExpeditionBalanceDataBlock: the per-difficulty-tier resource/enemy/door budget table.
         // Every entry here is left at vanilla (1.0) by default - this is a much bigger tuning
@@ -481,5 +608,113 @@ public class Plugin : BasePlugin
                 MeleeMultipliers[$"{archetype}.{stat.FieldKey}"] = entry;
             }
         }
+
+        // ArchetypeDataBlock: weapon-type tier (shared by every fire mode in that family), then the
+        // individual-archetype tier. Both default to vanilla (1.0) and are cumulative.
+        foreach (var category in WeaponTypeCategories)
+        {
+            foreach (var stat in WeaponCoreStatDefs)
+            {
+                var section = $"Weapon Type - {category.Replace('_', ' ')}";
+                var entry = Config.Bind(section, stat.DisplayName, 1.0f,
+                    $"{stat.Description} Applies to every fire-mode variant of this weapon type. Left at vanilla (1.0) by default.");
+                WeaponTypeMultipliers[$"{category}.{stat.FieldKey}"] = entry;
+            }
+        }
+
+        foreach (var weapon in WeaponArchetypes)
+        {
+            foreach (var stat in WeaponCoreStatDefs)
+            {
+                var section = $"Weapon - {weapon.Label}";
+                var entry = Config.Bind(section, stat.DisplayName, 1.0f,
+                    $"{stat.Description} Stacks multiplicatively with this weapon's type-level multiplier. Left at vanilla (1.0) by default.");
+                WeaponIndividualMultipliers[$"{weapon.ArchetypeId}.{stat.FieldKey}"] = entry;
+            }
+        }
+
+        WeaponCostOfBulletMultiplier = Config.Bind("Weapon - Other", "Ammo Cost Per Shot Multiplier", 1.0f,
+            "Multiplies how much reserve ammo each shot consumes, for every weapon and sentry. Left at vanilla (1.0) by default.");
+
+        WeaponShotDelayMultiplier = Config.Bind("Weapon - Other", "Shot Delay Multiplier", 1.0f,
+            "Multiplies the delay between shots (fire rate) for every weapon and sentry. Left at vanilla (1.0) by default.");
+
+        WeaponHipFireSpreadMultiplier = Config.Bind("Weapon - Other", "Hip-Fire Spread Multiplier", 1.0f,
+            "Multiplies bullet spread while firing from the hip, for every weapon. Left at vanilla (1.0) by default.");
+
+        WeaponAimSpreadMultiplier = Config.Bind("Weapon - Other", "Aim Spread Multiplier", 1.0f,
+            "Multiplies bullet spread while aiming down sights, for every weapon. Left at vanilla (1.0) by default.");
+
+        WeaponPiercingDamageCountLimitMultiplier = Config.Bind("Weapon - Other", "Piercing Target Count Multiplier", 1.0f,
+            "Multiplies how many enemies a piercing bullet can hit in one shot, for every weapon that pierces. Left at vanilla (1.0) by default.");
+
+        WeaponBurstDelayMultiplier = Config.Bind("Weapon - Other", "Burst Delay Multiplier", 1.0f,
+            "Multiplies the delay between shots within a burst, for every burst-fire weapon. Left at vanilla (1.0) by default.");
+
+        WeaponBurstShotCountMultiplier = Config.Bind("Weapon - Other", "Burst Shot Count Multiplier", 1.0f,
+            "Multiplies how many rounds fire per burst, for every burst-fire weapon. Left at vanilla (1.0) by default.");
+
+        WeaponShotgunBulletCountMultiplier = Config.Bind("Weapon - Other", "Shotgun Pellet Count Multiplier", 1.0f,
+            "Multiplies how many pellets a shotgun blast fires, for every shotgun. Left at vanilla (1.0) by default.");
+
+        WeaponShotgunConeSizeMultiplier = Config.Bind("Weapon - Other", "Shotgun Cone Size Multiplier", 1.0f,
+            "Multiplies the spread cone size of a shotgun blast, for every shotgun. Left at vanilla (1.0) by default.");
+
+        WeaponShotgunBulletSpreadMultiplier = Config.Bind("Weapon - Other", "Shotgun Pellet Spread Multiplier", 1.0f,
+            "Multiplies how spread out individual pellets are within a shotgun blast. Left at vanilla (1.0) by default.");
+
+        WeaponSpecialChargetupTimeMultiplier = Config.Bind("Weapon - Other", "Special Charge-Up Time Multiplier", 1.0f,
+            "Multiplies charge-up time for weapons with a special charged shot. Left at vanilla (1.0) by default.");
+
+        WeaponSpecialCooldownTimeMultiplier = Config.Bind("Weapon - Other", "Special Cooldown Time Multiplier", 1.0f,
+            "Multiplies cooldown time for weapons with a special charged shot. Left at vanilla (1.0) by default.");
+
+        WeaponSpecialSemiBurstCountTimeoutMultiplier = Config.Bind("Weapon - Other", "Semi-Burst Timeout Multiplier", 1.0f,
+            "Multiplies the window to chain shots into a semi-burst, for weapons with that firing mode. Left at vanilla (1.0) by default.");
+
+        WeaponEquipTransitionTimeMultiplier = Config.Bind("Weapon - Other", "Equip Transition Time Multiplier", 1.0f,
+            "Multiplies how long it takes to raise a weapon after switching to it. Left at vanilla (1.0) by default.");
+
+        WeaponAimTransitionTimeMultiplier = Config.Bind("Weapon - Other", "Aim Transition Time Multiplier", 1.0f,
+            "Multiplies how long it takes to raise sights when aiming down sights. Left at vanilla (1.0) by default.");
+
+        WeaponShellCasingSizeMultiplier = Config.Bind("Weapon - Other", "Shell Casing Size Multiplier", 1.0f,
+            "Multiplies the visual size of ejected shell casings. Purely cosmetic. Left at vanilla (1.0) by default.");
+
+        SentryStartFireDelayMultiplier = Config.Bind("Sentries", "Start Fire Delay Multiplier", 1.0f,
+            "Multiplies how long a sentry waits after detecting a target before it opens fire. Left at vanilla (1.0) by default.");
+
+        SentryRotationSpeedMultiplier = Config.Bind("Sentries", "Rotation Speed Multiplier", 1.0f,
+            "Multiplies how fast a sentry turns to track targets. Left at vanilla (1.0) by default.");
+
+        SentryDetectionMaxRangeMultiplier = Config.Bind("Sentries", "Detection Max Range Multiplier", 1.0f,
+            "Multiplies the maximum range at which a sentry can detect targets. Left at vanilla (1.0) by default.");
+
+        SentryDetectionMaxAngleMultiplier = Config.Bind("Sentries", "Detection Max Angle Multiplier", 1.0f,
+            "Multiplies the detection cone angle a sentry scans. Left at vanilla (1.0) by default.");
+
+        SentryLongRangeThresholdMultiplier = Config.Bind("Sentries", "Long Range Threshold Multiplier", 1.0f,
+            "Multiplies the distance beyond which a sentry treats a target as long-range. Left at vanilla (1.0) by default.");
+
+        SentryShortRangeThresholdMultiplier = Config.Bind("Sentries", "Short Range Threshold Multiplier", 1.0f,
+            "Multiplies the distance within which a sentry treats a target as short-range. Left at vanilla (1.0) by default.");
+
+        SentryStartFireDelayTagMultiplier = Config.Bind("Sentries", "Tagged-Target Start Fire Delay Multiplier", 1.0f,
+            "Multiplies the start-fire-delay multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        SentryRotationSpeedTagMultiplier = Config.Bind("Sentries", "Tagged-Target Rotation Speed Multiplier", 1.0f,
+            "Multiplies the rotation-speed multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        SentryDamageTagMultiplier = Config.Bind("Sentries", "Tagged-Target Damage Multiplier", 1.0f,
+            "Multiplies the damage multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        SentryStaggerDamageTagMultiplier = Config.Bind("Sentries", "Tagged-Target Stagger Multiplier", 1.0f,
+            "Multiplies the stagger multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        SentryCostOfBulletTagMultiplier = Config.Bind("Sentries", "Tagged-Target Ammo Cost Multiplier", 1.0f,
+            "Multiplies the ammo-cost multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        SentryShotDelayTagMultiplier = Config.Bind("Sentries", "Tagged-Target Shot Delay Multiplier", 1.0f,
+            "Multiplies the shot-delay multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
     }
 }

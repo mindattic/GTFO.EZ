@@ -22,9 +22,11 @@ internal static class GameDataInit_Initialize_Patch
             ApplyFlashlightTweaks();
             ApplyDetectionTweaks();
             ApplyEnemyBalanceTweaks();
+            ApplyFogTweaks();
             ApplyLootTweaks();
             ApplyExpeditionBalanceTweaks();
             ApplyMeleeTweaks();
+            ApplyWeaponTweaks();
             Plugin.Logger.LogInfo("GTFO.EZ tweaks applied. Goo goo. Gah gah.");
         }
         catch (Exception e)
@@ -146,6 +148,17 @@ internal static class GameDataInit_Initialize_Patch
 
             block.MeleeAttackDamage *= meleeMult;
             block.TentacleAttackDamage *= tentacleMult;
+        }
+    }
+
+    // FogSettingsDataBlock entries are shared across rundowns/dimensions, so one multiplier
+    // retunes visibility fog everywhere it's used.
+    private static void ApplyFogTweaks()
+    {
+        var densityMult = Plugin.FogDensityMultiplier.Value;
+        foreach (var block in GameDataBlockBase<FogSettingsDataBlock>.GetAllBlocks())
+        {
+            block.FogDensity *= densityMult;
         }
     }
 
@@ -339,6 +352,74 @@ internal static class GameDataInit_Initialize_Patch
 
     private static float MeleeMult(string archetypeName, string fieldKey) =>
         Plugin.MeleeMultipliers.TryGetValue($"{archetypeName}.{fieldKey}", out var entry) ? entry.Value : 1f;
+
+    // ArchetypeDataBlock covers ranged weapons and sentries alike. Core combat stats get the
+    // type x individual treatment for every archetype this mod found a GearCategory owner for
+    // (see Plugin.WeaponArchetypes); everything else - including sentries, which don't route
+    // through GearCategoryDataBlock at all - gets one flat multiplier applied to every archetype.
+    private static readonly Dictionary<uint, (string Category, string Label)> WeaponArchetypeOwners = BuildWeaponArchetypeOwners();
+
+    private static Dictionary<uint, (string Category, string Label)> BuildWeaponArchetypeOwners()
+    {
+        var map = new Dictionary<uint, (string Category, string Label)>();
+        foreach (var weapon in Plugin.WeaponArchetypes)
+        {
+            map[weapon.ArchetypeId] = (weapon.TypeCategory, weapon.Label);
+        }
+        return map;
+    }
+
+    private static void ApplyWeaponTweaks()
+    {
+        foreach (var block in GameDataBlockBase<ArchetypeDataBlock>.GetAllBlocks())
+        {
+            if (WeaponArchetypeOwners.TryGetValue(block.persistentID, out var owner))
+            {
+                block.Damage *= WeaponMult(block.persistentID, owner.Category, "Damage");
+                block.StaggerDamageMulti *= WeaponMult(block.persistentID, owner.Category, "StaggerDamageMulti");
+                block.PrecisionDamageMulti *= WeaponMult(block.persistentID, owner.Category, "PrecisionDamageMulti");
+                block.DefaultClipSize = ScaleInt(block.DefaultClipSize, WeaponMult(block.persistentID, owner.Category, "DefaultClipSize"));
+                block.DefaultReloadTime *= WeaponMult(block.persistentID, owner.Category, "DefaultReloadTime");
+            }
+
+            block.CostOfBullet *= Plugin.WeaponCostOfBulletMultiplier.Value;
+            block.ShotDelay *= Plugin.WeaponShotDelayMultiplier.Value;
+            block.HipFireSpread *= Plugin.WeaponHipFireSpreadMultiplier.Value;
+            block.AimSpread *= Plugin.WeaponAimSpreadMultiplier.Value;
+            block.PiercingDamageCountLimit = ScaleInt(block.PiercingDamageCountLimit, Plugin.WeaponPiercingDamageCountLimitMultiplier.Value);
+            block.BurstDelay *= Plugin.WeaponBurstDelayMultiplier.Value;
+            block.BurstShotCount = ScaleInt(block.BurstShotCount, Plugin.WeaponBurstShotCountMultiplier.Value);
+            block.ShotgunBulletCount = ScaleInt(block.ShotgunBulletCount, Plugin.WeaponShotgunBulletCountMultiplier.Value);
+            block.ShotgunConeSize = ScaleInt(block.ShotgunConeSize, Plugin.WeaponShotgunConeSizeMultiplier.Value);
+            block.ShotgunBulletSpread = ScaleInt(block.ShotgunBulletSpread, Plugin.WeaponShotgunBulletSpreadMultiplier.Value);
+            block.SpecialChargetupTime *= Plugin.WeaponSpecialChargetupTimeMultiplier.Value;
+            block.SpecialCooldownTime *= Plugin.WeaponSpecialCooldownTimeMultiplier.Value;
+            block.SpecialSemiBurstCountTimeout *= Plugin.WeaponSpecialSemiBurstCountTimeoutMultiplier.Value;
+            block.EquipTransitionTime *= Plugin.WeaponEquipTransitionTimeMultiplier.Value;
+            block.AimTransitionTime *= Plugin.WeaponAimTransitionTimeMultiplier.Value;
+            block.ShellCasingSize *= Plugin.WeaponShellCasingSizeMultiplier.Value;
+
+            block.Sentry_StartFireDelay *= Plugin.SentryStartFireDelayMultiplier.Value;
+            block.Sentry_RotationSpeed *= Plugin.SentryRotationSpeedMultiplier.Value;
+            block.Sentry_DetectionMaxRange *= Plugin.SentryDetectionMaxRangeMultiplier.Value;
+            block.Sentry_DetectionMaxAngle *= Plugin.SentryDetectionMaxAngleMultiplier.Value;
+            block.Sentry_LongRangeThreshold *= Plugin.SentryLongRangeThresholdMultiplier.Value;
+            block.Sentry_ShortRangeThreshold *= Plugin.SentryShortRangeThresholdMultiplier.Value;
+            block.Sentry_StartFireDelayTagMulti *= Plugin.SentryStartFireDelayTagMultiplier.Value;
+            block.Sentry_RotationSpeedTagMulti *= Plugin.SentryRotationSpeedTagMultiplier.Value;
+            block.Sentry_DamageTagMulti *= Plugin.SentryDamageTagMultiplier.Value;
+            block.Sentry_StaggerDamageTagMulti *= Plugin.SentryStaggerDamageTagMultiplier.Value;
+            block.Sentry_CostOfBulletTagMulti *= Plugin.SentryCostOfBulletTagMultiplier.Value;
+            block.Sentry_ShotDelayTagMulti *= Plugin.SentryShotDelayTagMultiplier.Value;
+        }
+    }
+
+    private static float WeaponMult(uint archetypeId, string category, string fieldKey)
+    {
+        var typeMult = Plugin.WeaponTypeMultipliers.TryGetValue($"{category}.{fieldKey}", out var t) ? t.Value : 1f;
+        var individualMult = Plugin.WeaponIndividualMultipliers.TryGetValue($"{archetypeId}.{fieldKey}", out var i) ? i.Value : 1f;
+        return typeMult * individualMult;
+    }
 
     private static int ScaleInt(int value, float multiplier) => (int)Math.Round(value * multiplier);
 }

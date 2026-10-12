@@ -1,5 +1,42 @@
 # Changelog
 
+## v8
+
+- Added a Vanilla column to every remaining table that was missing one (consumable spawn odds,
+  all four Expedition Balance subsections, all four melee weapon action types), so every exposed
+  stat now shows what it's being compared against instead of just its tuned/default value.
+- Exposed `TentacleTraps` and `ParasiteNests` (on `ExpeditionBalanceDataBlock`) as 14 new config
+  options, all left at vanilla (1.0) by default: both are `StaticEnemyData` references with the
+  same 7-field shape already exposed for roaming/sleeper enemies (Health, Attack Damage, Max Per
+  Zone, Max Small/Medium/Large/Huge Area), confirmed via IL inspection of the game's own assembly.
+- Credited Claude Opus 5.5 in Attributions for its role throughout development.
+- Added a Fog Density Multiplier (new, default 0.1 / -90%) patched onto every
+  `FogSettingsDataBlock` - vanilla fog was judged more annoying than fun.
+- Health Regen Rate Multiplier default lowered from 5.0 to 0.5 (0.2/s -> 0.1/s) and Health Regen
+  Cap Multiplier default lowered from 2.0 to 0.5 (20% -> 10%).
+- Revive Duration Multiplier default lowered from 1.0 to 0.33 (4s -> 1.32s), moving it from
+  "exposed but vanilla" into the core tuned defaults.
+- Lock Melter and C-Foam Grenade spawn odds now default to disabled (0), joining Glow Stick.
+- **Bug fix:** `Plugin.VERSION` was still hardcoded `5.0.0` from the last release despite all of
+  the above - the in-game confirmation message would have shown the wrong major version. Fixed to
+  match the real package version before release.
+- Added a **Bots Always Equip Sentry Gun** option (off by default): forces a bot's Tool slot to the
+  basic Sentry Gun the moment it gets gear, whether filling an empty slot or replacing a player.
+  Resolved through the game's own `GD.Gear.Basic_SentryGun` name lookup rather than a hardcoded ID.
+- Exposed `ArchetypeDataBlock` (every ranged weapon's fire modes, plus sentries) as ~380 new config
+  options. Core combat stats (Damage, Stagger, Precision, Clip Size, Reload Time) get a two-tier
+  multiplier - a Weapon Type slider shared by every fire mode in that family, times an Individual
+  Weapon slider for one specific fire mode - covering ~50 archetypes across ~20 weapon types, all
+  left at vanilla (1.0) by default. Every other archetype stat (ammo cost, fire rate, spread, burst
+  timing, equip speed, etc.) plus sentry-specific targeting/combat stats get one flat multiplier
+  shared by every weapon instead. IDs and ownership confirmed by logging
+  `GearCategoryDataBlock`/`ArchetypeDataBlock` at boot.
+- **Bug fix:** `package/README.md`'s embedded changelog copy had drifted out of sync with
+  `package/CHANGELOG.md` - still headed `v6` and missing the two bullets above. Pre-release audit
+  caught it; the two files are back in sync.
+- **Bug fix:** the root `README.md` and `package/README.md` both still advertised "155 config
+  entries" after the weapon/sentry exposure above added ~380 more. Updated to 530+ throughout.
+
 ## v5
 
 - **Bug fix:** Remove Combat Stamina Penalty previously equalized a pair of fields that are both

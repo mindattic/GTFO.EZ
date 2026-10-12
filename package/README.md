@@ -6,7 +6,7 @@ and underscores, so they can't contain a period.)*
 A small, config-driven BepInEx plugin for GTFO that tunes player stats for an easier, more
 relaxed co-op experience. No datablock JSON files are shipped — it patches the game's own data
 in memory at load time, so it keeps working across game patches that only change base values.
-A curated set of defaults covers the core experience, with 155 customizable fields underneath
+A curated set of defaults covers the core experience, with 530+ customizable fields underneath
 for anyone who wants to retune things further.
 
 ## What it changes
@@ -18,8 +18,8 @@ config is applied; `-` means left at vanilla:
 | Stat | Vanilla | Default |
 |---|---|---|
 | Max health | 25 | 50 (+100%) |
-| Health regen rate | 0.2/s | 1.0/s (+400%) |
-| Health regen cap (no med kit) | 20% | 40% (+100%) |
+| Health regen rate | 0.2/s | 0.1/s (-50%) |
+| Max regenerated health (no med kit) | 20% | 10% (-50%) |
 | Stamina regen rate while resting in combat | 0.15/s (vs 0.25/s out of combat) | 0.25/s, equalized |
 | Stamina cap while in combat | 90% | 100%, cap removed |
 | Fall damage amount | 2-15 | 0.2-1.5 (-90%) |
@@ -27,6 +27,10 @@ config is applied; `-` means left at vanilla:
 | Weapon/tool ammo (reserve, starting, refill packs) | x1 | x1.5 (+50%) |
 | Enemy movement-noise detection distance | 8m (sleepers: 20m) | 6m (sleepers: 15m) (-25%) |
 | Glow stick spawn odds (both colors) | enabled | disabled (-100%) |
+| Lock Melter spawn odds | varies by zone | disabled (-100%) |
+| C-Foam Grenade spawn odds | varies by zone | disabled (-100%) |
+| Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
+| Fog density (visibility-limiting fog) | varies by zone | -90% |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
 (fast regen with no delay makes you nearly unkillable in a slow fight), the no-damage fall height
@@ -105,12 +109,6 @@ itself:
 | Consumable spawns per zone (med/ammo packs, syringes) | varies by zone | - |
 | Big pickup spawns per zone (fog turbines, artifacts, etc.) | varies by zone | - |
 
-**Interactions**
-
-| Stat | Vanilla | Default |
-|---|---|---|
-| Revive duration (time to revive a downed teammate) | 4s | - |
-
 ## Miscellaneous (exposed, but not part of the core tuning)
 
 Everything below was added after the mod's core feature set (health/regen/fall damage/ammo/
@@ -118,15 +116,13 @@ detection/glow sticks, above) was already settled. It's real, functional, and fu
 but less curated and less load-bearing for the mod's "easy mode" identity than the stats above —
 expect it to matter more for players who want to go deeper than the defaults, not for a first install.
 
-**Consumable spawn odds** — Glow Stick is covered above (it's disabled by default); these other
-items share the same weighted lottery but are all left at vanilla:
+**Consumable spawn odds** — Glow Stick, Lock Melter, and C-Foam Grenade are covered above (all
+disabled by default); these other items share the same weighted lottery but are all left at vanilla:
 
 | Stat | Vanilla | Default |
 |---|---|---|
 | Long Range Flashlight spawn odds | varies by zone | - |
-| C-Foam Grenade spawn odds | varies by zone | - |
 | Fog Repeller spawn odds | varies by zone | - |
-| Lock Melter spawn odds | varies by zone | - |
 | Explosive Trip Mine spawn odds | varies by zone | - |
 | Melee Buff (IIx) Syringe spawn odds | varies by zone | - |
 | Health (I2-LP) Syringe spawn odds | varies by zone | - |
@@ -282,6 +278,129 @@ Not yet exposed: `PublicName`, `NoiseLevel`, the animation/SFX set references, a
 behavior flags (`SkipLimbDestruction`, `CanHitMultipleEnemies`, etc.) aren't multiplier-friendly
 balance values, so they're left alone.
 
+**Ranged weapons and sentries** — `ArchetypeDataBlock` is the ranged-weapon equivalent of melee's
+archetype block, covering every gun's fire modes and every sentry. There are far more of these
+(~50 individual fire-mode archetypes across ~20 weapon types) than melee's 4, so the five core
+combat stats get a **two-tier** multiplier instead of melee's single tier: a **Weapon Type**
+slider shared by every fire mode in that family (e.g. all of "Rifle") multiplied by an
+**Individual Weapon** slider for one specific fire mode (e.g. "Rifle - Burst"), both defaulting to
+1.0 and stacking multiplicatively - adjust either one, or both.
+
+| Stat | Vanilla | Default |
+|---|---|---|
+| Damage | varies by weapon (see table below) | - |
+| Stagger Multiplier | varies by weapon | - |
+| Precision (headshot) Multiplier | varies by weapon | - |
+| Clip Size | varies by weapon | - |
+| Reload Time | varies by weapon | - |
+
+Weapon type and archetype ownership were confirmed by logging `GearCategoryDataBlock` and
+`ArchetypeDataBlock` at boot - not documented anywhere official. A few types share an archetype
+across more than one category (e.g. "SMG_Special" reuses plain "SMG"'s stats), in which case only
+the base type gets its own slider. Every "SemiBurst" row below reads identical placeholder-looking
+values (20 damage, 10 clip) - no obtainable weapon in this rundown actually uses that fire mode, so
+treat those rows as inert rather than a real gun. Sentries don't go through this category system at
+all, so they aren't covered by the two-tier sliders - see the flat Sentry stats further below.
+
+| Weapon Type | Individual Weapon | Damage | Stagger Multiplier | Precision Multiplier | Clip Size | Reload Time |
+|---|---|---|---|---|---|---|
+| Bullpup | Semi | 3 | 1 | 1 | 8 | 3 |
+| Bullpup | Burst | 1.8 | 1 | 1 | 24 | 3 |
+| Bullpup | Auto | 2.1 | 1 | 1 | 40 | 2.3 |
+| Bullpup | SemiBurst | 1.5 | 1 | 1 | 25 | 3 |
+| DMR | Semi | 7.51 | 1 | 0.87 | 12 | 2.3 |
+| DMR | Burst | 5.51 | 1 | 0.9 | 14 | 2.15 |
+| DMR | Auto (Long gun) | 4 | 1 | 1 | 16 | 1.9 |
+| DMR | SemiBurst | 20 | 1 | 1 | 10 | 1.9 |
+| Gauss Rifle | Semi | 30.01 | 1 | 0.73 | 5 | 3.2 |
+| HEL Shotgun | Semi | 21 | 2 | 0.7413 | 6 | 2.5 |
+| HEL Shotgun | Burst | 1.67 | 2 | 0.7413 | 14 | 3 |
+| HighCalPistol | - | 30.1 | 1 | 0.7413 | 6 | 2.5 |
+| MachineGun | Auto | 3.51 | 1.45 | 0.7413 | 60 | 4 |
+| MachineGun LowRPM | Semi | 16.25 | 1 | 0.8 | 9 | 3.3 |
+| MachineGun LowRPM | Burst | 22 | 1 | 0.734 | 20 | 3.7 |
+| MachineGun LowRPM | Auto | 5.35 | 1 | 0.7413 | 40 | 3.5 |
+| MachineGun LowRPM | SemiBurst | 20 | 1 | 1 | 10 | 2.1 |
+| Pistol | Semi | 4.64 | 1.5 | 0.8667 | 15 | 1.3 |
+| Pistol | Burst | 3.2 | 1 | 0.8667 | 28 | 1.25 |
+| Pistol | Auto | 1.9 | 1 | 0.7413 | 50 | 1.25 |
+| Pistol | SemiBurst | 20 | 1 | 1 | 10 | 1.25 |
+| Pistol Stagger | Auto | 1.5 | 5 | 0.7413 | 60 | 1.3 |
+| Precision Rifle | - | 13 | 1 | 1.3 | 10 | 3.3 |
+| Revolver | Semi | 14.21 | 1 | 0.7413 | 6 | 1.75 |
+| Revolver | Burst | 8.01 | 1 | 0.7413 | 8 | 2.3 |
+| Revolver | Auto (Autorevolver) | 7 | 1 | 1 | 10 | 2 |
+| Revolver | SemiBurst | 20 | 1 | 1 | 10 | 2 |
+| Rifle | Semi | 5.08 | 1.75 | 0.8667 | 14 | 1.9 |
+| Rifle | Burst | 2.71 | 1 | 0.8667 | 30 | 2 |
+| Rifle | Auto | 2.1875 | 1 | 0.8 | 30 | 1.8 |
+| Rifle | SemiBurst (Semi Burst Rifle) | 20 | 1 | 1 | 10 | 1.8 |
+| RifleCQB | - | 4.31 | 1 | 0.7 | 24 | 1.5 |
+| RifleHeavy | Auto | 5.01 | 1 | 0.8 | 30 | 2.3 |
+| SMG | Semi | 4.81 | 0.5 | 0.7413 | 30 | 1.7 |
+| SMG | Burst | 2.38 | 1 | 0.7413 | 48 | 1.6 |
+| SMG | Auto | 1.98 | 1 | 0.91 | 50 | 1.4 |
+| SMG | SemiBurst | 20 | 1 | 1 | 10 | 1.5 |
+| SMGHeavy | Auto | 2.45 | 1 | 0.8 | 33 | 1.55 |
+| SMG PDW | - | 2.15 | 1 | 0.7413 | 32 | 1.4 |
+| SawedOffShotgun | Semi | 3.8 | 2 | 0.7413 | 4 | 1.6 |
+| Scattergun | Burst | 4.8 | 2 | 0.7333 | 2 | 2.66 |
+| Shotgun | Semi | 3.01 | 1 | 1 | 8 | 3 |
+| Shotgun | Burst | 3.76 | 1.35 | 1 | 4 | 2.72 |
+| Shotgun | Auto | 2.51 | 2 | 0.875 | 12 | 2.83 |
+| Shotgun | SemiBurst | 20 | 1 | 1 | 10 | 1 |
+| Sniper | Semi | 40.01 | 1 | 2.0025 | 2 | 3.5 |
+| Sniper | Burst (Railgun) | 15 | 1 | 1 | 9 | 3.5 |
+| Sniper | Auto (Coilgun) | 12 | 1 | 1 | 10 | 3.5 |
+| Sniper | SemiBurst | 20 | 1 | 1 | 10 | 2.5 |
+
+Every other `ArchetypeDataBlock` stat (ammo cost, fire rate, spread, burst/shotgun-pellet counts,
+charge-up/cooldown timing, equip/aim speed, shell casing size) is left as one flat multiplier
+shared by every weapon and sentry alike, rather than tripling the config size again for stats
+nobody asked to tune per-gun:
+
+| Stat | Vanilla | Default |
+|---|---|---|
+| Ammo cost per shot | varies by weapon | - |
+| Shot delay (fire rate) | varies by weapon | - |
+| Hip-fire spread | varies by weapon | - |
+| Aim spread | varies by weapon | - |
+| Piercing target count | varies by weapon | - |
+| Burst delay | varies by weapon | - |
+| Burst shot count | varies by weapon | - |
+| Shotgun pellet count | varies by weapon | - |
+| Shotgun cone size | varies by weapon | - |
+| Shotgun pellet spread | varies by weapon | - |
+| Special charge-up time | varies by weapon | - |
+| Special cooldown time | varies by weapon | - |
+| Semi-burst timeout | varies by weapon | - |
+| Equip transition time | varies by weapon | - |
+| Aim transition time | varies by weapon | - |
+| Shell casing size (cosmetic) | varies by weapon | - |
+
+Sentries get their own flat multiplier set for the targeting/combat behavior that's unique to them
+(not shared with handheld weapons), including a separate set applied only once a sentry has
+"tagged" (scanned) a target:
+
+| Stat | Vanilla | Default |
+|---|---|---|
+| Start fire delay | varies by sentry | - |
+| Rotation speed | varies by sentry | - |
+| Detection max range | varies by sentry | - |
+| Detection max angle | varies by sentry | - |
+| Long range threshold | varies by sentry | - |
+| Short range threshold | varies by sentry | - |
+| Tagged-target start fire delay multiplier | varies by sentry | - |
+| Tagged-target rotation speed multiplier | varies by sentry | - |
+| Tagged-target damage multiplier | varies by sentry | - |
+| Tagged-target stagger multiplier | varies by sentry | - |
+| Tagged-target ammo cost multiplier | varies by sentry | - |
+| Tagged-target shot delay multiplier | varies by sentry | - |
+
+Not yet exposed: `PublicName`/`Description`, `FireMode`, `RecoilDataID`, `DamageBoosterEffect`, the
+animation sequence references, `PiercingBullets` (on/off flag), and `ShellCasingSpeedRange` -
+either not multiplier-friendly or purely cosmetic/technical.
+
 ## Install
 
 Install via [Thunderstore Mod Manager or r2modman](https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/),
@@ -317,7 +436,7 @@ others' prior work:
 
 ## Changelog
 
-### v6
+### v8
 
 - Added a Vanilla column to every remaining table that was missing one (consumable spawn odds,
   all four Expedition Balance subsections, all four melee weapon action types), so every exposed
@@ -327,6 +446,32 @@ others' prior work:
   same 7-field shape already exposed for roaming/sleeper enemies (Health, Attack Damage, Max Per
   Zone, Max Small/Medium/Large/Huge Area), confirmed via IL inspection of the game's own assembly.
 - Credited Claude Opus 5.5 in Attributions for its role throughout development.
+- Added a Fog Density Multiplier (new, default 0.1 / -90%) patched onto every
+  `FogSettingsDataBlock` - vanilla fog was judged more annoying than fun.
+- Health Regen Rate Multiplier default lowered from 5.0 to 0.5 (0.2/s -> 0.1/s) and Health Regen
+  Cap Multiplier default lowered from 2.0 to 0.5 (20% -> 10%).
+- Revive Duration Multiplier default lowered from 1.0 to 0.33 (4s -> 1.32s), moving it from
+  "exposed but vanilla" into the core tuned defaults.
+- Lock Melter and C-Foam Grenade spawn odds now default to disabled (0), joining Glow Stick.
+- **Bug fix:** `Plugin.VERSION` was still hardcoded `5.0.0` from the last release despite all of
+  the above - the in-game confirmation message would have shown the wrong major version. Fixed to
+  match the real package version before release.
+- Added a **Bots Always Equip Sentry Gun** option (off by default): forces a bot's Tool slot to the
+  basic Sentry Gun the moment it gets gear, whether filling an empty slot or replacing a player.
+  Resolved through the game's own `GD.Gear.Basic_SentryGun` name lookup rather than a hardcoded ID.
+- Exposed `ArchetypeDataBlock` (every ranged weapon's fire modes, plus sentries) as ~380 new config
+  options. Core combat stats (Damage, Stagger, Precision, Clip Size, Reload Time) get a two-tier
+  multiplier - a Weapon Type slider shared by every fire mode in that family, times an Individual
+  Weapon slider for one specific fire mode - covering ~50 archetypes across ~20 weapon types, all
+  left at vanilla (1.0) by default. Every other archetype stat (ammo cost, fire rate, spread, burst
+  timing, equip speed, etc.) plus sentry-specific targeting/combat stats get one flat multiplier
+  shared by every weapon instead. IDs and ownership confirmed by logging
+  `GearCategoryDataBlock`/`ArchetypeDataBlock` at boot.
+- **Bug fix:** `package/README.md`'s embedded changelog copy had drifted out of sync with
+  `package/CHANGELOG.md` - still headed `v6` and missing the two bullets above. Pre-release audit
+  caught it; the two files are back in sync.
+- **Bug fix:** the root `README.md` and `package/README.md` both still advertised "155 config
+  entries" after the weapon/sentry exposure above added ~380 more. Updated to 530+ throughout.
 
 ### v5
 
