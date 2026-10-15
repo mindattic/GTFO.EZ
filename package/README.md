@@ -437,6 +437,17 @@ others' prior work:
 
 ## Changelog
 
+### v10
+
+- **Bug fix:** A full audit of every config default's git history turned up more entries hit by
+  the same stale-`.cfg` bug as v9's loot fix: Health Regen Rate Multiplier (5.0->0.5) and Health
+  Regen Cap Multiplier (2.0->0.5) from v8, Fall Damage Multiplier (1.0->0.1) and Fall Damage Min
+  Height Multiplier (2.0->1.0) from v5, Flashlight Angle/Intensity Multiplier (1.25->1.0) from v2,
+  and Revive Duration Multiplier (1.0->0.33) from v8 all changed their default without a
+  migration, so upgraders from before the relevant version could still be stuck on values as old
+  as v1 - most notably Health Regen Cap, where pre-v8 installs stayed at 40% max regen instead of
+  the intended 10%. The one-time migration added in v9 now covers all of these too.
+
 ### v9
 
 - Explosive Trip Mine and C-Foam Tripmine spawn odds now default to disabled (0), joining Glow

@@ -13,7 +13,7 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "9.0.0";
+    public const string VERSION = "10.0.0";
 
     // Shared between the rundown-select header and the in-level warden-intel message so the two
     // in-game surfaces never drift apart the way they did before this was pulled out. Major
@@ -289,37 +289,52 @@ public class Plugin : BasePlugin
     {
         Logger = Log;
         BindConfig();
-        ApplyLootDefaultMigrations();
+        ApplyConfigDefaultMigrations();
 
         new Harmony(GUID).PatchAll();
 
         Logger.LogInfo($"{NAME} v{VERSION} loaded.");
     }
 
-    // v5 defaulted Glow Stick to disabled, v8 did the same for Lock Melter/C-Foam Grenade, and v9
-    // did the same for Explosive Trip Mine/C-Foam Tripmine - but BepInEx preserves whatever value
-    // already exists in an upgrader's .cfg, so those keys stayed stuck at their old vanilla (1.0)
-    // default forever instead of ever picking up the new one. This is exactly why disabled items
-    // kept showing up for anyone who'd installed before the relevant version. One-time nudge for
-    // existing installs each time this list grows, gated so it never re-applies once an install is
-    // caught up; a player who deliberately re-enables one of these afterward keeps that choice.
-    private static void ApplyLootDefaultMigrations()
+    // BepInEx preserves whatever value already exists in an upgrader's .cfg, so any time this mod
+    // changes a config entry's default, upgraders stay stuck on the OLD default forever instead of
+    // ever picking up the new one - a full audit of every default across every released version
+    // (git history of this file) turned up 11 entries this happened to, not just the Loot ones
+    // originally reported: Health Regen Rate (5.0->0.5) and Cap (2.0->0.5) in v8, Fall Damage
+    // (1.0->0.1) and Fall Damage Min Height (2.0->1.0) in v5, Flashlight Angle/Intensity
+    // (1.25->1.0) in v2, Revive Duration (1.0->0.33) in v8, and Lock Melter/C-Foam Grenade
+    // (1.0->0.0) in v8 plus Explosive Trip Mine/C-Foam Tripmine (1.0->0.0) in v9. (Glow Stick was
+    // checked too but was never affected - it was introduced already disabled, with no earlier
+    // shipped default to get stuck on.) One-time nudge for existing installs each time this list
+    // grows, gated so it never re-applies once an install is caught up; a player who deliberately
+    // set one of these back to its old value afterward keeps that choice indistinguishably - same
+    // inherent trade-off for all of them.
+    private static void ApplyConfigDefaultMigrations()
     {
-        const int currentMigrationVersion = 2;
+        const int currentMigrationVersion = 3;
         if (ConfigMigrationVersion.Value < currentMigrationVersion)
         {
-            ResetIfAtOldDefault(GlowstickSpawnWeightMultiplier);
-            ResetIfAtOldDefault(CFoamGrenadeSpawnWeightMultiplier);
-            ResetIfAtOldDefault(LockMelterSpawnWeightMultiplier);
-            ResetIfAtOldDefault(ExplosiveTripMineSpawnWeightMultiplier);
-            ResetIfAtOldDefault(CFoamTripmineSpawnWeightMultiplier);
+            MigrateStaleDefault(HealthRegenRateMultiplier, 5.0f);
+            MigrateStaleDefault(HealthRegenCapMultiplier, 2.0f);
+            MigrateStaleDefault(FallDamageMultiplier, 1.0f);
+            MigrateStaleDefault(FallDamageMinHeightMultiplier, 2.0f);
+            MigrateStaleDefault(FlashlightAngleMultiplier, 1.25f);
+            MigrateStaleDefault(FlashlightIntensityMultiplier, 1.25f);
+            MigrateStaleDefault(ReviveDurationMultiplier, 1.0f);
+            MigrateStaleDefault(CFoamGrenadeSpawnWeightMultiplier, 1.0f);
+            MigrateStaleDefault(LockMelterSpawnWeightMultiplier, 1.0f);
+            MigrateStaleDefault(ExplosiveTripMineSpawnWeightMultiplier, 1.0f);
+            MigrateStaleDefault(CFoamTripmineSpawnWeightMultiplier, 1.0f);
         }
         ConfigMigrationVersion.Value = currentMigrationVersion;
     }
 
-    private static void ResetIfAtOldDefault(ConfigEntry<float> entry)
+    // Reads the new default straight off the entry itself (ConfigEntryBase.DefaultValue) rather
+    // than taking it as a second parameter, so there's only ever one place (the Config.Bind call)
+    // that can get the "new" value wrong.
+    private static void MigrateStaleDefault(ConfigEntry<float> entry, float oldDefault)
     {
-        if (entry.Value == 1.0f) entry.Value = 0.0f;
+        if (entry.Value == oldDefault) entry.Value = (float)entry.DefaultValue;
     }
 
     // Defaults follow community-consensus values rather than naive "bigger number" guesses:
