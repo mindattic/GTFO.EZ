@@ -454,6 +454,16 @@ others' prior work:
   migration, so upgraders from before the relevant version could still be stuck on values as old
   as v1 - most notably Health Regen Cap, where pre-v8 installs stayed at 40% max regen instead of
   the intended 10%. The one-time migration added in v9 now covers all of these too.
+- **Bug fix:** a single try/catch wrapped all 9 of the mod's tweak categories (player stats, fog,
+  loot, weapons, etc.), so one category throwing an exception - e.g. a future game patch renaming
+  a field - silently skipped every other, unrelated category too. Each category now fails
+  independently and logs which one broke, instead of one bad category taking the rest down with it.
+- The in-level "Goo goo. Gah gah." warden-intel message now stays up for 30 seconds instead of 15,
+  still starting 90 seconds into a level - easier to actually notice.
+- Added a real test suite: the weapon/melee config-table data and multiplier math that used to
+  live only in `Plugin.cs`/`GameDataTweaks.cs` moved to a new `GTFO.EZ.Core` project with no
+  BepInEx/Il2Cpp dependency, so it can be unit tested (`tests/GTFO.EZ.Core.Tests`, 21 NUnit tests)
+  without the game installed. Dev-facing only - no gameplay change.
 
 ### v9
 
