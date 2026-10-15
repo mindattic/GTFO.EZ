@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+  Pure game-balance data and math, with no BepInEx/Il2Cpp/Harmony dependency. Exists so the
+  tables and multiplier logic GTFO.EZ ships with can be unit tested without the game installed -
+  see tests/GTFO.EZ.Core.Tests. The main plugin project references this instead of duplicating it.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+</Project>

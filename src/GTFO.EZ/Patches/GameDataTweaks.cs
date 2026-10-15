@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GameData;
+using GTFO.EZ.Core;
 using HarmonyLib;
 
 namespace GTFO.EZ.Patches;
@@ -16,22 +17,32 @@ internal static class GameDataInit_Initialize_Patch
     [HarmonyPostfix]
     private static void Postfix()
     {
+        // Each category gets its own try/catch rather than one wrapping the whole method - a
+        // future game patch that renames/restructures a single field (the one failure mode this
+        // mod can't survive, per the class comment above) would otherwise take down every other,
+        // unrelated category too, since the original code bailed out of the entire sequence on
+        // the first exception.
+        RunTweakCategory("player", ApplyPlayerTweaks);
+        RunTweakCategory("flashlight", ApplyFlashlightTweaks);
+        RunTweakCategory("detection", ApplyDetectionTweaks);
+        RunTweakCategory("enemy balance", ApplyEnemyBalanceTweaks);
+        RunTweakCategory("fog", ApplyFogTweaks);
+        RunTweakCategory("loot", ApplyLootTweaks);
+        RunTweakCategory("expedition balance", ApplyExpeditionBalanceTweaks);
+        RunTweakCategory("melee", ApplyMeleeTweaks);
+        RunTweakCategory("weapon", ApplyWeaponTweaks);
+        Plugin.Logger.LogInfo("GTFO.EZ tweaks applied. Goo goo. Gah gah.");
+    }
+
+    private static void RunTweakCategory(string name, Action apply)
+    {
         try
         {
-            ApplyPlayerTweaks();
-            ApplyFlashlightTweaks();
-            ApplyDetectionTweaks();
-            ApplyEnemyBalanceTweaks();
-            ApplyFogTweaks();
-            ApplyLootTweaks();
-            ApplyExpeditionBalanceTweaks();
-            ApplyMeleeTweaks();
-            ApplyWeaponTweaks();
-            Plugin.Logger.LogInfo("GTFO.EZ tweaks applied. Goo goo. Gah gah.");
+            apply();
         }
         catch (Exception e)
         {
-            Plugin.Logger.LogError($"GTFO.EZ failed to apply tweaks: {e}");
+            Plugin.Logger.LogError($"GTFO.EZ failed to apply {name} tweaks: {e}");
         }
     }
 
@@ -362,7 +373,7 @@ internal static class GameDataInit_Initialize_Patch
     private static Dictionary<uint, (string Category, string Label)> BuildWeaponArchetypeOwners()
     {
         var map = new Dictionary<uint, (string Category, string Label)>();
-        foreach (var weapon in Plugin.WeaponArchetypes)
+        foreach (var weapon in BalanceTables.WeaponArchetypes)
         {
             map[weapon.ArchetypeId] = (weapon.TypeCategory, weapon.Label);
         }
@@ -421,5 +432,5 @@ internal static class GameDataInit_Initialize_Patch
         return typeMult * individualMult;
     }
 
-    private static int ScaleInt(int value, float multiplier) => (int)Math.Round(value * multiplier);
+    private static int ScaleInt(int value, float multiplier) => BalanceMath.ScaleInt(value, multiplier);
 }

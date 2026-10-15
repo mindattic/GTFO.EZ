@@ -43,6 +43,13 @@ was reported as overtuned by another mod's author).
 Every value above is a multiplier (or on/off switch) you can retune in the config file BepInEx
 generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without recompiling anything.
 
+If you're upgrading from an older version: BepInEx keeps whatever value is already in your `.cfg`,
+so when a *default* listed above changes between versions (see `CHANGELOG.md`), your install won't
+pick up the new number on its own. This mod corrects that once per affected setting, the first
+time you launch the version that fixes it - if you'd deliberately set one of those same settings
+to its old value yourself, that gets reset to the new default too, since the two cases look
+identical from the config file alone.
+
 ## Also exposed, but left at vanilla by default
 
 These are tunable in the same config file, but ship unchanged — either because vanilla was

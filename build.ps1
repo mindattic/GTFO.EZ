@@ -20,10 +20,18 @@ dotnet build "$root\src\GTFO.EZ\GTFO.EZ.csproj" -c $Configuration -p:GameName=$G
 if ($LASTEXITCODE -ne 0) { throw "Build failed." }
 
 $bepInEx = Join-Path $env:AppData "Thunderstore Mod Manager\DataFolder\$GameName\profiles\$GameName - $Profile\BepInEx"
-$builtDll = Join-Path $bepInEx "plugins\$displayName\$displayName.dll"
+$pluginDir = Join-Path $bepInEx "plugins\$displayName"
+$builtDll = Join-Path $pluginDir "$displayName.dll"
 if (-not (Test-Path $builtDll)) { throw "Could not find built DLL at $builtDll. Check -Profile matches your mod manager profile." }
 
 Copy-Item $builtDll "$root\package\$displayName.dll" -Force
+
+# GTFO.EZ.Core.dll (pure balance data/math, see src/GTFO.EZ.Core) is a real runtime dependency of
+# GTFO.EZ.dll, not just a build-time reference - it has to ship in the same package or the mod
+# throws a FileNotFoundException for every player the moment it loads.
+Get-ChildItem $pluginDir -Filter "*.dll" | Where-Object { $_.Name -ne "$displayName.dll" } | ForEach-Object {
+    Copy-Item $_.FullName "$root\package\$($_.Name)" -Force
+}
 
 $distDir = Join-Path $root "dist"
 New-Item -ItemType Directory -Path $distDir -Force | Out-Null

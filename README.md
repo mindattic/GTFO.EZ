@@ -16,7 +16,10 @@ of going stale.
 ## Layout
 
 ```
-src/GTFO.EZ/          the plugin project
+src/GTFO.EZ/          the plugin project (BepInEx/Il2Cpp - needs the game installed to build)
+src/GTFO.EZ.Core/     pure balance data/math the plugin uses, with no BepInEx/Il2Cpp dependency -
+                      split out so it's unit-testable; ships alongside GTFO.EZ.dll at runtime
+tests/                GTFO.EZ.Core.Tests - NUnit, runs with plain `dotnet test`, no game needed
 package/              exactly what ships to Thunderstore / gets zipped for sharing
   manifest.json       Thunderstore package name is "GtfoEZ" (no period allowed there)
   README.md           becomes the Thunderstore page
@@ -45,10 +48,27 @@ dotnet build .\src\GTFO.EZ\GTFO.EZ.csproj -p:BepInEx="$env:AppData\r2modmanPlus-
 This builds straight into that profile's `BepInEx/plugins/GTFO.EZ/` folder (so you can launch the
 game and test immediately) and also produces `dist/GTFO.EZ-<version>.zip` for sharing or upload.
 
+## Testing
+
+```powershell
+dotnet test tests/GTFO.EZ.Core.Tests/GTFO.EZ.Core.Tests.csproj
+```
+
+No game install or BepInEx profile needed - `GTFO.EZ.Core` holds the plugin's pure balance data
+and math (weapon/melee config-table generation, the `ScaleInt`/multiplier-composition logic) with
+no BepInEx/Il2Cpp dependency, so it's unit-tested directly. The actual datablock patches in
+`src/GTFO.EZ/Patches/` still can't be unit tested - they only run against the game's own loaded
+data - so verify those by launching the game after `build.ps1`.
+
 ## Config
 
 All tweaks are multipliers, tunable after first launch in
 `BepInEx/config/MindAttic.GTFO.EZ.cfg` — no rebuild needed to retune values.
+
+BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a default
+between versions, an existing install won't pick up the new number on its own — see
+`Plugin.ApplyConfigDefaultMigrations` for the one-time, per-setting correction this mod applies
+instead of leaving upgraders silently stuck on a stale default.
 
 ## Versioning
 

@@ -13,7 +13,7 @@ namespace GTFO.EZ.Patches;
 internal static class PlayerAgent_Setup_Patch
 {
     private const float EasyModeAnnouncementDelaySeconds = 90f;
-    private const float EasyModeAnnouncementDurationSeconds = 15f;
+    private const float EasyModeAnnouncementDurationSeconds = 30f;
 
     [HarmonyPostfix]
     private static void Postfix(PlayerAgent __instance)

@@ -43,4 +43,9 @@
     <Reference Remove="$(BepInEx)\interop\netstandard.dll" />
   </ItemGroup>
 
+  <!-- Pure balance data/math, shared with tests/GTFO.EZ.Core.Tests - see that project's README. -->
+  <ItemGroup>
+    <ProjectReference Include="..\GTFO.EZ.Core\GTFO.EZ.Core.csproj" />
+  </ItemGroup>
+
 </Project>
