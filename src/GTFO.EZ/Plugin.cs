@@ -14,7 +14,7 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "10.0.0";
+    public const string VERSION = "11.0.0";
 
     // Shared between the rundown-select header and the in-level warden-intel message so the two
     // in-game surfaces never drift apart the way they did before this was pulled out. Major
@@ -194,17 +194,21 @@ public class Plugin : BasePlugin
     // (1.25->1.0) in v2, Revive Duration (1.0->0.33) in v8, and Lock Melter/C-Foam Grenade
     // (1.0->0.0) in v8 plus Explosive Trip Mine/C-Foam Tripmine (1.0->0.0) in v9. (Glow Stick was
     // checked too but was never affected - it was introduced already disabled, with no earlier
-    // shipped default to get stuck on.) One-time nudge for existing installs each time this list
-    // grows, gated so it never re-applies once an install is caught up; a player who deliberately
-    // set one of these back to its old value afterward keeps that choice indistinguishably - same
+    // shipped default to get stuck on.) Health Regen Cap's 0.5 (10%) from v8 turned out to have no
+    // stated rationale anywhere (unlike the other changes here) and didn't match how the mod had
+    // actually been played, so v10 reverts it back to the original 2.0 (40%) target from before
+    // v8 - also migrated, so the same stale-default bug doesn't leave anyone stuck on the
+    // short-lived, undocumented 0.5 either. One-time nudge for existing installs each time this
+    // list grows, gated so it never re-applies once an install is caught up; a player who
+    // deliberately set one of these back to its old value afterward keeps that choice indistinguishably - same
     // inherent trade-off for all of them.
     private static void ApplyConfigDefaultMigrations()
     {
-        const int currentMigrationVersion = 3;
+        const int currentMigrationVersion = 4;
         if (ConfigMigrationVersion.Value < currentMigrationVersion)
         {
             MigrateStaleDefault(HealthRegenRateMultiplier, 5.0f);
-            MigrateStaleDefault(HealthRegenCapMultiplier, 2.0f);
+            MigrateStaleDefault(HealthRegenCapMultiplier, 0.5f); // v8's short-lived, undocumented value; reverted in v10
             MigrateStaleDefault(FallDamageMultiplier, 1.0f);
             MigrateStaleDefault(FallDamageMinHeightMultiplier, 2.0f);
             MigrateStaleDefault(FlashlightAngleMultiplier, 1.25f);
@@ -242,8 +246,8 @@ public class Plugin : BasePlugin
         HealthRegenRateMultiplier = Config.Bind("Health", "Health Regen Rate Multiplier", 0.5f,
             "Multiplies health regen per second. Vanilla 0.2/s -> 0.1/s at the default 0.5.");
 
-        HealthRegenCapMultiplier = Config.Bind("Health", "Health Regen Cap Multiplier", 0.5f,
-            "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 10% at the default 0.5. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
+        HealthRegenCapMultiplier = Config.Bind("Health", "Health Regen Cap Multiplier", 2.0f,
+            "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 40% at the default 2.0. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
 
         RemoveCombatStaminaPenalty = Config.Bind("Stamina", "Remove Combat Stamina Penalty", true,
             "Makes stamina regen while in combat as fast as out of combat, and removes the 90% stamina cap while in combat.");

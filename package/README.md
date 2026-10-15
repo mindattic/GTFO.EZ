@@ -19,7 +19,7 @@ config is applied; `-` means left at vanilla:
 |---|---|---|
 | Max health | 25 | 50 (+100%) |
 | Health regen rate | 0.2/s | 0.1/s (-50%) |
-| Max regenerated health (no med kit) | 20% | 10% (-50%) |
+| Max regenerated health (no med kit) | 20% | 40% (+100%) |
 | Stamina regen rate while resting in combat | 0.15/s (vs 0.25/s out of combat) | 0.25/s, equalized |
 | Stamina cap while in combat | 90% | 100%, cap removed |
 | Fall damage amount | 2-15 | 0.2-1.5 (-90%) |
@@ -444,6 +444,16 @@ others' prior work:
 
 ## Changelog
 
+### v11
+
+- **Bug fix:** Health Regen Cap Multiplier's default of 0.5 (10%), introduced in v8, turned out to
+  have no stated rationale anywhere in that commit or the changelog - unlike every other default
+  change in this mod, which cites a reason. It also never matched how the mod was actually played:
+  because of the stale-`.cfg` bug below, any install that predates v8 was never actually affected
+  by it in the first place, silently staying at the original 2.0 (40%) the whole time. Reverted
+  the default back to 2.0 (40%) to match that original, actually-played-with value, and extended
+  the v10 migration to also catch anyone who *did* get moved onto the short-lived 0.5.
+
 ### v10
 
 - **Bug fix:** A full audit of every config default's git history turned up more entries hit by
@@ -452,8 +462,7 @@ others' prior work:
   Height Multiplier (2.0->1.0) from v5, Flashlight Angle/Intensity Multiplier (1.25->1.0) from v2,
   and Revive Duration Multiplier (1.0->0.33) from v8 all changed their default without a
   migration, so upgraders from before the relevant version could still be stuck on values as old
-  as v1 - most notably Health Regen Cap, where pre-v8 installs stayed at 40% max regen instead of
-  the intended 10%. The one-time migration added in v9 now covers all of these too.
+  as v1. The one-time migration added here now covers all of these too.
 - **Bug fix:** a single try/catch wrapped all 9 of the mod's tweak categories (player stats, fog,
   loot, weapons, etc.), so one category throwing an exception - e.g. a future game patch renaming
   a field - silently skipped every other, unrelated category too. Each category now fails

@@ -1,6 +1,6 @@
 {
   "name": "GtfoEZ",
-  "version_number": "10.0.0",
+  "version_number": "11.0.0",
   "website_url": "https://github.com/mindattic/GTFO.EZ",
   "description": "Health x2, faster regen, no stamina penalty, 90% less fall damage & fog, more ammo, faster revives, shorter enemy detection, no glow sticks/lock melters/c-foam grenades/trip mines. 530+ more stats also exposed, left at vanilla by default.",
   "dependencies": [

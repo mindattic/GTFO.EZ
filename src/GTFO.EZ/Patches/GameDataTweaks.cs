@@ -60,7 +60,7 @@ internal static class GameDataInit_Initialize_Patch
         player.health *= healthMult;
 
         // Rate and cap are deliberately separate multipliers: vanilla under-regens relative to
-        // its own cap, so hitting both target numbers (1.0/s against a 40% cap) needs different
+        // its own cap, so hitting both target numbers (0.1/s against a 40% cap) needs different
         // factors. Regen delay after damage is left untouched on purpose - see config comment.
         player.healthRegenPerSecond *= Plugin.HealthRegenRateMultiplier.Value;
         player.healthRegenRelMax = Math.Min(1f, player.healthRegenRelMax * Plugin.HealthRegenCapMultiplier.Value);
