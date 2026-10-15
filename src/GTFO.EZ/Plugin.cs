@@ -68,6 +68,8 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> HealthSyringeSpawnWeightMultiplier = null!;
     internal static ConfigEntry<float> CFoamTripmineSpawnWeightMultiplier = null!;
     internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
+    internal static ConfigEntry<float> HealthSyringeHealFraction = null!;
+    internal static ConfigEntry<bool> ControlDefaultsApplied = null!;
 
     // GE-T10 spike - see Patches/TerminalPingPatch.cs. Diagnostic only; off by default.
     internal static ConfigEntry<bool> ExperimentalGlobalTerminalPing = null!;
@@ -209,6 +211,7 @@ public class Plugin : BasePlugin
         (3, () => FlashlightIntensityMultiplier, 1.25f),
         (3, () => ReviveDurationMultiplier, 1.0f),
         (4, () => HealthRegenCapMultiplier, 0.5f),               // v11
+        (5, () => FogRepellerSpawnWeightMultiplier, 1.0f),
     };
 
     private static void ApplyConfigDefaultMigrations()
@@ -339,7 +342,8 @@ public class Plugin : BasePlugin
 
         // Each consumable is picked from a shared weighted lottery, so these retune the odds
         // between them rather than the total amount of loot (that's ConsumableSpawnMultiplier
-        // above). Glow Stick defaults to 0 (disabled) - every other item here is left at vanilla.
+        // above). Glow Stick, C-Foam Grenade, Fog Repeller, Lock Melter and both tripmines default
+        // to 0 (disabled); the flashlight and both syringes are left at vanilla.
         FlashlightItemSpawnWeightMultiplier = Config.Bind("Loot", "Long Range Flashlight Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a Long Range Flashlight is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
@@ -349,8 +353,8 @@ public class Plugin : BasePlugin
         CFoamGrenadeSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Grenade Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
-        FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 1.0f,
-            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+        FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 0.0f,
+            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Defaults to 0 (disabled) - fog is already cut 90%, so other consumables fill those slots.");
 
         LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
@@ -366,6 +370,12 @@ public class Plugin : BasePlugin
 
         CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+
+        ControlDefaultsApplied = Config.Bind("Controls", "Control Defaults Applied", false,
+            "On first launch the mod turns on comms-menu toggle (no holding Q), sprint toggle, aim toggle and stand-when-jumping in the game's own settings, then sets this to true and never touches them again. Set back to false to reapply.");
+
+        HealthSyringeHealFraction = Config.Bind("Consumables", "I2-LP Syringe Heal Amount", 0.5f,
+            "Fraction of max health an I2-LP (health) syringe restores. Vanilla is a random 5-15%; default 0.5 (50%). Set to 0 to keep vanilla.");
 
         BotsAlwaysEquipSentryGun = Config.Bind("Bots", "Bots Always Equip Sentry Gun", false,
             "Forces any bot's Tool slot to the basic Sentry Gun the moment it gets gear, whether it's " +

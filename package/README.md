@@ -20,6 +20,7 @@ config is applied; `-` means left at vanilla:
 | Max health | 25 | 50 (+100%) |
 | Health regen rate | 0.2/s | 0.1/s (-50%) |
 | Max regenerated health (no med kit) | 20% | 40% (+100%) |
+| I2-LP (health) syringe heal | 5-15% of max health | 50% of max health |
 | Stamina regen rate while resting in combat | 0.15/s (vs 0.25/s out of combat) | 0.25/s, equalized |
 | Stamina cap while in combat | 90% | 100%, cap removed |
 | Fall damage amount | 2-15 | 0.2-1.5 (-90%) |
@@ -31,6 +32,7 @@ config is applied; `-` means left at vanilla:
 | C-Foam Grenade spawn odds | varies by zone | disabled (-100%) |
 | Explosive Trip Mine spawn odds | varies by zone | disabled (-100%) |
 | C-Foam Tripmine spawn odds | varies by zone | disabled (-100%) |
+| Fog Repeller spawn odds | varies by zone | disabled (-100%) |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog density (visibility-limiting fog) | varies by zone | -90% |
 
@@ -39,6 +41,11 @@ A few deliberate non-changes among the tuned stats: regen delay after damage is 
 itself is left at vanilla (cutting fall damage to 10% already does the work, so raising the safe
 height on top of that was redundant), and ammo isn't paired with a damage buff (that combination
 was reported as overtuned by another mod's author).
+
+**Controls** — on first launch the mod also switches on four of the game's own control options:
+the comms menu opens and closes with a tap of Q instead of having to be held, sprint and aim are
+toggles, and jumping stands you up from a crouch. It does this once only; after that they're
+ordinary game settings you can change back in Settings → Gameplay.
 
 Every value above is a multiplier (or on/off switch) you can retune in the config file BepInEx
 generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without recompiling anything.
@@ -125,14 +132,13 @@ detection/glow sticks, above) was already settled. It's real, functional, and fu
 but less curated and less load-bearing for the mod's "easy mode" identity than the stats above —
 expect it to matter more for players who want to go deeper than the defaults, not for a first install.
 
-**Consumable spawn odds** — Glow Stick, Lock Melter, C-Foam Grenade, Explosive Trip Mine, and
-C-Foam Tripmine are covered above (all disabled by default); these other items share the same
-weighted lottery but are all left at vanilla:
+**Consumable spawn odds** — Glow Stick, Lock Melter, C-Foam Grenade, Explosive Trip Mine, C-Foam
+Tripmine, and Fog Repeller are covered above (all disabled by default); these other items share the
+same weighted lottery but are all left at vanilla:
 
 | Stat | Vanilla | Default |
 |---|---|---|
 | Long Range Flashlight spawn odds | varies by zone | - |
-| Fog Repeller spawn odds | varies by zone | - |
 | Melee Buff (IIx) Syringe spawn odds | varies by zone | - |
 | Health (I2-LP) Syringe spawn odds | varies by zone | - |
 
@@ -472,10 +478,19 @@ others' prior work:
   you'd deliberately set something back after an earlier update (say, re-enabled Lock Melters, or
   put fall damage back to vanilla) the next update quietly reset it again. Each migration now runs
   once per install and never again.
-- **Bug fix:** 17 of the game's loot tables contain *only* items this mod disables (e.g. the
-  "C-foam" tables are just C-Foam grenades and tripmines), which left them as a loot lottery with
-  nothing to win - with no telling what the game draws from that. Those tables now just spawn
-  nothing, which is what disabling those items means.
+- Fog Repeller spawn odds now default to disabled (0), joining the other disabled consumables -
+  with fog already cut 90%, they mostly took up loot slots.
+- I2-LP (health) syringes now restore 50% of max health instead of vanilla's random 5-15%.
+  Configurable as "I2-LP Syringe Heal Amount" under Consumables; 0 keeps vanilla.
+- On first launch, turns on four of the game's own control options: the comms menu toggles open/
+  closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
+  Applied once only - change any of them back in the game's settings and they stay changed.
+- **Bug fix:** 25 of the game's loot tables contain *only* items this mod disables (e.g. the
+  "C-foam" tables are just C-Foam grenades and tripmines, "OnlyFogReps" is just fog repellers),
+  which left them as a loot lottery with nothing to win - with no telling what the game draws from
+  that. Those tables now hand out I2-LP health syringes instead. (Med/ammo/tool packs aren't used
+  here: those get filled by the level's resource budget, and would likely spawn empty from a
+  consumable table.)
 
 ### v10
 

@@ -22,10 +22,19 @@
   you'd deliberately set something back after an earlier update (say, re-enabled Lock Melters, or
   put fall damage back to vanilla) the next update quietly reset it again. Each migration now runs
   once per install and never again.
-- **Bug fix:** 17 of the game's loot tables contain *only* items this mod disables (e.g. the
-  "C-foam" tables are just C-Foam grenades and tripmines), which left them as a loot lottery with
-  nothing to win - with no telling what the game draws from that. Those tables now just spawn
-  nothing, which is what disabling those items means.
+- Fog Repeller spawn odds now default to disabled (0), joining the other disabled consumables -
+  with fog already cut 90%, they mostly took up loot slots.
+- I2-LP (health) syringes now restore 50% of max health instead of vanilla's random 5-15%.
+  Configurable as "I2-LP Syringe Heal Amount" under Consumables; 0 keeps vanilla.
+- On first launch, turns on four of the game's own control options: the comms menu toggles open/
+  closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
+  Applied once only - change any of them back in the game's settings and they stay changed.
+- **Bug fix:** 25 of the game's loot tables contain *only* items this mod disables (e.g. the
+  "C-foam" tables are just C-Foam grenades and tripmines, "OnlyFogReps" is just fog repellers),
+  which left them as a loot lottery with nothing to win - with no telling what the game draws from
+  that. Those tables now hand out I2-LP health syringes instead. (Med/ammo/tool packs aren't used
+  here: those get filled by the level's resource budget, and would likely spawn empty from a
+  consumable table.)
 
 ## v10
 
