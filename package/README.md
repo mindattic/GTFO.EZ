@@ -305,62 +305,68 @@ slider shared by every fire mode in that family (e.g. all of "Rifle") multiplied
 Weapon type and archetype ownership were confirmed by logging `GearCategoryDataBlock` and
 `ArchetypeDataBlock` at boot - not documented anywhere official. A few types share an archetype
 across more than one category (e.g. "SMG_Special" reuses plain "SMG"'s stats), in which case only
-the base type gets its own slider. Every "SemiBurst" row below reads identical placeholder-looking
-values (20 damage, 10 clip) - no obtainable weapon in this rundown actually uses that fire mode, so
-treat those rows as inert rather than a real gun. Sentries don't go through this category system at
-all, so they aren't covered by the two-tier sliders - see the flat Sentry stats further below.
+the base type gets its own slider. Sentries don't go through this category system at all, so they
+aren't covered by the two-tier sliders - see the flat Sentry stats further below.
 
-| Weapon Type | Individual Weapon | Damage | Stagger Multiplier | Precision Multiplier | Clip Size | Reload Time |
-|---|---|---|---|---|---|---|
-| Bullpup | Semi | 3 | 1 | 1 | 8 | 3 |
-| Bullpup | Burst | 1.8 | 1 | 1 | 24 | 3 |
-| Bullpup | Auto | 2.1 | 1 | 1 | 40 | 2.3 |
-| Bullpup | SemiBurst | 1.5 | 1 | 1 | 25 | 3 |
-| DMR | Semi | 7.51 | 1 | 0.87 | 12 | 2.3 |
-| DMR | Burst | 5.51 | 1 | 0.9 | 14 | 2.15 |
-| DMR | Auto (Long gun) | 4 | 1 | 1 | 16 | 1.9 |
-| DMR | SemiBurst | 20 | 1 | 1 | 10 | 1.9 |
-| Gauss Rifle | Semi | 30.01 | 1 | 0.73 | 5 | 3.2 |
-| HEL Shotgun | Semi | 21 | 2 | 0.7413 | 6 | 2.5 |
-| HEL Shotgun | Burst | 1.67 | 2 | 0.7413 | 14 | 3 |
-| HighCalPistol | - | 30.1 | 1 | 0.7413 | 6 | 2.5 |
-| MachineGun | Auto | 3.51 | 1.45 | 0.7413 | 60 | 4 |
-| MachineGun LowRPM | Semi | 16.25 | 1 | 0.8 | 9 | 3.3 |
-| MachineGun LowRPM | Burst | 22 | 1 | 0.734 | 20 | 3.7 |
-| MachineGun LowRPM | Auto | 5.35 | 1 | 0.7413 | 40 | 3.5 |
-| MachineGun LowRPM | SemiBurst | 20 | 1 | 1 | 10 | 2.1 |
-| Pistol | Semi | 4.64 | 1.5 | 0.8667 | 15 | 1.3 |
-| Pistol | Burst | 3.2 | 1 | 0.8667 | 28 | 1.25 |
-| Pistol | Auto | 1.9 | 1 | 0.7413 | 50 | 1.25 |
-| Pistol | SemiBurst | 20 | 1 | 1 | 10 | 1.25 |
-| Pistol Stagger | Auto | 1.5 | 5 | 0.7413 | 60 | 1.3 |
-| Precision Rifle | - | 13 | 1 | 1.3 | 10 | 3.3 |
-| Revolver | Semi | 14.21 | 1 | 0.7413 | 6 | 1.75 |
-| Revolver | Burst | 8.01 | 1 | 0.7413 | 8 | 2.3 |
-| Revolver | Auto (Autorevolver) | 7 | 1 | 1 | 10 | 2 |
-| Revolver | SemiBurst | 20 | 1 | 1 | 10 | 2 |
-| Rifle | Semi | 5.08 | 1.75 | 0.8667 | 14 | 1.9 |
-| Rifle | Burst | 2.71 | 1 | 0.8667 | 30 | 2 |
-| Rifle | Auto | 2.1875 | 1 | 0.8 | 30 | 1.8 |
-| Rifle | SemiBurst (Semi Burst Rifle) | 20 | 1 | 1 | 10 | 1.8 |
-| RifleCQB | - | 4.31 | 1 | 0.7 | 24 | 1.5 |
-| RifleHeavy | Auto | 5.01 | 1 | 0.8 | 30 | 2.3 |
-| SMG | Semi | 4.81 | 0.5 | 0.7413 | 30 | 1.7 |
-| SMG | Burst | 2.38 | 1 | 0.7413 | 48 | 1.6 |
-| SMG | Auto | 1.98 | 1 | 0.91 | 50 | 1.4 |
-| SMG | SemiBurst | 20 | 1 | 1 | 10 | 1.5 |
-| SMGHeavy | Auto | 2.45 | 1 | 0.8 | 33 | 1.55 |
-| SMG PDW | - | 2.15 | 1 | 0.7413 | 32 | 1.4 |
-| SawedOffShotgun | Semi | 3.8 | 2 | 0.7413 | 4 | 1.6 |
-| Scattergun | Burst | 4.8 | 2 | 0.7333 | 2 | 2.66 |
-| Shotgun | Semi | 3.01 | 1 | 1 | 8 | 3 |
-| Shotgun | Burst | 3.76 | 1.35 | 1 | 4 | 2.72 |
-| Shotgun | Auto | 2.51 | 2 | 0.875 | 12 | 2.83 |
-| Shotgun | SemiBurst | 20 | 1 | 1 | 10 | 1 |
-| Sniper | Semi | 40.01 | 1 | 2.0025 | 2 | 3.5 |
-| Sniper | Burst (Railgun) | 15 | 1 | 1 | 9 | 3.5 |
-| Sniper | Auto (Coilgun) | 12 | 1 | 1 | 10 | 3.5 |
-| Sniper | SemiBurst | 20 | 1 | 1 | 10 | 2.5 |
+The **Weapon** column is the actual gun you pick in the loadout screen, resolved from the game's own
+gear data (and checked against the GTFO wiki). The Weapon Type / Individual Weapon columns are the
+names of the config sections you'd edit. 16 rows have no player weapon - every "SemiBurst" slot
+plus a few unused ones - so treat those as inert. The fire-mode word in a section name is the
+internal slot, which doesn't always match how the gun fires: the Bataldo Custom K330 is a slug
+shotgun filed under "HEL Shotgun - Semi", and the Bataldo J 300 fires full-auto from the "Burst"
+slot.
+
+| Weapon | Weapon Type | Individual Weapon | Damage | Stagger Multiplier | Precision Multiplier | Clip Size | Reload Time |
+|---|---|---|---|---|---|---|---|
+| — (no player weapon) | Bullpup | Semi | 3 | 1 | 1 | 8 | 3 |
+| — (no player weapon) | Bullpup | Burst | 1.8 | 1 | 1 | 24 | 3 |
+| Accrat Golok DA Bullpup Rifle | Bullpup | Auto | 2.1 | 1 | 1 | 40 | 2.3 |
+| — (no player weapon) | Bullpup | SemiBurst | 1.5 | 1 | 1 | 25 | 3 |
+| TR22 Hanaway DMR | DMR | Semi | 7.51 | 1 | 0.87 | 12 | 2.3 |
+| Hanaway PSB Double Tap Rifle | DMR | Burst | 5.51 | 1 | 0.9 | 14 | 2.15 |
+| — (no player weapon) | DMR | Auto (Long gun) | 4 | 1 | 1 | 16 | 1.9 |
+| — (no player weapon) | DMR | SemiBurst | 20 | 1 | 1 | 10 | 1.9 |
+| Omneco LRG HEL Rifle | Gauss Rifle | Semi | 30.01 | 1 | 0.73 | 5 | 3.2 |
+| Bataldo Custom K330 Slug Shotgun | HEL Shotgun | Semi | 21 | 2 | 0.7413 | 6 | 2.5 |
+| Bataldo J 300 HEL Shotgun | HEL Shotgun | Burst | 1.67 | 2 | 0.7413 | 14 | 3 |
+| Shelling Arid 5 High Caliber Pistol | HighCalPistol | - | 30.1 | 1 | 0.7413 | 6 | 2.5 |
+| TechMan Veruta XII Machine Gun | MachineGun | Auto | 3.51 | 1.45 | 0.7413 | 60 | 4 |
+| Omneco EXP1 HEL Gun | MachineGun LowRPM | Semi | 16.25 | 1 | 0.8 | 9 | 3.3 |
+| TechMan Klust 6 Burst Cannon | MachineGun LowRPM | Burst | 22 | 1 | 0.734 | 20 | 3.7 |
+| TechMan Arbalist V Machine Gun | MachineGun LowRPM | Auto | 5.35 | 1 | 0.7413 | 40 | 3.5 |
+| — (no player weapon) | MachineGun LowRPM | SemiBurst | 20 | 1 | 1 | 10 | 2.1 |
+| Shelling S49 Pistol | Pistol | Semi | 4.64 | 1.5 | 0.8667 | 15 | 1.3 |
+| Shelling Nano Burst Pistol | Pistol | Burst | 3.2 | 1 | 0.8667 | 28 | 1.25 |
+| Raptus Treffen 2 Machine Pistol | Pistol | Auto | 1.9 | 1 | 0.7413 | 50 | 1.25 |
+| — (no player weapon) | Pistol | SemiBurst | 20 | 1 | 1 | 10 | 1.25 |
+| Raptus Steigro HEL Autopistol | Pistol Stagger | Auto | 1.5 | 5 | 0.7413 | 60 | 1.3 |
+| Drekker Del P1 Precision Rifle | Precision Rifle | - | 13 | 1 | 1.3 | 10 | 3.3 |
+| Mastaba R66 Revolver | Revolver | Semi | 14.21 | 1 | 0.7413 | 6 | 1.75 |
+| Bataldo 3RB HEL Revolver | Revolver | Burst | 8.01 | 1 | 0.7413 | 8 | 2.3 |
+| — (no player weapon) | Revolver | Auto (Autorevolver) | 7 | 1 | 1 | 10 | 2 |
+| — (no player weapon) | Revolver | SemiBurst | 20 | 1 | 1 | 10 | 2 |
+| Drekker Pres MOD 556 Rifle | Rifle | Semi | 5.08 | 1.75 | 0.8667 | 14 | 1.9 |
+| Malatack CH 4 Burst Rifle | Rifle | Burst | 2.71 | 1 | 0.8667 | 30 | 2 |
+| Malatack LX Assault Rifle | Rifle | Auto | 2.1875 | 1 | 0.8 | 30 | 1.8 |
+| — (no player weapon) | Rifle | SemiBurst (Semi Burst Rifle) | 20 | 1 | 1 | 10 | 1.8 |
+| — (no player weapon) | RifleCQB | - | 4.31 | 1 | 0.7 | 24 | 1.5 |
+| Malatack HXC Heavy Assault Rifle | RifleHeavy | Auto | 5.01 | 1 | 0.8 | 30 | 2.3 |
+| Drekker CLR Short Rifle | SMG | Semi | 4.81 | 0.5 | 0.7413 | 30 | 1.7 |
+| Van Auken CAB F4 Carbine | SMG | Burst | 2.38 | 1 | 0.7413 | 48 | 1.6 |
+| Van Auken LTC5 SMG | SMG | Auto | 1.98 | 1 | 0.91 | 50 | 1.4 |
+| — (no player weapon) | SMG | SemiBurst | 20 | 1 | 1 | 10 | 1.5 |
+| Accrat ND6 Heavy SMG | SMGHeavy | Auto | 2.45 | 1 | 0.8 | 33 | 1.55 |
+| Accrat STB PDW | SMG PDW | - | 2.15 | 1 | 0.7413 | 32 | 1.4 |
+| Buckland SBS III Sawed-off Shotgun | SawedOffShotgun | Semi | 3.8 | 2 | 0.7413 | 4 | 1.6 |
+| Drekker INEX Drei Scattergun | Scattergun | Burst | 4.8 | 2 | 0.7333 | 2 | 2.66 |
+| Buckland S870 Shotgun | Shotgun | Semi | 3.01 | 1 | 1 | 8 | 3 |
+| Buckland XDIST2 Choke Mod Shotgun | Shotgun | Burst | 3.76 | 1.35 | 1 | 4 | 2.72 |
+| Buckland AF6 Combat Shotgun | Shotgun | Auto | 2.51 | 2 | 0.875 | 12 | 2.83 |
+| — (no player weapon) | Shotgun | SemiBurst | 20 | 1 | 1 | 10 | 1 |
+| Köning PR 11 Sniper | Sniper | Semi | 40.01 | 1 | 2.0025 | 2 | 3.5 |
+| — (no player weapon) | Sniper | Burst (Railgun) | 15 | 1 | 1 | 9 | 3.5 |
+| — (no player weapon) | Sniper | Auto (Coilgun) | 12 | 1 | 1 | 10 | 3.5 |
+| — (no player weapon) | Sniper | SemiBurst | 20 | 1 | 1 | 10 | 2.5 |
 
 Every other `ArchetypeDataBlock` stat (ammo cost, fire rate, spread, burst/shotgun-pellet counts,
 charge-up/cooldown timing, equip/aim speed, shell casing size) is left as one flat multiplier
@@ -453,6 +459,15 @@ others' prior work:
   by it in the first place, silently staying at the original 2.0 (40%) the whole time. Reverted
   the default back to 2.0 (40%) to match that original, actually-played-with value, and extended
   the v10 migration to also catch anyone who *did* get moved onto the short-lived 0.5.
+- Whole-number stats (ammo counts, clip size, pellet count, enemy caps, loot counts, etc.) now
+  always round in the player's favor when a multiplier leaves a fraction, instead of rounding to
+  nearest-even: anything where more helps you rounds up, anything where fewer helps you (enemy
+  counts, shotgun spread) rounds down. At default settings this can add 1 to an ammo value where
+  the x1.5 ammo multiplier lands on a half.
+- Every individual-weapon setting now names the actual gun it affects (e.g. "Weapon - Rifle Auto"
+  is the Malatack LX Assault Rifle), both in the config file's descriptions and in a new Weapon
+  column on the README's weapon table. Section names are unchanged, so existing settings carry
+  over. 16 of the 49 fire-mode slots turned out to have no player weapon at all - now labelled.
 
 ### v10
 

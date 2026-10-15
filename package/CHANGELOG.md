@@ -9,6 +9,15 @@
   by it in the first place, silently staying at the original 2.0 (40%) the whole time. Reverted
   the default back to 2.0 (40%) to match that original, actually-played-with value, and extended
   the v10 migration to also catch anyone who *did* get moved onto the short-lived 0.5.
+- Whole-number stats (ammo counts, clip size, pellet count, enemy caps, loot counts, etc.) now
+  always round in the player's favor when a multiplier leaves a fraction, instead of rounding to
+  nearest-even: anything where more helps you rounds up, anything where fewer helps you (enemy
+  counts, shotgun spread) rounds down. At default settings this can add 1 to an ammo value where
+  the x1.5 ammo multiplier lands on a half.
+- Every individual-weapon setting now names the actual gun it affects (e.g. "Weapon - Rifle Auto"
+  is the Malatack LX Assault Rifle), both in the config file's descriptions and in a new Weapon
+  column on the README's weapon table. Section names are unchanged, so existing settings carry
+  over. 16 of the 49 fire-mode slots turned out to have no player weapon at all - now labelled.
 
 ## v10
 

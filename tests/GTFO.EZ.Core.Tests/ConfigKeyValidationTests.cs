@@ -63,6 +63,15 @@ public class ConfigKeyValidationTests
         }
     }
 
+    [Test]
+    public void WeaponNames_OnlyReferenceKnownArchetypes_AndAreUnique()
+    {
+        var knownIds = BalanceTables.WeaponArchetypes.Select(a => a.ArchetypeId).ToHashSet();
+
+        Assert.That(BalanceTables.WeaponNames.Keys.Where(id => !knownIds.Contains(id)), Is.Empty);
+        Assert.That(BalanceTables.WeaponNames.Values.Distinct().Count(), Is.EqualTo(BalanceTables.WeaponNames.Count));
+    }
+
     [TestCase("Weapon - Rifle Semi", true)]
     [TestCase("Weapon [Rifle]", false)]
     [TestCase("", false)]

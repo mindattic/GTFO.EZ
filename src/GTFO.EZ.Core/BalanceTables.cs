@@ -114,6 +114,50 @@ public static class BalanceTables
         (32, "Sniper", "Sniper SemiBurst"),
     };
 
+    // Real in-game name of the one player weapon that uses each archetype. Resolved from a vanilla
+    // datablock dump (game build 34855) the same way the game does it - offline gear's category +
+    // fire mode -> that GearCategory's Semi/Burst/Auto/SemiBurst archetype - and cross-checked
+    // against gtfo.wiki.gg. Archetypes missing here have no player-facing weapon. The Label above
+    // stays the config section name regardless, so renaming never orphans a player's settings;
+    // note a Label's fire-mode word is the archetype slot, not always how the gun actually fires
+    // (81 is a slug shotgun under HEL_Shotgun, 78 fires full-auto from the Burst slot).
+    public static readonly IReadOnlyDictionary<uint, string> WeaponNames = new Dictionary<uint, string>
+    {
+        [1] = "Drekker Pres MOD 556 Rifle",
+        [3] = "Malatack CH 4 Burst Rifle",
+        [5] = "Malatack LX Assault Rifle",
+        [17] = "Drekker CLR Short Rifle",
+        [18] = "Van Auken CAB F4 Carbine",
+        [19] = "Van Auken LTC5 SMG",
+        [21] = "Omneco EXP1 HEL Gun",
+        [22] = "TechMan Klust 6 Burst Cannon",
+        [23] = "TechMan Arbalist V Machine Gun",
+        [25] = "TR22 Hanaway DMR",
+        [26] = "Hanaway PSB Double Tap Rifle",
+        [29] = "Köning PR 11 Sniper",
+        [33] = "Buckland S870 Shotgun",
+        [34] = "Buckland XDIST2 Choke Mod Shotgun",
+        [35] = "Buckland AF6 Combat Shotgun",
+        [37] = "Mastaba R66 Revolver",
+        [38] = "Bataldo 3RB HEL Revolver",
+        [41] = "Shelling S49 Pistol",
+        [42] = "Shelling Nano Burst Pistol",
+        [43] = "Raptus Treffen 2 Machine Pistol",
+        [45] = "Buckland SBS III Sawed-off Shotgun",
+        [49] = "Accrat Golok DA Bullpup Rifle",
+        [59] = "TechMan Veruta XII Machine Gun",
+        [65] = "Omneco LRG HEL Rifle",
+        [66] = "Raptus Steigro HEL Autopistol",
+        [69] = "Accrat ND6 Heavy SMG",
+        [72] = "Drekker INEX Drei Scattergun",
+        [73] = "Malatack HXC Heavy Assault Rifle",
+        [77] = "Accrat STB PDW",
+        [78] = "Bataldo J 300 HEL Shotgun",
+        [79] = "Drekker Del P1 Precision Rifle",
+        [80] = "Shelling Arid 5 High Caliber Pistol",
+        [81] = "Bataldo Custom K330 Slug Shotgun",
+    };
+
     public static readonly (string FieldKey, string DisplayName, string Description)[] WeaponCoreStatDefs =
     {
         ("Damage", "Damage Multiplier", "Multiplies this weapon's base damage per hit."),

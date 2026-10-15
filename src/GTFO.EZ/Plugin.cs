@@ -569,8 +569,11 @@ public class Plugin : BasePlugin
             foreach (var stat in BalanceTables.WeaponCoreStatDefs)
             {
                 var section = $"Weapon - {weapon.Label}";
+                var namePrefix = BalanceTables.WeaponNames.TryGetValue(weapon.ArchetypeId, out var realName)
+                    ? $"{realName}. "
+                    : "No player weapon uses this fire mode. ";
                 var entry = Config.Bind(section, stat.DisplayName, 1.0f,
-                    $"{stat.Description} Stacks multiplicatively with this weapon's type-level multiplier. Left at vanilla (1.0) by default.");
+                    $"{namePrefix}{stat.Description} Stacks multiplicatively with this weapon's type-level multiplier. Left at vanilla (1.0) by default.");
                 WeaponIndividualMultipliers[$"{weapon.ArchetypeId}.{stat.FieldKey}"] = entry;
             }
         }

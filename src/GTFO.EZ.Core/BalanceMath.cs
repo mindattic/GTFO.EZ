@@ -9,11 +9,16 @@ namespace GTFO.EZ.Core;
 /// </summary>
 public static class BalanceMath
 {
-    // Mirrors GameDataInit_Initialize_Patch.ScaleInt: Math.Round has no float overload, so the
-    // product widens to double before rounding - this is also where Math.Round's default
-    // MidpointRounding.ToEven ("banker's rounding") applies (3 * 1.5 = 4, 5 * 0.5 = 2), which is a
-    // deliberate, open product question (see GE-T4) rather than something this method decides.
-    public static int ScaleInt(int value, float multiplier) => (int)Math.Round(value * multiplier);
+    // Integer stats always round in the player's favor rather than to nearest: a stat where more
+    // helps the player (ammo, clip size, loot) rounds up, one where fewer helps (enemy caps, spread)
+    // rounds down. 3 x 1.5 clip = 5 rounds; 3 x 1.5 patrol groups = 4.
+    public static int ScaleIntUp(int value, float multiplier) => (int)Math.Ceiling(Product(value, multiplier));
+
+    public static int ScaleIntDown(int value, float multiplier) => (int)Math.Floor(Product(value, multiplier));
+
+    // Multipliers like 0.3 aren't exact in binary, so 10 x 0.3 lands on 3.0000001 and would
+    // ceiling to 4; trimming to 4 decimals keeps a whole-number product whole.
+    private static double Product(int value, float multiplier) => Math.Round(value * (double)multiplier, 4);
 
     // A missing key defaults to 1 (no-op multiplier) rather than 0, so an archetype/field
     // combination nobody configured yet - or one the game adds later - is left at vanilla instead

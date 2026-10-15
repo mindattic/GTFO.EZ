@@ -89,15 +89,15 @@ internal static class GameDataInit_Initialize_Patch
         player.fallDamageMaxHeight *= Plugin.FallDamageMaxHeightMultiplier.Value;
 
         var ammoMult = Plugin.AmmoMultiplier.Value;
-        player.AmmoStandardInitial = ScaleInt(player.AmmoStandardInitial, ammoMult);
-        player.AmmoStandardMaxCap = ScaleInt(player.AmmoStandardMaxCap, ammoMult);
-        player.AmmoStandardResourcePackMaxCap = ScaleInt(player.AmmoStandardResourcePackMaxCap, ammoMult);
-        player.AmmoSpecialInitial = ScaleInt(player.AmmoSpecialInitial, ammoMult);
-        player.AmmoSpecialMaxCap = ScaleInt(player.AmmoSpecialMaxCap, ammoMult);
-        player.AmmoSpecialResourcePackMaxCap = ScaleInt(player.AmmoSpecialResourcePackMaxCap, ammoMult);
-        player.AmmoClassInitial = ScaleInt(player.AmmoClassInitial, ammoMult);
-        player.AmmoClassMaxCap = ScaleInt(player.AmmoClassMaxCap, ammoMult);
-        player.AmmoClassResourcePackMaxCap = ScaleInt(player.AmmoClassResourcePackMaxCap, ammoMult);
+        player.AmmoStandardInitial = ScaleUp(player.AmmoStandardInitial, ammoMult);
+        player.AmmoStandardMaxCap = ScaleUp(player.AmmoStandardMaxCap, ammoMult);
+        player.AmmoStandardResourcePackMaxCap = ScaleUp(player.AmmoStandardResourcePackMaxCap, ammoMult);
+        player.AmmoSpecialInitial = ScaleUp(player.AmmoSpecialInitial, ammoMult);
+        player.AmmoSpecialMaxCap = ScaleUp(player.AmmoSpecialMaxCap, ammoMult);
+        player.AmmoSpecialResourcePackMaxCap = ScaleUp(player.AmmoSpecialResourcePackMaxCap, ammoMult);
+        player.AmmoClassInitial = ScaleUp(player.AmmoClassInitial, ammoMult);
+        player.AmmoClassMaxCap = ScaleUp(player.AmmoClassMaxCap, ammoMult);
+        player.AmmoClassResourcePackMaxCap = ScaleUp(player.AmmoClassResourcePackMaxCap, ammoMult);
 
         player.walkMoveSpeed *= Plugin.WalkSpeedMultiplier.Value;
         player.runMoveSpeed *= Plugin.RunSpeedMultiplier.Value;
@@ -108,7 +108,7 @@ internal static class GameDataInit_Initialize_Patch
 
         player.friendlyFireMulti *= Plugin.FriendlyFireMultiplier.Value;
 
-        player.battery = ScaleInt(player.battery, Plugin.BatteryCapacityMultiplier.Value);
+        player.battery = ScaleUp(player.battery, Plugin.BatteryCapacityMultiplier.Value);
         player.smallBatteryConsumtionPerSec *= Plugin.SmallBatteryDrainMultiplier.Value;
         player.mediumBatteryConsumtionPerSec *= Plugin.MediumBatteryDrainMultiplier.Value;
         player.largeBatteryConsumtionPerSec *= Plugin.LargeBatteryDrainMultiplier.Value;
@@ -180,7 +180,7 @@ internal static class GameDataInit_Initialize_Patch
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
-            block.SpawnsPerZone = ScaleInt(block.SpawnsPerZone, consumableMult);
+            block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
 
             // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
             // an item's weight retunes the odds between items rather than the total amount of
@@ -197,7 +197,7 @@ internal static class GameDataInit_Initialize_Patch
         var bigPickupMult = Plugin.BigPickupSpawnMultiplier.Value;
         foreach (var block in GameDataBlockBase<BigPickupDistributionDataBlock>.GetAllBlocks())
         {
-            block.SpawnsPerZone = ScaleInt(block.SpawnsPerZone, bigPickupMult);
+            block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
         }
     }
 
@@ -233,7 +233,7 @@ internal static class GameDataInit_Initialize_Patch
             block.ChanceToSpawnCommodityLargePack *= Plugin.LargeCommodityPackChanceMultiplier.Value;
             block.ChanceToSpawnCommodityMediumPack *= Plugin.MediumCommodityPackChanceMultiplier.Value;
             block.ChanceToReUseResourceContainer *= Plugin.ResourceContainerReuseChanceMultiplier.Value;
-            block.MaxPacksPerResourceContainer = ScaleInt(block.MaxPacksPerResourceContainer, Plugin.MaxPacksPerContainerMultiplier.Value);
+            block.MaxPacksPerResourceContainer = ScaleUp(block.MaxPacksPerResourceContainer, Plugin.MaxPacksPerContainerMultiplier.Value);
             block.EmptyWeakResourceContainersPerZone *= Plugin.EmptyWeakContainersPerZoneMultiplier.Value;
             block.EmptySecureResourceContainersPerZone *= Plugin.EmptySecureContainersPerZoneMultiplier.Value;
             block.LootPerZone *= Plugin.LootPerZoneMultiplier.Value;
@@ -248,18 +248,18 @@ internal static class GameDataInit_Initialize_Patch
                 block.ResourcePackSizes[i] *= packSizeMult;
             }
 
-            block.EnemyPatrolGroupsPerZone = ScaleInt(block.EnemyPatrolGroupsPerZone, Plugin.EnemyPatrolGroupsPerZoneMultiplier.Value);
-            block.StaticEnemiesMaxPerZone = ScaleInt(block.StaticEnemiesMaxPerZone, Plugin.StaticEnemiesMaxPerZoneMultiplier.Value);
-            block.StaticEnemiesMaxSmallArea = ScaleInt(block.StaticEnemiesMaxSmallArea, Plugin.StaticEnemiesMaxSmallAreaMultiplier.Value);
-            block.StaticEnemiesMaxMediumArea = ScaleInt(block.StaticEnemiesMaxMediumArea, Plugin.StaticEnemiesMaxMediumAreaMultiplier.Value);
-            block.StaticEnemiesMaxLargeArea = ScaleInt(block.StaticEnemiesMaxLargeArea, Plugin.StaticEnemiesMaxLargeAreaMultiplier.Value);
-            block.StaticEnemiesMaxHugeArea = ScaleInt(block.StaticEnemiesMaxHugeArea, Plugin.StaticEnemiesMaxHugeAreaMultiplier.Value);
+            block.EnemyPatrolGroupsPerZone = ScaleDown(block.EnemyPatrolGroupsPerZone, Plugin.EnemyPatrolGroupsPerZoneMultiplier.Value);
+            block.StaticEnemiesMaxPerZone = ScaleDown(block.StaticEnemiesMaxPerZone, Plugin.StaticEnemiesMaxPerZoneMultiplier.Value);
+            block.StaticEnemiesMaxSmallArea = ScaleDown(block.StaticEnemiesMaxSmallArea, Plugin.StaticEnemiesMaxSmallAreaMultiplier.Value);
+            block.StaticEnemiesMaxMediumArea = ScaleDown(block.StaticEnemiesMaxMediumArea, Plugin.StaticEnemiesMaxMediumAreaMultiplier.Value);
+            block.StaticEnemiesMaxLargeArea = ScaleDown(block.StaticEnemiesMaxLargeArea, Plugin.StaticEnemiesMaxLargeAreaMultiplier.Value);
+            block.StaticEnemiesMaxHugeArea = ScaleDown(block.StaticEnemiesMaxHugeArea, Plugin.StaticEnemiesMaxHugeAreaMultiplier.Value);
             block.EnemyPopulationPerZone *= Plugin.EnemyPopulationPerZoneMultiplier.Value;
 
             block.VoxelCoverageAreaMultiplier *= Plugin.LevelGenVoxelCoverageMultiplier.Value;
             block.VoxelCoverageAreaScoringRandomMultiplier *= Plugin.LevelGenVoxelCoverageRandomnessMultiplier.Value;
-            block.ArtifactsPerSegment = ScaleInt(block.ArtifactsPerSegment, Plugin.ArtifactsPerSegmentMultiplier.Value);
-            block.ArtifactsPerLayer = ScaleInt(block.ArtifactsPerLayer, Plugin.ArtifactsPerLayerMultiplier.Value);
+            block.ArtifactsPerSegment = ScaleUp(block.ArtifactsPerSegment, Plugin.ArtifactsPerSegmentMultiplier.Value);
+            block.ArtifactsPerLayer = ScaleUp(block.ArtifactsPerLayer, Plugin.ArtifactsPerLayerMultiplier.Value);
 
             block.WeakDoor4x4Health *= Plugin.WeakDoor4x4HealthMultiplier.Value;
             block.WeakDoor8x4Health *= Plugin.WeakDoor8x4HealthMultiplier.Value;
@@ -303,11 +303,11 @@ internal static class GameDataInit_Initialize_Patch
 
         data.Health *= healthMult;
         data.AttackDamage *= attackDamageMult;
-        data.MaxPerZone = ScaleInt(data.MaxPerZone, maxPerZoneMult);
-        data.MaxSmallArea = ScaleInt(data.MaxSmallArea, maxSmallAreaMult);
-        data.MaxMediumArea = ScaleInt(data.MaxMediumArea, maxMediumAreaMult);
-        data.MaxLargeArea = ScaleInt(data.MaxLargeArea, maxLargeAreaMult);
-        data.MaxHugeArea = ScaleInt(data.MaxHugeArea, maxHugeAreaMult);
+        data.MaxPerZone = ScaleDown(data.MaxPerZone, maxPerZoneMult);
+        data.MaxSmallArea = ScaleDown(data.MaxSmallArea, maxSmallAreaMult);
+        data.MaxMediumArea = ScaleDown(data.MaxMediumArea, maxMediumAreaMult);
+        data.MaxLargeArea = ScaleDown(data.MaxLargeArea, maxLargeAreaMult);
+        data.MaxHugeArea = ScaleDown(data.MaxHugeArea, maxHugeAreaMult);
     }
 
     // One MeleeArchetypeDataBlock per weapon type - real PublicName values are Bat, Hammer,
@@ -389,7 +389,7 @@ internal static class GameDataInit_Initialize_Patch
                 block.Damage *= WeaponMult(block.persistentID, owner.Category, "Damage");
                 block.StaggerDamageMulti *= WeaponMult(block.persistentID, owner.Category, "StaggerDamageMulti");
                 block.PrecisionDamageMulti *= WeaponMult(block.persistentID, owner.Category, "PrecisionDamageMulti");
-                block.DefaultClipSize = ScaleInt(block.DefaultClipSize, WeaponMult(block.persistentID, owner.Category, "DefaultClipSize"));
+                block.DefaultClipSize = ScaleUp(block.DefaultClipSize, WeaponMult(block.persistentID, owner.Category, "DefaultClipSize"));
                 block.DefaultReloadTime *= WeaponMult(block.persistentID, owner.Category, "DefaultReloadTime");
             }
 
@@ -397,12 +397,12 @@ internal static class GameDataInit_Initialize_Patch
             block.ShotDelay *= Plugin.WeaponShotDelayMultiplier.Value;
             block.HipFireSpread *= Plugin.WeaponHipFireSpreadMultiplier.Value;
             block.AimSpread *= Plugin.WeaponAimSpreadMultiplier.Value;
-            block.PiercingDamageCountLimit = ScaleInt(block.PiercingDamageCountLimit, Plugin.WeaponPiercingDamageCountLimitMultiplier.Value);
+            block.PiercingDamageCountLimit = ScaleUp(block.PiercingDamageCountLimit, Plugin.WeaponPiercingDamageCountLimitMultiplier.Value);
             block.BurstDelay *= Plugin.WeaponBurstDelayMultiplier.Value;
-            block.BurstShotCount = ScaleInt(block.BurstShotCount, Plugin.WeaponBurstShotCountMultiplier.Value);
-            block.ShotgunBulletCount = ScaleInt(block.ShotgunBulletCount, Plugin.WeaponShotgunBulletCountMultiplier.Value);
-            block.ShotgunConeSize = ScaleInt(block.ShotgunConeSize, Plugin.WeaponShotgunConeSizeMultiplier.Value);
-            block.ShotgunBulletSpread = ScaleInt(block.ShotgunBulletSpread, Plugin.WeaponShotgunBulletSpreadMultiplier.Value);
+            block.BurstShotCount = ScaleUp(block.BurstShotCount, Plugin.WeaponBurstShotCountMultiplier.Value);
+            block.ShotgunBulletCount = ScaleUp(block.ShotgunBulletCount, Plugin.WeaponShotgunBulletCountMultiplier.Value);
+            block.ShotgunConeSize = ScaleDown(block.ShotgunConeSize, Plugin.WeaponShotgunConeSizeMultiplier.Value);
+            block.ShotgunBulletSpread = ScaleDown(block.ShotgunBulletSpread, Plugin.WeaponShotgunBulletSpreadMultiplier.Value);
             block.SpecialChargetupTime *= Plugin.WeaponSpecialChargetupTimeMultiplier.Value;
             block.SpecialCooldownTime *= Plugin.WeaponSpecialCooldownTimeMultiplier.Value;
             block.SpecialSemiBurstCountTimeout *= Plugin.WeaponSpecialSemiBurstCountTimeoutMultiplier.Value;
@@ -432,5 +432,9 @@ internal static class GameDataInit_Initialize_Patch
         return typeMult * individualMult;
     }
 
-    private static int ScaleInt(int value, float multiplier) => BalanceMath.ScaleInt(value, multiplier);
+    // More of this stat helps the player, so a fractional result rounds up.
+    private static int ScaleUp(int value, float multiplier) => BalanceMath.ScaleIntUp(value, multiplier);
+
+    // Less of this stat helps the player (enemy counts, spread), so a fractional result rounds down.
+    private static int ScaleDown(int value, float multiplier) => BalanceMath.ScaleIntDown(value, multiplier);
 }

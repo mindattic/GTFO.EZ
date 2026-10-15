@@ -7,25 +7,26 @@ namespace GTFO.EZ.Core.Tests;
 [TestFixture]
 public class BalanceMathTests
 {
-    [TestCase(3, 1.6f, 5)] // 4.8, unambiguous regardless of rounding mode
-    [TestCase(1, 0.4f, 0)] // 0.4, unambiguous
-    [TestCase(4, 0.25f, 1)] // exactly 1.0, no rounding involved
-    public void ScaleInt_RoundsToNearestInteger_ForNonMidpointCases(int value, float multiplier, int expected)
+    [TestCase(3, 1.5f, 5)]
+    [TestCase(5, 0.5f, 3)]
+    [TestCase(1, 0.4f, 1)]
+    [TestCase(3, 1.6f, 5)]
+    [TestCase(4, 1.0f, 4)]
+    [TestCase(10, 0.3f, 3)] // 0.3 isn't exact in binary - must not become 4
+    public void ScaleIntUp_RoundsUp_ForStatsWhereMoreHelpsThePlayer(int value, float multiplier, int expected)
     {
-        Assert.That(BalanceMath.ScaleInt(value, multiplier), Is.EqualTo(expected));
+        Assert.That(BalanceMath.ScaleIntUp(value, multiplier), Is.EqualTo(expected));
     }
 
-    // GE-T4: Math.Round defaults to MidpointRounding.ToEven ("banker's rounding"), so exact
-    // .5 products round to the nearest EVEN integer, not always up - 3*1.5=4.5 rounds to 4
-    // (even), while 5*0.5=2.5 rounds to 2 (even). This documents the current, actual behavior;
-    // whether that's the intended behavior for clip sizes/pellet counts is a still-open product
-    // decision (pin AwayFromZero deliberately, or accept ToEven), not something these tests
-    // should silently redefine.
     [TestCase(3, 1.5f, 4)]
     [TestCase(5, 0.5f, 2)]
-    public void ScaleInt_UsesBankersRounding_AtExactMidpoints(int value, float multiplier, int expected)
+    [TestCase(1, 0.4f, 0)]
+    [TestCase(3, 1.6f, 4)]
+    [TestCase(4, 1.0f, 4)]
+    [TestCase(10, 0.7f, 7)] // 0.7 isn't exact in binary - must not become 6
+    public void ScaleIntDown_RoundsDown_ForStatsWhereFewerHelpsThePlayer(int value, float multiplier, int expected)
     {
-        Assert.That(BalanceMath.ScaleInt(value, multiplier), Is.EqualTo(expected));
+        Assert.That(BalanceMath.ScaleIntDown(value, multiplier), Is.EqualTo(expected));
     }
 
     [Test]
