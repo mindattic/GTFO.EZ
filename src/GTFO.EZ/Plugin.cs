@@ -69,6 +69,9 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> CFoamTripmineSpawnWeightMultiplier = null!;
     internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
 
+    // GE-T10 spike - see Patches/TerminalPingPatch.cs. Diagnostic only; off by default.
+    internal static ConfigEntry<bool> ExperimentalGlobalTerminalPing = null!;
+
     // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
     internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
     internal static ConfigEntry<float> DisinfectionResourceMultiplier = null!;
@@ -661,5 +664,11 @@ public class Plugin : BasePlugin
 
         SentryShotDelayTagMultiplier = Config.Bind("Sentries", "Tagged-Target Shot Delay Multiplier", 1.0f,
             "Multiplies the shot-delay multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        ExperimentalGlobalTerminalPing = Config.Bind("Experimental", "Global Terminal Ping (SPIKE)", false,
+            "GE-T10 spike: logs every terminal command and attempts to PING any item level-wide, not just " +
+            "same-zone ones. Off by default - a prior attempt at this broke the terminal in play. This version " +
+            "never skips the terminal's own command handling and catches its own exceptions, but it's still " +
+            "unverified in play - enable only to help diagnose LogOutput.log, not for normal use.");
     }
 }
