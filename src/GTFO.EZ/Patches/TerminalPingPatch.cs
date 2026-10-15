@@ -19,9 +19,23 @@ namespace GTFO.EZ.Patches;
 /// "skipping EvaluateInput breaks interpreter state" can't apply here), and it catches every
 /// exception instead of letting one escape the prefix (Harmony does not swallow prefix exceptions,
 /// so an unhandled one here would propagate up through EvaluateInput's own call site and could well
-/// be what "broke the terminal" - the original method would simply never run). What's left
-/// un-ruled-out is "wrong key format" - this logs the raw input and the parsed key on every
-/// attempt specifically so that can be confirmed or ruled out from LogOutput.log.
+/// be what "broke the terminal" - the original method would simply never run). "Wrong key format"
+/// was also ruled in as a real bug (not the root cause, but a confirmed defect in this spike's own
+/// parsing) and fixed: it used to mistake "PING KEY -t" for an unknown-key-format input.
+///
+/// A fourth hypothesis, found by decompiling the game's IL2CPP interop stubs (Modules-ASM.dll) with
+/// ilspycmd rather than by play-testing: LG_ComputerTerminalCommandInterpreter has its own *private*
+/// `int Ping(string, string)`, plus GetPingStatus/GetDefaultDetails/TryGetTerminalInterface(key,
+/// eDimensionIndex, out item)/OnGotListedCallback helpers. Vanilla's real PING path almost certainly
+/// does eligibility/listed-state bookkeeping through those before (or instead of) touching
+/// PlayPing()/AttemptSetLocatorBeacon/AttemptSetTerminalPing directly - the three raw calls this
+/// spike (and the original broken attempt) make skip all of that. That bookkeeping gap, not a
+/// networking/RPC one, is the leading suspect: GuiManager separately exposes a distinctly-named
+/// SpawnSyncedNavMarker, implying these two calls are intentionally local-only rather than
+/// RPC-gated, so a replication precondition is unlikely. Interop stubs are native trampolines with
+/// no recoverable IL, so this can't be confirmed further by static analysis - the next step for
+/// whoever picks this back up is reflecting into the private Ping(key, dimensionIndex) overload (or
+/// TryGetTerminalInterface) instead of reimplementing it, then verifying in play.
 ///
 /// Off by default. Enabling it never changes what EvaluateInput itself does - it only observes the
 /// input and best-effort pings alongside it. Needs an actual in-game PING attempt to find out
