@@ -185,12 +185,23 @@ internal static class GameDataInit_Initialize_Patch
             // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
             // an item's weight retunes the odds between items rather than the total amount of
             // loot (that's the SpawnsPerZone scale above). Both glow stick colors share one entry.
+            var totalWeight = 0f;
             foreach (var entry in block.SpawnData)
             {
                 if (ConsumableWeightMultipliers.TryGetValue(entry.ItemID, out var getMultiplier))
                 {
                     entry.Weight *= getMultiplier();
                 }
+                totalWeight += entry.Weight;
+            }
+
+            // Vanilla has 17 tables made only of items this mod disables by default (e.g.
+            // "Small_C-foam" is C-Foam grenades + tripmines). Left as an all-zero lottery, what the
+            // game draws is undefined - possibly a disabled item anyway - so a table with nothing
+            // left to give spawns nothing, which is what "disabled" means.
+            if (block.SpawnData.Count > 0 && totalWeight <= 0f)
+            {
+                block.SpawnsPerZone = 0;
             }
         }
 

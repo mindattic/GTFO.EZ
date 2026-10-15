@@ -18,6 +18,14 @@
   is the Malatack LX Assault Rifle), both in the config file's descriptions and in a new Weapon
   column on the README's weapon table. Section names are unchanged, so existing settings carry
   over. 16 of the 49 fire-mode slots turned out to have no player weapon at all - now labelled.
+- **Bug fix:** each mod update re-ran every past default-migration, not just the new ones, so if
+  you'd deliberately set something back after an earlier update (say, re-enabled Lock Melters, or
+  put fall damage back to vanilla) the next update quietly reset it again. Each migration now runs
+  once per install and never again.
+- **Bug fix:** 17 of the game's loot tables contain *only* items this mod disables (e.g. the
+  "C-foam" tables are just C-Foam grenades and tripmines), which left them as a loot lottery with
+  nothing to win - with no telling what the game draws from that. Those tables now just spawn
+  nothing, which is what disabling those items means.
 
 ## v10
 

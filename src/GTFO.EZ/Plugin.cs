@@ -188,41 +188,39 @@ public class Plugin : BasePlugin
         Logger.LogInfo($"{NAME} v{VERSION} loaded.");
     }
 
-    // BepInEx preserves whatever value already exists in an upgrader's .cfg, so any time this mod
-    // changes a config entry's default, upgraders stay stuck on the OLD default forever instead of
-    // ever picking up the new one - a full audit of every default across every released version
-    // (git history of this file) turned up 11 entries this happened to, not just the Loot ones
-    // originally reported: Health Regen Rate (5.0->0.5) and Cap (2.0->0.5) in v8, Fall Damage
-    // (1.0->0.1) and Fall Damage Min Height (2.0->1.0) in v5, Flashlight Angle/Intensity
-    // (1.25->1.0) in v2, Revive Duration (1.0->0.33) in v8, and Lock Melter/C-Foam Grenade
-    // (1.0->0.0) in v8 plus Explosive Trip Mine/C-Foam Tripmine (1.0->0.0) in v9. (Glow Stick was
-    // checked too but was never affected - it was introduced already disabled, with no earlier
-    // shipped default to get stuck on.) Health Regen Cap's 0.5 (10%) from v8 turned out to have no
-    // stated rationale anywhere (unlike the other changes here) and didn't match how the mod had
-    // actually been played, so v10 reverts it back to the original 2.0 (40%) target from before
-    // v8 - also migrated, so the same stale-default bug doesn't leave anyone stuck on the
-    // short-lived, undocumented 0.5 either. One-time nudge for existing installs each time this
-    // list grows, gated so it never re-applies once an install is caught up; a player who
-    // deliberately set one of these back to its old value afterward keeps that choice indistinguishably - same
-    // inherent trade-off for all of them.
+    // BepInEx keeps whatever value is already in an upgrader's .cfg, so when this mod changes a
+    // default, existing installs never pick up the new one. Each entry here nudges a setting still
+    // sitting on its old default over to the new one - and runs only for installs that haven't yet
+    // reached the migration version that introduced it. Re-running the whole list on every bump
+    // would undo a player who deliberately set something back after an earlier migration (v10 and
+    // v11 both did exactly that). Health Regen Cap's v8 drop to 0.5 had no stated rationale and
+    // never matched how the mod was played, so v11 restores 2.0 and migrates anyone moved onto 0.5.
+    // Glow Stick isn't listed: it was introduced already disabled, with no older default to strand.
+    private static readonly (int Version, Func<ConfigEntry<float>> Entry, float OldDefault)[] DefaultMigrations =
+    {
+        (1, () => CFoamGrenadeSpawnWeightMultiplier, 1.0f),     // v9
+        (1, () => LockMelterSpawnWeightMultiplier, 1.0f),
+        (2, () => ExplosiveTripMineSpawnWeightMultiplier, 1.0f), // v9
+        (2, () => CFoamTripmineSpawnWeightMultiplier, 1.0f),
+        (3, () => HealthRegenRateMultiplier, 5.0f),              // v10
+        (3, () => FallDamageMultiplier, 1.0f),
+        (3, () => FallDamageMinHeightMultiplier, 2.0f),
+        (3, () => FlashlightAngleMultiplier, 1.25f),
+        (3, () => FlashlightIntensityMultiplier, 1.25f),
+        (3, () => ReviveDurationMultiplier, 1.0f),
+        (4, () => HealthRegenCapMultiplier, 0.5f),               // v11
+    };
+
     private static void ApplyConfigDefaultMigrations()
     {
-        const int currentMigrationVersion = 4;
-        if (ConfigMigrationVersion.Value < currentMigrationVersion)
+        var reached = ConfigMigrationVersion.Value;
+        var latest = reached;
+        foreach (var (version, entry, oldDefault) in DefaultMigrations)
         {
-            MigrateStaleDefault(HealthRegenRateMultiplier, 5.0f);
-            MigrateStaleDefault(HealthRegenCapMultiplier, 0.5f); // v8's short-lived, undocumented value; reverted in v10
-            MigrateStaleDefault(FallDamageMultiplier, 1.0f);
-            MigrateStaleDefault(FallDamageMinHeightMultiplier, 2.0f);
-            MigrateStaleDefault(FlashlightAngleMultiplier, 1.25f);
-            MigrateStaleDefault(FlashlightIntensityMultiplier, 1.25f);
-            MigrateStaleDefault(ReviveDurationMultiplier, 1.0f);
-            MigrateStaleDefault(CFoamGrenadeSpawnWeightMultiplier, 1.0f);
-            MigrateStaleDefault(LockMelterSpawnWeightMultiplier, 1.0f);
-            MigrateStaleDefault(ExplosiveTripMineSpawnWeightMultiplier, 1.0f);
-            MigrateStaleDefault(CFoamTripmineSpawnWeightMultiplier, 1.0f);
+            if (reached < version) MigrateStaleDefault(entry(), oldDefault);
+            latest = Math.Max(latest, version);
         }
-        ConfigMigrationVersion.Value = currentMigrationVersion;
+        ConfigMigrationVersion.Value = latest;
     }
 
     // Reads the new default straight off the entry itself (ConfigEntryBase.DefaultValue) rather

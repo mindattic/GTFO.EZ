@@ -55,10 +55,18 @@ internal static class TerminalPing_EvaluateInput_Patch
 
     private static void HandlePing(string? inputString)
     {
-        var trimmed = inputString?.Trim() ?? string.Empty;
-        if (!trimmed.StartsWith(PingCommand, StringComparison.OrdinalIgnoreCase)) return;
+        var tokens = (inputString ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (tokens.Length == 0 || !string.Equals(tokens[0], PingCommand, StringComparison.OrdinalIgnoreCase)) return;
 
-        var key = trimmed.Length > PingCommand.Length ? trimmed[PingCommand.Length..].Trim() : string.Empty;
+        // Vanilla PING takes a "-t" (repeat) flag, before or after the key - skip flags so
+        // "PING KEY_123 -t" looks up KEY_123 rather than misreporting a key-format problem.
+        var key = string.Empty;
+        for (var i = 1; i < tokens.Length; i++)
+        {
+            if (tokens[i].StartsWith("-")) continue;
+            key = tokens[i];
+            break;
+        }
         if (key.Length == 0)
         {
             Plugin.Logger.LogInfo($"{LogPrefix} PING with no key argument, nothing to look up.");
@@ -81,7 +89,8 @@ internal static class TerminalPing_EvaluateInput_Patch
 
         Plugin.Logger.LogInfo($"{LogPrefix} parsed key \"{key}\" from input, {itemsByKey.Count} known terminal item keys.");
 
-        if (!itemsByKey.TryGetValue(key, out var item))
+        // Registry keys are uppercase; fall back so typed lowercase isn't misread as a format bug.
+        if (!itemsByKey.TryGetValue(key, out var item) && !itemsByKey.TryGetValue(key.ToUpperInvariant(), out item))
         {
             var sample = new StringBuilder();
             var count = 0;
