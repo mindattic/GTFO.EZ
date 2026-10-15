@@ -1,5 +1,18 @@
 # Changelog
 
+## v9
+
+- Explosive Trip Mine and C-Foam Tripmine spawn odds now default to disabled (0), joining Glow
+  Stick, Lock Melter, and C-Foam Grenade - vanilla frequency was judged too cluttered, same call as
+  the others.
+- **Bug fix:** Glow Stick (v5), and Lock Melter/C-Foam Grenade (v8), were meant to default to
+  disabled (0) spawn odds, but BepInEx preserves whatever value already exists in an upgrader's
+  `.cfg` file - so anyone who'd installed before the relevant version stayed stuck at the old
+  vanilla (1.0) default forever and kept seeing them at full frequency. Added a one-time migration
+  that nudges those settings (now including the two above) to their intended default on first
+  launch of this version, gated so it never re-applies - if you'd deliberately re-enabled one of
+  them since, your choice is kept.
+
 ## v8
 
 - Added a Vanilla column to every remaining table that was missing one (consumable spawn odds,

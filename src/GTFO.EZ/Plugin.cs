@@ -13,7 +13,7 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "8.0.0";
+    public const string VERSION = "9.0.0";
 
     // Shared between the rundown-select header and the in-level warden-intel message so the two
     // in-game surfaces never drift apart the way they did before this was pulled out. Major
@@ -21,6 +21,10 @@ public class Plugin : BasePlugin
     internal static readonly string EasterEggMessage = $"GTFO.EZ v{VERSION.Split('.')[0]} Active - Goo goo. Gah gah.";
 
     internal static ManualLogSource Logger = null!;
+
+    // Bookkeeping only, not a gameplay stat - lets ApplyLootDefaultMigrations run its one-time
+    // fixup below exactly once per install rather than every launch.
+    internal static ConfigEntry<int> ConfigMigrationVersion = null!;
 
     internal static ConfigEntry<float> HealthMultiplier = null!;
     internal static ConfigEntry<float> HealthRegenRateMultiplier = null!;
@@ -285,10 +289,37 @@ public class Plugin : BasePlugin
     {
         Logger = Log;
         BindConfig();
+        ApplyLootDefaultMigrations();
 
         new Harmony(GUID).PatchAll();
 
         Logger.LogInfo($"{NAME} v{VERSION} loaded.");
+    }
+
+    // v5 defaulted Glow Stick to disabled, v8 did the same for Lock Melter/C-Foam Grenade, and v9
+    // did the same for Explosive Trip Mine/C-Foam Tripmine - but BepInEx preserves whatever value
+    // already exists in an upgrader's .cfg, so those keys stayed stuck at their old vanilla (1.0)
+    // default forever instead of ever picking up the new one. This is exactly why disabled items
+    // kept showing up for anyone who'd installed before the relevant version. One-time nudge for
+    // existing installs each time this list grows, gated so it never re-applies once an install is
+    // caught up; a player who deliberately re-enables one of these afterward keeps that choice.
+    private static void ApplyLootDefaultMigrations()
+    {
+        const int currentMigrationVersion = 2;
+        if (ConfigMigrationVersion.Value < currentMigrationVersion)
+        {
+            ResetIfAtOldDefault(GlowstickSpawnWeightMultiplier);
+            ResetIfAtOldDefault(CFoamGrenadeSpawnWeightMultiplier);
+            ResetIfAtOldDefault(LockMelterSpawnWeightMultiplier);
+            ResetIfAtOldDefault(ExplosiveTripMineSpawnWeightMultiplier);
+            ResetIfAtOldDefault(CFoamTripmineSpawnWeightMultiplier);
+        }
+        ConfigMigrationVersion.Value = currentMigrationVersion;
+    }
+
+    private static void ResetIfAtOldDefault(ConfigEntry<float> entry)
+    {
+        if (entry.Value == 1.0f) entry.Value = 0.0f;
     }
 
     // Defaults follow community-consensus values rather than naive "bigger number" guesses:
@@ -298,6 +329,9 @@ public class Plugin : BasePlugin
     // against a 20% cap), so a single shared multiplier can't hit both target numbers at once.
     private void BindConfig()
     {
+        ConfigMigrationVersion = Config.Bind("Internal", "Config Migration Version", 0,
+            "Internal bookkeeping - do not edit. Tracks which one-time default migrations have already run.");
+
         HealthMultiplier = Config.Bind("Health", "Max Health Multiplier", 2.0f,
             "Multiplies player max health. Vanilla 25 -> 50 at the default 2.0.");
 
@@ -412,8 +446,8 @@ public class Plugin : BasePlugin
         LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
-        ExplosiveTripMineSpawnWeightMultiplier = Config.Bind("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 1.0f,
-            "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+        ExplosiveTripMineSpawnWeightMultiplier = Config.Bind("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 0.0f,
+            "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
         MeleeBuffSyringeSpawnWeightMultiplier = Config.Bind("Loot", "Melee Buff Syringe Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a IIx (melee buff) Syringe is picked when a consumable spawns. Left at vanilla (1.0) by default.");
@@ -421,8 +455,8 @@ public class Plugin : BasePlugin
         HealthSyringeSpawnWeightMultiplier = Config.Bind("Loot", "Health Syringe Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a I2-LP (health) Syringe is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
-        CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 1.0f,
-            "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Left at vanilla (1.0) by default.");
+        CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 0.0f,
+            "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
 
         BotsAlwaysEquipSentryGun = Config.Bind("Bots", "Bots Always Equip Sentry Gun", false,
             "Forces any bot's Tool slot to the basic Sentry Gun the moment it gets gear, whether it's " +

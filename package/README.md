@@ -29,6 +29,8 @@ config is applied; `-` means left at vanilla:
 | Glow stick spawn odds (both colors) | enabled | disabled (-100%) |
 | Lock Melter spawn odds | varies by zone | disabled (-100%) |
 | C-Foam Grenade spawn odds | varies by zone | disabled (-100%) |
+| Explosive Trip Mine spawn odds | varies by zone | disabled (-100%) |
+| C-Foam Tripmine spawn odds | varies by zone | disabled (-100%) |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog density (visibility-limiting fog) | varies by zone | -90% |
 
@@ -116,17 +118,16 @@ detection/glow sticks, above) was already settled. It's real, functional, and fu
 but less curated and less load-bearing for the mod's "easy mode" identity than the stats above —
 expect it to matter more for players who want to go deeper than the defaults, not for a first install.
 
-**Consumable spawn odds** — Glow Stick, Lock Melter, and C-Foam Grenade are covered above (all
-disabled by default); these other items share the same weighted lottery but are all left at vanilla:
+**Consumable spawn odds** — Glow Stick, Lock Melter, C-Foam Grenade, Explosive Trip Mine, and
+C-Foam Tripmine are covered above (all disabled by default); these other items share the same
+weighted lottery but are all left at vanilla:
 
 | Stat | Vanilla | Default |
 |---|---|---|
 | Long Range Flashlight spawn odds | varies by zone | - |
 | Fog Repeller spawn odds | varies by zone | - |
-| Explosive Trip Mine spawn odds | varies by zone | - |
 | Melee Buff (IIx) Syringe spawn odds | varies by zone | - |
 | Health (I2-LP) Syringe spawn odds | varies by zone | - |
-| C-Foam Tripmine spawn odds | varies by zone | - |
 
 These spawn-odds stats (glow stick included) all retune the same weighted lottery that decides
 *which* consumable fills a spawn slot — they don't change *how many* consumables spawn (that's
@@ -435,6 +436,19 @@ others' prior work:
   patches, reverse-engineering datablock fields, and writing/auditing this documentation.
 
 ## Changelog
+
+### v9
+
+- Explosive Trip Mine and C-Foam Tripmine spawn odds now default to disabled (0), joining Glow
+  Stick, Lock Melter, and C-Foam Grenade - vanilla frequency was judged too cluttered, same call as
+  the others.
+- **Bug fix:** Glow Stick (v5), and Lock Melter/C-Foam Grenade (v8), were meant to default to
+  disabled (0) spawn odds, but BepInEx preserves whatever value already exists in an upgrader's
+  `.cfg` file - so anyone who'd installed before the relevant version stayed stuck at the old
+  vanilla (1.0) default forever and kept seeing them at full frequency. Added a one-time migration
+  that nudges those settings (now including the two above) to their intended default on first
+  launch of this version, gated so it never re-applies - if you'd deliberately re-enabled one of
+  them since, your choice is kept.
 
 ### v8
 
