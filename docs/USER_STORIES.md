@@ -4,7 +4,7 @@ project: GTFO.EZ
 code: GE
 layer: stories
 status: living
-updated: 2026-10-12
+updated: 2026-10-15
 ---
 
 # GTFO.EZ — User Stories
