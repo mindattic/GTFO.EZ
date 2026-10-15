@@ -185,34 +185,37 @@ internal static class GameDataInit_Initialize_Patch
             // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
             // an item's weight retunes the odds between items rather than the total amount of
             // loot (that's the SpawnsPerZone scale above). Both glow stick colors share one entry.
+            //
+            // A disabled item (multiplier 0) doesn't just drop out: its slot becomes a syringe at
+            // the item's original odds, alternating I2-LP (health) and IIx (melee) per table.
+            // Dropping out alone hands its share to whatever's left - in 23 vanilla tables that's
+            // only the Long Range Flashlight, and 25 tables would have nothing left at all (an
+            // all-zero lottery with undefined draws). Med/ammo/tool packs would be the obvious
+            // pick, but those items carry no contents of their own (the per-zone resource budget
+            // fills them) and would likely spawn empty from here; syringes carry their own.
+            var nextIsHealthSyringe = true;
             var totalWeight = 0f;
             foreach (var entry in block.SpawnData)
             {
                 if (ConsumableWeightMultipliers.TryGetValue(entry.ItemID, out var getMultiplier))
                 {
-                    entry.Weight *= getMultiplier();
+                    var multiplier = getMultiplier();
+                    if (multiplier <= 0f)
+                    {
+                        entry.ItemID = nextIsHealthSyringe ? HealthSyringeItemId : MeleeSyringeItemId;
+                        nextIsHealthSyringe = !nextIsHealthSyringe;
+                        multiplier = ConsumableWeightMultipliers[entry.ItemID]();
+                    }
+                    entry.Weight *= multiplier;
                 }
                 totalWeight += entry.Weight;
             }
 
-            // Vanilla has 25 tables made only of items this mod disables by default (e.g.
-            // "Small_C-foam" is C-Foam grenades + tripmines, "OnlyFogReps" is fog repellers). Left
-            // as an all-zero lottery, what the game draws is undefined - possibly a disabled item
-            // anyway - so restock them with health syringes. Med/ammo/tool packs would be the
-            // obvious pick, but those items carry no contents of their own (the per-zone resource
-            // budget fills them) and would likely spawn empty from here; syringes carry their own.
+            // Only reachable if the syringes are disabled too - spawn nothing rather than run an
+            // all-zero lottery.
             if (block.SpawnData.Count > 0 && totalWeight <= 0f)
             {
-                var syringeWeight = Plugin.HealthSyringeSpawnWeightMultiplier.Value;
-                if (syringeWeight > 0f)
-                {
-                    block.SpawnData[0].ItemID = HealthSyringeItemId;
-                    block.SpawnData[0].Weight = syringeWeight;
-                }
-                else
-                {
-                    block.SpawnsPerZone = 0;
-                }
+                block.SpawnsPerZone = 0;
             }
         }
 
@@ -224,6 +227,7 @@ internal static class GameDataInit_Initialize_Patch
     }
 
     private const uint HealthSyringeItemId = 140;
+    private const uint MeleeSyringeItemId = 142;
 
     // ItemIDs confirmed by logging GameDataBlockBase<ItemDataBlock> entries referenced from
     // ConsumableDistributionDataBlock.SpawnData at runtime - not documented anywhere official.

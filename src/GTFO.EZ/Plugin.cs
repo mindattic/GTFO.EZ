@@ -348,19 +348,19 @@ public class Plugin : BasePlugin
             "Multiplies how likely a Long Range Flashlight is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
         GlowstickSpawnWeightMultiplier = Config.Bind("Loot", "Glow Stick Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely a glow stick (either color) is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+            "Multiplies how likely a glow stick (either color) is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");
 
         CFoamGrenadeSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Grenade Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+            "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");
 
         FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Defaults to 0 (disabled) - fog is already cut 90%, so other consumables fill those slots.");
+            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Defaults to 0 (disabled) - fog is already cut 90%, so a health or melee syringe takes its slot.");
 
         LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+            "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");
 
         ExplosiveTripMineSpawnWeightMultiplier = Config.Bind("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+            "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");
 
         MeleeBuffSyringeSpawnWeightMultiplier = Config.Bind("Loot", "Melee Buff Syringe Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a IIx (melee buff) Syringe is picked when a consumable spawns. Left at vanilla (1.0) by default.");
@@ -369,7 +369,7 @@ public class Plugin : BasePlugin
             "Multiplies how likely a I2-LP (health) Syringe is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
         CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Defaults to 0 (disabled) - other consumables fill those slots.");
+            "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");
 
         ControlDefaultsApplied = Config.Bind("Controls", "Control Defaults Applied", false,
             "On first launch the mod turns on comms-menu toggle (no holding Q), sprint toggle, aim toggle and stand-when-jumping in the game's own settings, then sets this to true and never touches them again. Set back to false to reapply.");

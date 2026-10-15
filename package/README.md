@@ -145,7 +145,8 @@ same weighted lottery but are all left at vanilla:
 These spawn-odds stats (glow stick included) all retune the same weighted lottery that decides
 *which* consumable fills a spawn slot — they don't change *how many* consumables spawn (that's
 the `Consumable Spawn Multiplier` above). Setting one to 0 removes that item from the loot pool
-entirely; the slots it would have used go to whatever's left in the lottery instead.
+and turns its slot into a syringe at the same odds, alternating I2-LP (health) and IIx (melee
+buff) - so a disabled item's share becomes something useful rather than more of whatever's left.
 
 **Expedition balance** — `ExpeditionBalanceDataBlock` is the game's own per-difficulty-tier budget
 table (one entry per tier: Easy/Normal/Hard/..., scaled uniformly). This is by far the largest
@@ -485,12 +486,12 @@ others' prior work:
 - On first launch, turns on four of the game's own control options: the comms menu toggles open/
   closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
   Applied once only - change any of them back in the game's settings and they stay changed.
-- **Bug fix:** 25 of the game's loot tables contain *only* items this mod disables (e.g. the
-  "C-foam" tables are just C-Foam grenades and tripmines, "OnlyFogReps" is just fog repellers),
-  which left them as a loot lottery with nothing to win - with no telling what the game draws from
-  that. Those tables now hand out I2-LP health syringes instead. (Med/ammo/tool packs aren't used
-  here: those get filled by the level's resource budget, and would likely spawn empty from a
-  consumable table.)
+- Disabled consumables now turn into syringes instead of just vanishing: each disabled item's loot
+  slot becomes an I2-LP (health) or IIx (melee buff) syringe at the same odds, alternating within
+  each loot table. Previously their share went to whatever was left - so 23 tables, including
+  every common "Baseline" zone, dropped nothing but Long Range Flashlights, and 25 tables had
+  nothing left to drop at all. Med/ammo/tool packs aren't used here: those get filled by the
+  level's resource budget and would likely spawn empty from a consumable table.
 
 ### v10
 
