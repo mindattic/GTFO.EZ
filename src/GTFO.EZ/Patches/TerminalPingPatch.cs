@@ -25,17 +25,30 @@ namespace GTFO.EZ.Patches;
 ///
 /// A fourth hypothesis, found by decompiling the game's IL2CPP interop stubs (Modules-ASM.dll) with
 /// ilspycmd rather than by play-testing: LG_ComputerTerminalCommandInterpreter has its own *private*
-/// `int Ping(string, string)`, plus GetPingStatus/GetDefaultDetails/TryGetTerminalInterface(key,
-/// eDimensionIndex, out item)/OnGotListedCallback helpers. Vanilla's real PING path almost certainly
-/// does eligibility/listed-state bookkeeping through those before (or instead of) touching
-/// PlayPing()/AttemptSetLocatorBeacon/AttemptSetTerminalPing directly - the three raw calls this
-/// spike (and the original broken attempt) make skip all of that. That bookkeeping gap, not a
-/// networking/RPC one, is the leading suspect: GuiManager separately exposes a distinctly-named
-/// SpawnSyncedNavMarker, implying these two calls are intentionally local-only rather than
-/// RPC-gated, so a replication precondition is unlikely. Interop stubs are native trampolines with
-/// no recoverable IL, so this can't be confirmed further by static analysis - the next step for
-/// whoever picks this back up is reflecting into the private Ping(key, dimensionIndex) overload (or
-/// TryGetTerminalInterface) instead of reimplementing it, then verifying in play.
+/// `int Ping(string, string)`, plus private GetPingStatus(iTerminalItem)/GetDefaultDetails(item,
+/// beaconStatus) helpers. (A later pass of this same decompile corrected two names that had been
+/// misattributed to the interpreter: TryGetTerminalInterface(key-or-id, eDimensionIndex, out item) is
+/// `public static` on LG_LevelInteractionManager, not a private interpreter helper, and
+/// OnGotListedCallback is a public `Il2CppSystem.Action` property on iTerminalItem itself (backed by
+/// LG_GenericTerminalItem) - both already reachable with no reflection needed.) Vanilla's real PING
+/// path almost certainly does eligibility/listed-state bookkeeping through Ping's private helpers
+/// before (or instead of) touching PlayPing()/AttemptSetLocatorBeacon/AttemptSetTerminalPing directly
+/// - the three raw calls this spike (and the original broken attempt) make skip all of that. That
+/// bookkeeping gap, not a networking/RPC one, is the leading suspect: GuiManager separately exposes a
+/// distinctly-named SpawnSyncedNavMarker, implying these two calls are intentionally local-only
+/// rather than RPC-gated, so a replication precondition is unlikely.
+///
+/// Ping's signature - `(string, string)`, not `(string, eDimensionIndex)` as first guessed - lines up
+/// with vanilla's own "PING key [-t]" parsing, meaning this private method is almost certainly the
+/// exact entry point EvaluateInput's own command dispatch already reaches for a normal, same-zone
+/// PING. That cuts the other way for "reflect into it instead" as a next step: Ping's body is (
+/// reconfirmed on this later pass) a pure il2cpp_runtime_invoke trampoline with no recoverable
+/// managed IL, so whether its native implementation enforces the same-zone restriction internally -
+/// the exact thing a level-wide ping needs to bypass - can't be read off decompiled code, and
+/// reflecting into it would most likely just reproduce ordinary same-zone PING rather than a
+/// level-wide one. Interop stubs being native trampolines means this can't be narrowed further by
+/// static analysis alone - the open bookkeeping-gap hypothesis still needs an actual in-game PING
+/// attempt to confirm or rule out, which no agent session so far has had a way to perform.
 ///
 /// Off by default. Enabling it never changes what EvaluateInput itself does - it only observes the
 /// input and best-effort pings alongside it. Needs an actual in-game PING attempt to find out
