@@ -32,16 +32,21 @@ internal static class SyringeAddHealth_Patch
     [HarmonyPrefix]
     private static void Prefix(Dam_SyncedDamageBase __instance, ref float addHealth)
     {
-        if (!SyringeApply_MoveNext_Patch.ApplyingHealthSyringe) return;
+        if (!SyringeApply_MoveNext_Patch.ApplyingHealthSyringe)
+        {
+            SyringeLifeBuff.OnOtherHeal(__instance, addHealth);
+            return;
+        }
 
         var fraction = Plugin.HealthSyringeHealFraction.Value;
         if (fraction <= 0f) return;
 
         var vanillaAmount = addHealth;
-        addHealth = __instance.HealthMax * fraction;
-        Plugin.Logger.LogInfo($"I2-LP syringe heal: {vanillaAmount:0.##} -> {addHealth:0.##} HP (max {__instance.HealthMax:0.##}).");
+        var maxHealth = SyringeLifeBuff.OriginalMaxHealth(__instance);
+        addHealth = maxHealth * fraction;
+        Plugin.Logger.LogInfo($"I2-LP syringe heal: {vanillaAmount:0.##} -> {addHealth:0.##} HP (max {maxHealth:0.##}).");
 
-        SyringeLifeBuff.Grant(__instance, Math.Min(addHealth, __instance.HealthMax - __instance.Health));
+        SyringeLifeBuff.Grant(__instance, addHealth);
     }
 }
 
@@ -58,79 +63,141 @@ internal static class SyringeLifeBuff_Tick_Patch
     private static void Setup_Postfix() => SyringeLifeBuff.Clear();
 }
 
-// Turns the I2-LP's heal into temporary health: whatever it actually added drains back out
-// linearly over the configured duration. Damage taken meanwhile is paid out of the buff first,
-// so less is left to drain, and the drain itself never takes the player below MinHealth.
+// Turns the I2-LP into a temporary life buff: the health you had when injecting is the baseline,
+// the syringe adds on top of it (overheal past max allowed), and everything above the baseline
+// drains back down at a fixed rate. Falling below the baseline cancels the buff on the spot.
 internal static class SyringeLifeBuff
 {
     // Health is set through the synced SendSetHealth, so it's stepped once a second rather than
     // every frame to keep network traffic down.
     private const float TickSeconds = 1f;
-    private const float MinHealth = 1f;
+    private const float Epsilon = 0.01f;
+
+    // AddHealth caps at max natively, so overheal is pushed with SendSetHealth afterwards. If the
+    // game caps that too, max health is raised for the buff's duration; if even that doesn't
+    // stick, the buff carries on without overheal.
+    private const int OverhealAttempts = 2;
 
     private static IntPtr _owner;
-    private static float _remaining;
-    private static float _drainPerSecond;
-    private static float _lastHealth = float.NaN;
+    private static bool _active;
+    private static float _baseline;
+    private static float _target;
+    private static float _originalMax;
+    private static bool _maxRaised;
+    private static int _overhealAttempt;
+    private static float _lastSent = float.NaN;
     private static float _untilTick;
 
-    internal static void Grant(Dam_SyncedDamageBase target, float gained)
-    {
-        var duration = Plugin.HealthSyringeBuffDurationSeconds.Value;
-        if (duration <= 0f || gained <= 0f) return;
+    // Set when a heal is about to land: the baseline has already moved up, health hasn't yet, and
+    // that gap mustn't be read as damage.
+    private static bool _cancelGrace;
 
-        if (_owner != target.Pointer) Clear();
-        _owner = target.Pointer;
-        _remaining += gained;
-        _drainPerSecond = _remaining / duration;
-        // AddHealth hasn't landed yet (and may round-trip the network on a client), so the next
-        // tick re-reads health rather than mistaking the pre-heal value for damage taken.
-        _lastHealth = float.NaN;
+    internal static float OriginalMaxHealth(Dam_SyncedDamageBase target) =>
+        _active && _maxRaised && target.Pointer == _owner ? _originalMax : target.HealthMax;
+
+    internal static void Grant(Dam_SyncedDamageBase target, float amount)
+    {
+        if (Plugin.HealthSyringeBuffDrainPercentPerSecond.Value <= 0f) return;
+
+        if (!_active || _owner != target.Pointer)
+        {
+            Clear();
+            _owner = target.Pointer;
+            _active = true;
+            _baseline = target.Health;
+            _originalMax = target.HealthMax;
+        }
+
+        _target = CurrentHealth(target.Health) + amount;
+        _overhealAttempt = 0;
+        _lastSent = float.NaN;
         _untilTick = TickSeconds;
-        Plugin.Logger.LogInfo($"I2-LP life buff: {gained:0.##} HP draining over {duration:0.#}s ({_remaining:0.##} HP buffed in total).");
+        _cancelGrace = true;
+        Plugin.Logger.LogInfo($"I2-LP life buff: {_baseline:0.##} HP baseline, overhealing to {_target:0.##} HP (max {_originalMax:0.##}).");
+    }
+
+    internal static void OnOtherHeal(Dam_SyncedDamageBase target, float amount)
+    {
+        if (!_active || target.Pointer != _owner || amount <= 0f) return;
+
+        _baseline = Math.Min(_originalMax, _baseline + amount);
+        _lastSent = float.NaN;
+        _cancelGrace = true;
+        Plugin.Logger.LogInfo($"I2-LP life buff: heal of {amount:0.##} HP kept, baseline now {_baseline:0.##} HP.");
     }
 
     internal static void Clear()
     {
         _owner = IntPtr.Zero;
-        _remaining = 0f;
-        _lastHealth = float.NaN;
+        _active = false;
+        _maxRaised = false;
+        _lastSent = float.NaN;
+        _cancelGrace = false;
     }
 
     internal static void Tick(Dam_PlayerDamageLocal local)
     {
-        if (_remaining <= 0f || local.Pointer != _owner) return;
+        if (!_active || local.Pointer != _owner) return;
+
+        if (!_cancelGrace && local.Health < _baseline - Epsilon)
+        {
+            End(local, "health fell below the pre-syringe level, cancelled");
+            return;
+        }
 
         _untilTick -= Time.deltaTime;
         if (_untilTick > 0f) return;
         var elapsed = TickSeconds - _untilTick;
         _untilTick = TickSeconds;
+        _cancelGrace = false;
 
         var health = local.Health;
-        if (health <= 0f)
+        if (health < _baseline - Epsilon)
         {
-            Clear();
+            End(local, "health fell below the pre-syringe level, cancelled");
             return;
         }
 
-        if (!float.IsNaN(_lastHealth) && health < _lastHealth) _remaining -= _lastHealth - health;
-        if (_remaining <= 0f)
+        if (_overhealAttempt <= OverhealAttempts && health < _target - Epsilon)
         {
-            Plugin.Logger.LogInfo("I2-LP life buff absorbed by damage.");
-            Clear();
-            return;
+            if (_overhealAttempt < OverhealAttempts)
+            {
+                if (_overhealAttempt == 1 && _target > local.HealthMax + Epsilon)
+                {
+                    local.HealthMax = _target;
+                    _maxRaised = true;
+                    Plugin.Logger.LogInfo($"I2-LP life buff: health capped at {health:0.##}, raising max to {_target:0.##} for the buff.");
+                }
+                local.SendSetHealth(_target);
+                _lastSent = _target;
+                _overhealAttempt++;
+                return;
+            }
+            Plugin.Logger.LogWarning($"I2-LP life buff: overheal didn't stick (health {health:0.##}, wanted {_target:0.##}), draining from here.");
         }
+        _overhealAttempt = OverhealAttempts + 1;
 
-        var drain = Math.Min(_remaining, _drainPerSecond * elapsed);
-        var newHealth = Math.Max(MinHealth, health - drain);
-        _remaining = newHealth > MinHealth ? _remaining - drain : 0f;
-        if (newHealth < health) local.SendSetHealth(newHealth);
-        _lastHealth = newHealth;
+        var step = _originalMax * Plugin.HealthSyringeBuffDrainPercentPerSecond.Value / 100f * elapsed;
+        var next = Math.Max(_baseline, CurrentHealth(health) - step);
+        if (_maxRaised) local.HealthMax = Math.Max(_originalMax, next);
+        local.SendSetHealth(next);
+        _lastSent = next;
 
-        if (_remaining <= 0f)
+        if (next <= _baseline + Epsilon) End(local, "drained back to the pre-syringe level");
+    }
+
+    // On a client, Health can briefly read the pre-SendSetHealth value; trusting the last value
+    // sent stops a stale read from undoing a drain step.
+    private static float CurrentHealth(float health) => float.IsNaN(_lastSent) ? health : Math.Min(health, _lastSent);
+
+    private static void End(Dam_PlayerDamageLocal local, string reason)
+    {
+        if (_maxRaised)
         {
-            Plugin.Logger.LogInfo("I2-LP life buff ended.");
-            Clear();
+            local.HealthMax = _originalMax;
+            if (local.Health > _originalMax) local.SendSetHealth(_originalMax);
         }
+        Plugin.Logger.LogInfo($"I2-LP life buff ended: {reason}.");
+        Clear();
     }
 }

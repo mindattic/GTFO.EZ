@@ -24,12 +24,13 @@
   once per install and never again.
 - Fog Repeller spawn odds now default to disabled (0), joining the other disabled consumables -
   with fog already cut 90%, they mostly took up loot slots.
-- I2-LP (health) syringes are now a temporary life buff: they instantly restore 50% of max health
-  instead of vanilla's random 5-15%, then that health drains back out evenly over 60 seconds.
-  Damage you take meanwhile comes out of the buff first, the drain never takes you below 1 HP,
-  and a second syringe tops the buff up and restarts the timer. Configurable under Consumables as
-  "I2-LP Syringe Heal Amount" (0 keeps vanilla) and "I2-LP Buff Duration (seconds)" (0 makes the
-  heal permanent).
+- I2-LP (health) syringes are now a temporary life buff: they add 50% of max health (vanilla: a
+  random 5-15%) and can overheal past 100% - inject at 65% and you're at 115%. Everything above
+  the health you had when injecting then drains away at 1% of max health per second. Drop below
+  that pre-syringe health (say, from a hit) and the buff cancels on the spot. A second syringe
+  stacks on top, and a med kit used mid-buff is kept rather than drained. Configurable under
+  Consumables as "I2-LP Syringe Heal Amount" (0 keeps vanilla) and "I2-LP Buff Drain (% of max
+  health per second)" (0 makes it a normal heal capped at max health).
 - On first launch, turns on four of the game's own control options: the comms menu toggles open/
   closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
   Applied once only - change any of them back in the game's settings and they stay changed.
