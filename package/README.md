@@ -21,6 +21,7 @@ config is applied; `-` means left at vanilla:
 | Health regen rate | 0.2/s | 0.1/s (-50%) |
 | Max regenerated health (no med kit) | 20% | 40% (+100%) |
 | I2-LP (health) syringe heal | 5-15% of max health, permanent | +50% of max health (can overheal past 100%), drains back to pre-syringe health at 1%/s |
+| I2-LP (health) syringe name | I2-LP | Stim Pack (terminal key STIM_PACK) |
 | Stamina regen rate while resting in combat | 0.15/s (vs 0.25/s out of combat) | 0.25/s, equalized |
 | Stamina cap while in combat | 90% | 100%, cap removed |
 | Fall damage amount | 2-15 | 0.2-1.5 (-90%) |
@@ -488,6 +489,8 @@ others' prior work:
   stacks on top, and a med kit used mid-buff is kept rather than drained. Configurable under
   Consumables as "I2-LP Syringe Heal Amount" (0 keeps vanilla) and "I2-LP Buff Drain (% of max
   health per second)" (0 makes it a normal heal capped at max health).
+- The I2-LP is renamed "Stim Pack" in game - pickup, inventory and terminal, where its key becomes
+  STIM_PACK_123. Configurable as "I2-LP Display Name" under Consumables; empty keeps the vanilla name.
 - On first launch, turns on four of the game's own control options: the comms menu toggles open/
   closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
   Applied once only - change any of them back in the game's settings and they stay changed.

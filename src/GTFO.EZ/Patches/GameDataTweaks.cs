@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
+using Localization;
 
 namespace GTFO.EZ.Patches;
 
@@ -28,6 +30,7 @@ internal static class GameDataInit_Initialize_Patch
         RunTweakCategory("enemy balance", ApplyEnemyBalanceTweaks);
         RunTweakCategory("fog", ApplyFogTweaks);
         RunTweakCategory("loot", ApplyLootTweaks);
+        RunTweakCategory("item names", ApplyItemNameTweaks);
         RunTweakCategory("expedition balance", ApplyExpeditionBalanceTweaks);
         RunTweakCategory("melee", ApplyMeleeTweaks);
         RunTweakCategory("weapon", ApplyWeaponTweaks);
@@ -230,6 +233,30 @@ internal static class GameDataInit_Initialize_Patch
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
         }
     }
+
+    // The I2-LP works as a temporary life buff in this mod (see SyringeHealPatch), so it gets a
+    // name that says so. Names are set as untranslated text with no localization ID, otherwise the
+    // game's translation table would put the vanilla name straight back.
+    private static void ApplyItemNameTweaks()
+    {
+        var name = Plugin.HealthSyringeDisplayName.Value.Trim();
+        if (name.Length == 0) return;
+
+        var item = GameDataBlockBase<ItemDataBlock>.GetBlock(HealthSyringeItemId);
+        if (item == null)
+        {
+            Plugin.Logger.LogWarning($"ItemDataBlock {HealthSyringeItemId} (I2-LP) not found, skipping rename.");
+            return;
+        }
+
+        item.publicName = name;
+        item.LocalizedName = Untranslated(name);
+        item.terminalItemLongName = Untranslated(name);
+        // Terminal keys are SHORTNAME_123, typed by players, so keep them to letters, digits and _.
+        item.terminalItemShortName = Regex.Replace(name.ToUpperInvariant(), "[^A-Z0-9]+", "_").Trim('_');
+    }
+
+    private static LocalizedText Untranslated(string text) => new() { UntranslatedText = text, Id = 0 };
 
     private const uint HealthSyringeItemId = 140;
     private const uint MeleeSyringeItemId = 142;

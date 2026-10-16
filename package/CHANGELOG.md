@@ -31,6 +31,8 @@
   stacks on top, and a med kit used mid-buff is kept rather than drained. Configurable under
   Consumables as "I2-LP Syringe Heal Amount" (0 keeps vanilla) and "I2-LP Buff Drain (% of max
   health per second)" (0 makes it a normal heal capped at max health).
+- The I2-LP is renamed "Stim Pack" in game - pickup, inventory and terminal, where its key becomes
+  STIM_PACK_123. Configurable as "I2-LP Display Name" under Consumables; empty keeps the vanilla name.
 - On first launch, turns on four of the game's own control options: the comms menu toggles open/
   closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
   Applied once only - change any of them back in the game's settings and they stay changed.

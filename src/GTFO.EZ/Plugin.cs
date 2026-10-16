@@ -70,6 +70,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
     internal static ConfigEntry<float> HealthSyringeHealFraction = null!;
     internal static ConfigEntry<float> HealthSyringeBuffDrainPercentPerSecond = null!;
+    internal static ConfigEntry<string> HealthSyringeDisplayName = null!;
     internal static ConfigEntry<bool> ControlDefaultsApplied = null!;
 
     // GE-T10 spike - see Patches/TerminalPingPatch.cs. Diagnostic only; off by default.
@@ -383,6 +384,11 @@ public class Plugin : BasePlugin
             "when injecting drains back down at this rate. Dropping below that pre-syringe health cancels the buff immediately. " +
             "A second syringe adds on top; a med kit raises the floor so its healing is kept. Default 1. Set to 0 for a normal " +
             "heal capped at max health with no drain.");
+
+        HealthSyringeDisplayName = Config.Bind("Consumables", "I2-LP Display Name", "Stim Pack",
+            "What the I2-LP is called in game - pickup, inventory and terminal. Its terminal key is derived from it " +
+            "(Stim Pack -> STIM_PACK_123). Default \"Stim Pack\", since it works as a temporary life buff here. Leave empty " +
+            "to keep the vanilla name.");
 
         BotsAlwaysEquipSentryGun = Config.Bind("Bots", "Bots Always Equip Sentry Gun", false,
             "Forces any bot's Tool slot to the basic Sentry Gun the moment it gets gear, whether it's " +
