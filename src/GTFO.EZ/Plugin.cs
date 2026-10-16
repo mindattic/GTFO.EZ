@@ -69,6 +69,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> CFoamTripmineSpawnWeightMultiplier = null!;
     internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
     internal static ConfigEntry<float> HealthSyringeHealFraction = null!;
+    internal static ConfigEntry<float> HealthSyringeBuffDurationSeconds = null!;
     internal static ConfigEntry<bool> ControlDefaultsApplied = null!;
 
     // GE-T10 spike - see Patches/TerminalPingPatch.cs. Diagnostic only; off by default.
@@ -376,6 +377,11 @@ public class Plugin : BasePlugin
 
         HealthSyringeHealFraction = Config.Bind("Consumables", "I2-LP Syringe Heal Amount", 0.5f,
             "Fraction of max health an I2-LP (health) syringe restores. Vanilla is a random 5-15%; default 0.5 (50%). Set to 0 to keep vanilla.");
+
+        HealthSyringeBuffDurationSeconds = Config.Bind("Consumables", "I2-LP Buff Duration (seconds)", 60f,
+            "Makes the I2-LP heal temporary: what it added drains back out evenly over this many seconds. Damage taken meanwhile is " +
+            "paid out of the buff first, and the drain never takes you below 1 HP. Another syringe adds to the buff and restarts " +
+            "the timer. Default 60. Set to 0 for a permanent heal.");
 
         BotsAlwaysEquipSentryGun = Config.Bind("Bots", "Bots Always Equip Sentry Gun", false,
             "Forces any bot's Tool slot to the basic Sentry Gun the moment it gets gear, whether it's " +

@@ -20,7 +20,7 @@ config is applied; `-` means left at vanilla:
 | Max health | 25 | 50 (+100%) |
 | Health regen rate | 0.2/s | 0.1/s (-50%) |
 | Max regenerated health (no med kit) | 20% | 40% (+100%) |
-| I2-LP (health) syringe heal | 5-15% of max health | 50% of max health |
+| I2-LP (health) syringe heal | 5-15% of max health, permanent | 50% of max health, drains back out over 60s |
 | Stamina regen rate while resting in combat | 0.15/s (vs 0.25/s out of combat) | 0.25/s, equalized |
 | Stamina cap while in combat | 90% | 100%, cap removed |
 | Fall damage amount | 2-15 | 0.2-1.5 (-90%) |
@@ -481,8 +481,12 @@ others' prior work:
   once per install and never again.
 - Fog Repeller spawn odds now default to disabled (0), joining the other disabled consumables -
   with fog already cut 90%, they mostly took up loot slots.
-- I2-LP (health) syringes now restore 50% of max health instead of vanilla's random 5-15%.
-  Configurable as "I2-LP Syringe Heal Amount" under Consumables; 0 keeps vanilla.
+- I2-LP (health) syringes are now a temporary life buff: they instantly restore 50% of max health
+  instead of vanilla's random 5-15%, then that health drains back out evenly over 60 seconds.
+  Damage you take meanwhile comes out of the buff first, the drain never takes you below 1 HP,
+  and a second syringe tops the buff up and restarts the timer. Configurable under Consumables as
+  "I2-LP Syringe Heal Amount" (0 keeps vanilla) and "I2-LP Buff Duration (seconds)" (0 makes the
+  heal permanent).
 - On first launch, turns on four of the game's own control options: the comms menu toggles open/
   closed with Q instead of having to hold it, sprint toggle, aim toggle, and stand when jumping.
   Applied once only - change any of them back in the game's settings and they stay changed.
