@@ -193,6 +193,10 @@ internal static class GameDataInit_Initialize_Patch
             // all-zero lottery with undefined draws). Med/ammo/tool packs would be the obvious
             // pick, but those items carry no contents of their own (the per-zone resource budget
             // fills them) and would likely spawn empty from here; syringes carry their own.
+            // Only an enabled syringe can take a slot - alternating onto a disabled one would just
+            // zero the slot out again.
+            var healthSyringeOn = Plugin.HealthSyringeSpawnWeightMultiplier.Value > 0f;
+            var meleeSyringeOn = Plugin.MeleeBuffSyringeSpawnWeightMultiplier.Value > 0f;
             var nextIsHealthSyringe = true;
             var totalWeight = 0f;
             foreach (var entry in block.SpawnData)
@@ -200,10 +204,11 @@ internal static class GameDataInit_Initialize_Patch
                 if (ConsumableWeightMultipliers.TryGetValue(entry.ItemID, out var getMultiplier))
                 {
                     var multiplier = getMultiplier();
-                    if (multiplier <= 0f)
+                    if (multiplier <= 0f && (healthSyringeOn || meleeSyringeOn))
                     {
-                        entry.ItemID = nextIsHealthSyringe ? HealthSyringeItemId : MeleeSyringeItemId;
-                        nextIsHealthSyringe = !nextIsHealthSyringe;
+                        var useHealthSyringe = healthSyringeOn && (!meleeSyringeOn || nextIsHealthSyringe);
+                        entry.ItemID = useHealthSyringe ? HealthSyringeItemId : MeleeSyringeItemId;
+                        nextIsHealthSyringe = !useHealthSyringe;
                         multiplier = ConsumableWeightMultipliers[entry.ItemID]();
                     }
                     entry.Weight *= multiplier;
@@ -211,7 +216,7 @@ internal static class GameDataInit_Initialize_Patch
                 totalWeight += entry.Weight;
             }
 
-            // Only reachable if the syringes are disabled too - spawn nothing rather than run an
+            // Only reachable if both syringes are disabled too - spawn nothing rather than run an
             // all-zero lottery.
             if (block.SpawnData.Count > 0 && totalWeight <= 0f)
             {

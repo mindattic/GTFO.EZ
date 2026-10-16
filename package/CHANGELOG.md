@@ -35,6 +35,8 @@
   every common "Baseline" zone, dropped nothing but Long Range Flashlights, and 25 tables had
   nothing left to drop at all. Med/ammo/tool packs aren't used here: those get filled by the
   level's resource budget and would likely spawn empty from a consumable table.
+- **Bug fix:** with one syringe type's spawn odds set to 0, disabled consumables still alternated
+  onto it, so half their loot slots spawned nothing. They now all go to the syringe that's enabled.
 
 ## v10
 
