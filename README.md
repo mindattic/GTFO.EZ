@@ -43,9 +43,14 @@ vanilla-vs-default table):
 - Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
   default. Placing your own switches you straight back to the weapon you had out before.
 - **Artifact buffs**: each artifact you pick up buffs you for the rest of the level - Bold +5% max
-  health, Aggressive +5% damage, Muted 5% harder to detect. Tunable under `Artifacts`.
+  health (healed too), Aggressive +5% damage to enemies, Muted 5% harder to detect (capped at 75%).
+  A checkpoint restart that puts the artifact back removes its buff. Tunable under `Artifacts`.
+- **Bots Always Equip Sentry Gun** (`Bots`, off by default): forces every bot's tool slot to the
+  basic Sentry Gun.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
+- A load confirmation: a "GTFO.EZ vN Active" line under the rundown title on the rundown-select
+  screen, and a short warden-intel message in-level once you spawn.
 
 **Everything else** - 530+ further config entries covering flashlights, movement speed, friendly
 fire, battery drain, no-air damage, per-enemy health/damage, the full per-difficulty-tier

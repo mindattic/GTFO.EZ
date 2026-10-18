@@ -44,6 +44,43 @@ the comms menu opens and closes with a tap of Q instead of having to be held, sp
 toggles, and jumping stands you up from a crouch. It does this once only; after that they're
 ordinary game settings you can change back in Settings → Gameplay.
 
+**Gameplay additions** — beyond the stat changes in the table, the mod adds a few behaviours of
+its own, each with its own config section and on/off switch:
+
+- **Artifact buffs** (`Artifacts`): whoever picks up an artifact keeps a buff for the rest of the
+  level - each **Bold** (Uncommon) +5% max health, healed too; each **Aggressive** (Rare) +5%
+  damage to enemies, guns and melee; each **Muted** (Common) 5% harder for enemies to detect you,
+  capped at 75%. A checkpoint restart that puts an artifact back takes its buff off again.
+- **Fog clearing** (`Fog Clearing`): a silent, invisible version of the Fog Repeller's sphere
+  follows you, clearing 4 m around you at the start of a level and widening to 25 m over 90 s.
+- **Kit loot** (`Loot` → *Consumables Are Kits*): every consumable in boxes, lockers or lying
+  around becomes a health, tool or ammo kit holding 20-40% of a pack. The zone's normal resource
+  packs still spawn as usual. Turn it off for vanilla consumables.
+- **Instant sentries** (`Sentries`): sentry guns place and pick back up with no hold-to-confirm,
+  and placing your own switches you straight back to the weapon you had out.
+- **Bots Always Equip Sentry Gun** (`Bots`, *off* by default): forces every bot's tool slot to the
+  basic Sentry Gun, whether it's filling an empty slot or replacing a player.
+
+**Experimental** (`Experimental`, on by default, not all confirmed in play yet):
+
+- **Bot tool controls**: aim your own sentry's placement ghost and press **Shift+E** to drop the
+  next bot's equipped tool there instead of yours; **Z** recalls every bot-placed tool back into
+  its bot; **X** places your own sentry without pulling it out (at your aim if you're holding it,
+  otherwise just ahead of you). One switch turns all three off.
+- **Ping Anywhere**: `PING <KEY>` from any terminal finds an item anywhere in the level, not just
+  in that terminal's zone; the marker shows for 10 s. Same-zone pings are left to the game's own
+  PING, and any error falls back to it.
+
+| Input | Action |
+|---|---|
+| E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
+| Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
+| Z | Recall every bot-placed tool at once |
+| X | Place your own sentry without pulling it out |
+
+**How you know it's loaded** — a "GTFO.EZ vN Active" line appears under the rundown title on the
+rundown-select screen, and a short warden-intel message shows in-level once you spawn.
+
 Every value above is a multiplier (or on/off switch) you can retune in the config file BepInEx
 generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without recompiling anything.
 
