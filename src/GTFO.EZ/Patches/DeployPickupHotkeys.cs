@@ -26,6 +26,42 @@ internal static class DeployPickupHotkeys_Update_Patch
 
         var shiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if (shiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
+
+        var altHeld = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
+        if (altHeld && Input.GetKeyDown(KeyCode.E)) PickupAllBotTools.Activate();
+    }
+}
+
+// The player's own placement already goes through the normal vanilla flow, but switches weapons
+// back to whatever was equipped before pulling out the tool - vanilla leaves you empty-handed in
+// the Tool slot afterward, which this treats as a missed step rather than desired behaviour.
+[HarmonyPatch(typeof(SentryGunFirstPerson), nameof(SentryGunFirstPerson.PlaceOnGround))]
+internal static class SentryGunFirstPerson_PlaceOnGround_Patch
+{
+    [HarmonyPostfix]
+    private static void Postfix(SentryGunFirstPerson __instance)
+    {
+        try
+        {
+            var localBackpack = PlayerBackpackManager.LocalBackpack;
+            if (localBackpack == null) return;
+            if (!localBackpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem?.Instance != __instance) return;
+
+            localBackpack.TryClearSlot(InventorySlot.GearClass);
+
+            if (!PlayerManager.TryGetLocalPlayerAgent(out var localAgent) || localAgent == null) return;
+            var lastSlot = InventorySlot.None;
+            if (!localBackpack.GetLastEquippedGear(ref lastSlot) || lastSlot == InventorySlot.None) return;
+            if (!localBackpack.TryGetBackpackItem(lastSlot, out var previousItem) || previousItem?.Instance == null) return;
+            var previousEquippable = previousItem.Instance.TryCast<ItemEquippable>();
+            if (previousEquippable == null) return;
+
+            localAgent.Inventory.SyncWieldItem(previousEquippable);
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogWarning($"Instant Sentry Placement: couldn't switch back to your previous weapon after placing. {e}");
+        }
     }
 }
 
@@ -85,6 +121,7 @@ internal static class BotDeployAtAim
                 var desc = new PlayerBotActionDeploySentryGun.Descriptor(bot) { InstallationPose = pose };
                 var action = new PlayerBotActionDeploySentryGun(desc) { m_backpackItem = backpackItem };
                 action.PlaceSentryGunOnGround();
+                backpack.TryClearSlot(InventorySlot.GearClass);
                 Plugin.Logger.LogInfo("Shift+E: deployed a bot's tool at your aim.");
                 return;
             }
@@ -113,5 +150,57 @@ internal static class BotDeployAtAim
 
         pose = new Pose(sentry.m_placePos, sentry.m_cameraLookRot);
         return true;
+    }
+}
+
+// Alt+E: instantly recalls every bot-placed tool still down, straight back into the bot that
+// placed it, all at once - the reverse of Shift+E. Your own placed tool is untouched; walk up and
+// interact with it as normal.
+internal static class PickupAllBotTools
+{
+    internal static void Activate()
+    {
+        List<PlayerAIBot> bots;
+        try
+        {
+            bots = Bots.List();
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogWarning($"Alt+E: couldn't list bots. {e}");
+            return;
+        }
+
+        var recalled = 0;
+        foreach (var bot in bots)
+        {
+            Il2CppSystem.Collections.Generic.List<ItemEquippable> deployedItems;
+            try
+            {
+                if (!PlayerBotActionGatherDeployables.Descriptor.Evaluate(bot, out deployedItems) || deployedItems == null) continue;
+            }
+            catch (Exception e)
+            {
+                Plugin.Logger.LogWarning($"Alt+E: couldn't check a bot's deployed items, skipping it. {e}");
+                continue;
+            }
+
+            foreach (var item in deployedItems)
+            {
+                try
+                {
+                    var desc = new PlayerBotActionGatherDeployables.Descriptor(bot);
+                    var action = new PlayerBotActionGatherDeployables(desc) { m_targetItem = item };
+                    action.PickUpItem();
+                    recalled++;
+                }
+                catch (Exception e)
+                {
+                    Plugin.Logger.LogWarning($"Alt+E: couldn't recall one item, skipping it. {e}");
+                }
+            }
+        }
+
+        Plugin.Logger.LogInfo($"Alt+E: recalled {recalled} bot tool(s).");
     }
 }

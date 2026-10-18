@@ -12,11 +12,15 @@
   the expedition. Starting a new level now restores it first if it was still raised.
 - **Experimental (SPIKE), on by default:** while aiming your own equipped tool at a valid
   placement spot (the normal green ghost/arrow), Shift+E deploys the first bot with an undeployed
-  tool there instead, reusing that same aim - your own plain-E placement is untouched. Picking a
-  bot-placed deployable back up is just the normal vanilla E-interact. There's no vanilla order
-  for "deploy now" to route through, so this calls the bot AI's own placement method directly;
-  only confirmed to compile, not confirmed safe by decompiling alone - set it to false under
-  Experimental to disable, or report back if it needs reverting.
+  tool there instead, reusing that same aim - your own plain-E placement is untouched. Placing a
+  tool, yours or a bot's, now immediately clears it from that Tool slot instead of leaving a
+  lingering "equipped but actually deployed" state; placing your own also switches you straight
+  back to whatever you had equipped before pulling the tool out, instead of leaving you
+  empty-handed. Alt+E instantly recalls every bot-placed tool still down, straight back into
+  whichever bot placed it. There's no vanilla order for "deploy now" to route through, so this
+  calls the bot AI's own placement/pickup methods directly; only confirmed to compile, not
+  confirmed safe by decompiling alone - set Shift+E deploy to false under Experimental to disable,
+  or report back if it needs reverting.
 - Sentry guns place and pick back up instantly now - the hold-to-confirm charge is gone by
   default. New "Deploy/Pickup Interaction Duration Multiplier" under Sentries, default 0; set to
   1.0 to restore the vanilla hold time.
