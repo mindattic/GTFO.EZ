@@ -14,8 +14,8 @@ namespace MindAttic.GTFO.Shared;
 // are). Each holds MinCharges-MaxCharges charges - one charge is one use, 20% of a pack - and there
 // are only as many as add up to LootPercent of the zone's resource budget, split between the three
 // kinds the way that budget is. A mod can add Extras (GTFO.AbsurdWeapons: Hand Grenades, Stim
-// Packs) to the same lottery: they come on top, in proportion to their weights, and the kits stay
-// at LootPercent. GTFO.EZ owns this; GTFO.AbsurdWeapons runs the same code with its own settings.
+// Packs) to the same lottery: they come on top, at their weights' odds against the kits' own
+// weights (1 each by default), and the kits stay at LootPercent. GTFO.EZ owns this; GTFO.AbsurdWeapons runs the same code with its own settings.
 internal sealed class KitLootSettings
 {
     internal string LogName = "Kits";
@@ -50,6 +50,13 @@ internal static class KitLoot
         Add(settings, kits, Find(settings, "tool", min, max, "tool"), toolAmmo * settings.ToolWeight, "tool");
         Add(settings, kits, Find(settings, "ammo", min, max, "ammo"), weaponAmmo * settings.AmmoWeight, "ammo");
         if (kits.Count == 0) return 0;
+
+        // The budget only splits the kits between kinds; together they weigh what their settings
+        // add up to (3 by default), so Extras' weights read as plain odds against them.
+        float budgetWeight = 0f;
+        foreach (var (_, weight) in kits) budgetWeight += weight;
+        var scale = (Mathf.Max(0f, settings.HealthWeight) + Mathf.Max(0f, settings.ToolWeight) + Mathf.Max(0f, settings.AmmoWeight)) / budgetWeight;
+        for (var i = 0; i < kits.Count; i++) kits[i] = (kits[i].Id, kits[i].Weight * scale);
 
         var averageKit = (min + max) / 2f * ChargePercent / 100f;
         var kitsPerZone = Mathf.Max(0f, settings.LootPercent) / 100f * (health + weaponAmmo + toolAmmo) / averageKit;

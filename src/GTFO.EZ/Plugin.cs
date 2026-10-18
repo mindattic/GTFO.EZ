@@ -356,7 +356,7 @@ public class Plugin : BasePlugin
             "Multiplies tentacle attack damage (Striker/Tank grabs, Scout tentacles, etc.) for every enemy type. Left at vanilla (1.0) by default.");
 
         ConsumableSpawnMultiplier = Config.Bind("Loot", "Consumable Spawn Multiplier", 1.0f,
-            "Multiplies how many consumables (kits, flashlights, syringes, etc.) spawn per zone. Left at vanilla (1.0) by default.");
+            "Multiplies how many consumables (flashlights, glow sticks, etc.) spawn per zone. With Consumables Are Kits on, Kit Loot sets how many kits instead. Left at vanilla (1.0) by default.");
 
         BigPickupSpawnMultiplier = Config.Bind("Loot", "Big Pickup Spawn Multiplier", 1.0f,
             "Multiplies how many big pickups (fog turbines, artifacts, etc.) spawn per zone. Left at vanilla (1.0) by default.");

@@ -468,9 +468,9 @@ either not multiplier-friendly or purely cosmetic/technical.
 ## Compatibility
 
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
-  mod's, so where the two clash it wins - notably loot: with its Loot Mix on, its mix (kits at its odds and size, plus Hand
-  Grenades, and Stim Packs when those are on) is the consumable loot, and this mod's *Consumables
-  Are Kits* and consumable spawn odds are skipped. *Consumable Spawn Multiplier* still applies. Its
+  mod's, so where the two clash it wins - notably loot: with its Loot Mix on, it runs this mod's kit loot with its own settings and adds
+  Hand Grenades and Stim Packs to the mix, and this mod's *Consumables Are Kits* and consumable
+  spawn odds are skipped. Its
   keys (Home/PgUp/PgDn) don't overlap with this mod's (E, Shift+E, X, Z). It leaves artifacts
   in place, so artifact buffs work with it installed.
 - **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
