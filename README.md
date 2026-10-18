@@ -184,8 +184,8 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
   instrumented with logging but hasn't had an actual in-game PING attempt to confirm it's safe -
   see the `TerminalPing_EvaluateInput_Patch` doc comment for the current working theory.
 - The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
-  "deploy now" order). Shift+E placement is confirmed working in play; Z recall, X
-  auto-place, and the weapon switch-back after placing are compiled but not yet confirmed in play.
+  "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow) and Z
+  are confirmed working in play; the weapon switch-back after placing your own is not yet.
 - The dash is compiled and built on the same movement approach as GTFO.AbsurdWeapons' Katana
   dash, but not yet confirmed in play.
 - Fog clearing is compiled but not yet confirmed in play; its density is read from the vanilla
