@@ -425,7 +425,8 @@ either not multiplier-friendly or purely cosmetic/technical.
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
   mod's, so where the two clash it wins - notably loot, which follows its `[Loot]` settings (kits at
   its odds and size, plus Hand Grenades and Stim Packs) instead of *Consumables Are Kits* here. Its
-  keys (Home/PgUp/PgDn) don't overlap with this mod's (E, X, Z, Shift, W/A/S/D).
+  keys (Home/PgUp/PgDn) don't overlap with this mod's (E, X, Z, Shift, W/A/S/D). It leaves artifacts
+  in place, so artifact buffs work with it installed.
 - **GTFO.CrashTestDummies** and **GTFO.SkipDrop:** compatible - they patch level building and the
   elevator drop, nothing this mod touches.
 
