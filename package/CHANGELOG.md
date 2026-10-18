@@ -14,7 +14,7 @@
   placement spot (the normal green ghost/arrow), Shift+E deploys the first bot with an undeployed
   tool there instead, reusing that same aim - your own plain-E placement is untouched. Placing
   your own also switches you straight back to whatever you had equipped before pulling the tool
-  out, instead of leaving you empty-handed. Alt+E or Z instantly recalls every bot-placed tool
+  out, instead of leaving you empty-handed. Z instantly recalls every bot-placed tool
   still down, straight back into whichever bot placed it. X places your own sentry without
   pulling it out - at your aim if you're holding it, otherwise on the ground just ahead of you.
   There's no vanilla order for "deploy now" to route through, so this

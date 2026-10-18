@@ -723,7 +723,7 @@ public class Plugin : BasePlugin
             "green ghost/arrow), Shift+E deploys the first bot with an undeployed tool there instead, reusing " +
             "that same aim - your own plain-E placement is untouched. Calls the bot AI's own placement method " +
             "directly since there's no vanilla order for 'deploy now' - only confirmed to compile, not confirmed " +
-            "safe by decompiling alone. This switch also covers the other experimental sentry keys - Alt+E/Z (recall " +
+            "safe by decompiling alone. This switch also covers the other experimental sentry keys - Z (recall " +
             "bot tools) and X (place your own) - so false turns all of them off. On by default to test live.");
 
         DashEnabled = Config.Bind("Dash", "Dash Enabled", true,

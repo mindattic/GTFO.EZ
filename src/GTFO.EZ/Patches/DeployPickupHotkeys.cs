@@ -26,7 +26,7 @@ internal static class DeployPickupHotkeys_Update_Patch
 
         if (Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
 
-        if ((Hotkeys.AltHeld && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
+        if (Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
 
         if (Input.GetKeyDown(KeyCode.X)) OwnSentryAutoPlace.Place();
     }
@@ -38,10 +38,9 @@ internal static class Hotkeys
     // menu, on the map, etc., where these letters are just text or menu input.
     internal static bool InPlay => FocusStateManager.CurrentState == eFocusState.FPS;
     internal static bool ShiftHeld => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-    internal static bool AltHeld => Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
 }
 
-// With sentry placement made instant, the plain E inside Shift+E / Alt+E would also complete the
+// With sentry placement made instant, the plain E inside Shift+E would also complete the
 // vanilla placement of your own held sentry in the same press. Hold that back for your own sentry
 // only - a bot's placement and X's own call go through.
 [HarmonyPatch(typeof(SentryGunFirstPerson), nameof(SentryGunFirstPerson.PlaceOnGround))]
@@ -51,7 +50,7 @@ internal static class SentryGunFirstPerson_PlaceOnGround_ModifierGuard
     private static bool Prefix(SentryGunFirstPerson __instance)
     {
         if (OwnSentryAutoPlace.Placing || !Plugin.BotsDeployOnShiftE.Value) return true;
-        if (!Hotkeys.ShiftHeld && !Hotkeys.AltHeld) return true;
+        if (!Hotkeys.ShiftHeld) return true;
         var own = BotDeployAtAim.LocalSentry();
         return own == null || own.Pointer != __instance.Pointer;
     }
@@ -150,7 +149,7 @@ internal static class BotDeployAtAim
                 action.PlaceSentryGunOnGround();
                 // Marks it placed-but-still-owned, the bookkeeping the bot's own AI does after this
                 // call. Clearing the slot instead (an earlier version) orphaned the turret, which
-                // broke bot item commands and gave Alt+E nothing to recall.
+                // broke bot item commands and gave Z nothing to recall.
                 backpack.SetDeployed(InventorySlot.GearClass, true);
                 Plugin.Logger.LogInfo("Shift+E: deployed a bot's tool at your aim.");
                 return;
@@ -201,7 +200,7 @@ internal static class OwnSentryAutoPlace
     private const float GroundProbeHeight = 1.5f;
     private const float GroundProbeDepth = 4f;
 
-    // Lets X's own PlaceOnGround call past the Shift/Alt modifier guard.
+    // Lets X's own PlaceOnGround call past the Shift modifier guard.
     internal static bool Placing;
 
     internal static void Place()
@@ -261,7 +260,7 @@ internal static class OwnSentryAutoPlace
     }
 }
 
-// Alt+E: instantly recalls every bot-placed tool still down, straight back into the bot that
+// Z: instantly recalls every bot-placed tool still down, straight back into the bot that
 // placed it, all at once - the reverse of Shift+E. Your own placed tool is untouched; walk up and
 // interact with it as normal.
 internal static class PickupAllBotTools
@@ -275,7 +274,7 @@ internal static class PickupAllBotTools
         }
         catch (Exception e)
         {
-            Plugin.Logger.LogWarning($"Alt+E: couldn't list bots. {e}");
+            Plugin.Logger.LogWarning($"Z: couldn't list bots. {e}");
             return;
         }
 
@@ -292,7 +291,7 @@ internal static class PickupAllBotTools
         }
         catch (Exception e)
         {
-            Plugin.Logger.LogWarning($"Alt+E: couldn't list placed sentries. {e}");
+            Plugin.Logger.LogWarning($"Z: couldn't list placed sentries. {e}");
             return;
         }
 
@@ -316,10 +315,10 @@ internal static class PickupAllBotTools
             }
             catch (Exception e)
             {
-                Plugin.Logger.LogWarning($"Alt+E: couldn't recall a bot's sentry, skipping it. {e}");
+                Plugin.Logger.LogWarning($"Z: couldn't recall a bot's sentry, skipping it. {e}");
             }
         }
 
-        Plugin.Logger.LogInfo($"Alt+E: recalled {recalled} bot sentry(s) of {placed.Length} placed in the level.");
+        Plugin.Logger.LogInfo($"Z: recalled {recalled} bot sentry(s) of {placed.Length} placed in the level.");
     }
 }
