@@ -45,9 +45,10 @@ internal static class Bots
     }
 }
 
-// O: deploys bot1's equipped tool, waits for confirmation it's actually down, then bot2, then
-// bot3 - one bot at a time, same shape as the vanilla COMS order flow the user already relies on,
-// except the "wait for confirmation" check reads real backpack state instead of watching the menu.
+// O: deploys bot1's equipped tool at the calling player's own position/facing, waits for
+// confirmation it's actually down, then bot2, then bot3 - one bot at a time, same shape as the
+// vanilla COMS order flow the user already relies on, except the "wait for confirmation" check
+// reads real backpack state instead of watching the menu.
 internal static class BotDeploySequence
 {
     private const float PerBotTimeoutSeconds = 6f;
@@ -136,8 +137,21 @@ internal static class BotDeploySequence
                 return;
             }
 
-            var agent = bot.Agent;
-            var pose = new Pose(agent != null ? agent.transform.position : Vector3.zero, agent != null ? agent.transform.rotation : Quaternion.identity);
+            // Placed at the calling player's own position/facing, not the bot's - the bot doesn't
+            // walk there first, so a pose from wherever it happens to be standing could be
+            // anywhere; the player aiming the spot is the one piece of human judgement in this
+            // otherwise-instant flow.
+            Pose pose;
+            if (PlayerManager.TryGetLocalPlayerAgent(out var localAgent) && localAgent != null)
+            {
+                pose = new Pose(localAgent.transform.position, localAgent.transform.rotation);
+            }
+            else
+            {
+                Plugin.Logger.LogWarning("Bots Deploy Key: couldn't find the local player, skipping this bot.");
+                Advance();
+                return;
+            }
 
             var desc = new PlayerBotActionDeploySentryGun.Descriptor(bot) { InstallationPose = pose };
             var action = new PlayerBotActionDeploySentryGun(desc) { m_backpackItem = backpackItem };
