@@ -14,7 +14,7 @@ public class Plugin : BasePlugin
 {
     public const string GUID = "MindAttic.GTFO.EZ";
     public const string NAME = "GTFO.EZ";
-    public const string VERSION = "11.0.0";
+    public const string VERSION = "12.0.0";
 
     // Shared between the rundown-select header and the in-level warden-intel message so the two
     // in-game surfaces never drift apart the way they did before this was pulled out. Major

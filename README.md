@@ -6,7 +6,7 @@ who want to go deeper.
 
 ![Language](https://img.shields.io/badge/language-C%23%20(.NET%206)-blue)
 ![Platform](https://img.shields.io/badge/platform-BepInEx%20IL2CPP-informational)
-![Status](https://img.shields.io/badge/status-active%20(v11)-success)
+![Status](https://img.shields.io/badge/status-active%20(v12)-success)
 
 Try it: install from [Thunderstore](https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/) (listed
 there as `GtfoEZ`, since package names can't contain a period).
@@ -148,7 +148,7 @@ build.ps1             builds the plugin and packages dist/GTFO.EZ-<version>.zip
 v1, v2, v3... - major-only bumps, matching the convention across other MindAttic projects.
 Thunderstore requires `manifest.json`'s `version_number` to be strict `x.y.z`, so "v1" is `1.0.0`,
 "v2" is `2.0.0`, and so on (minor/patch stay 0). `package/CHANGELOG.md` headers use the short `vN`
-form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release: v11.
+form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release: v12.
 
 ## Sharing with friends
 
