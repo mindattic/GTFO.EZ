@@ -36,6 +36,7 @@ config is applied; `-` means left at vanilla:
 | Fog Repeller spawn odds | varies by zone | disabled (-100%) |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog (visibility-limiting fog) | enabled | disabled |
+| Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
 (fast regen with no delay makes you nearly unkillable in a slow fight), the no-damage fall height
@@ -475,6 +476,9 @@ others' prior work:
   for "deploy now" to route through, so this calls the bot AI's own placement method directly;
   only confirmed to compile, not confirmed safe by decompiling alone - set it to false under
   Experimental to disable, or report back if it needs reverting.
+- Sentry guns place and pick back up instantly now - the hold-to-confirm charge is gone by
+  default. New "Deploy/Pickup Interaction Duration Multiplier" under Sentries, default 0; set to
+  1.0 to restore the vanilla hold time.
 
 ### v11
 

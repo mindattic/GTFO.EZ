@@ -17,6 +17,9 @@
   for "deploy now" to route through, so this calls the bot AI's own placement method directly;
   only confirmed to compile, not confirmed safe by decompiling alone - set it to false under
   Experimental to disable, or report back if it needs reverting.
+- Sentry guns place and pick back up instantly now - the hold-to-confirm charge is gone by
+  default. New "Deploy/Pickup Interaction Duration Multiplier" under Sentries, default 0; set to
+  1.0 to restore the vanilla hold time.
 
 ## v11
 

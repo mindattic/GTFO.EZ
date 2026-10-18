@@ -186,6 +186,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> SentryStaggerDamageTagMultiplier = null!;
     internal static ConfigEntry<float> SentryCostOfBulletTagMultiplier = null!;
     internal static ConfigEntry<float> SentryShotDelayTagMultiplier = null!;
+    internal static ConfigEntry<float> SentryDeployPickupInteractionDurationMultiplier = null!;
 
     public override void Load()
     {
@@ -691,6 +692,10 @@ public class Plugin : BasePlugin
 
         SentryShotDelayTagMultiplier = Config.Bind("Sentries", "Tagged-Target Shot Delay Multiplier", 1.0f,
             "Multiplies the shot-delay multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
+
+        SentryDeployPickupInteractionDurationMultiplier = Config.Bind("Sentries", "Deploy/Pickup Interaction Duration Multiplier", 0.0f,
+            "Multiplies how long you have to hold the interact key to place or retrieve a sentry gun. Default 0 " +
+            "(instant) - no charge-up to place, no wait to pick back up. Set to 1.0 to keep vanilla timing.");
 
         ExperimentalGlobalTerminalPing = Config.Bind("Experimental", "Global Terminal Ping (SPIKE)", false,
             "GE-T10 spike: logs every terminal command and attempts to PING any item level-wide, not just " +

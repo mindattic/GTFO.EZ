@@ -41,6 +41,8 @@ vanilla-vs-default table):
 - Fog is switched off outright (a density multiplier turned out to have no visible in-game effect,
   so v11 replaced it with a toggle on the fog's own enabled flag).
 - Revive duration is cut roughly two-thirds.
+- Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
+  default.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
 
