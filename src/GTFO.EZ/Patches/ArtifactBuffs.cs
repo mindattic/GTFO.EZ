@@ -20,6 +20,7 @@ internal static class ArtifactBuffs
 
     private static IntPtr _healthOwner;
     private static float _baseMaxHealth;
+    private static float _bonusApplied;
 
     internal static int Count(PlayerAgent? player, ArtifactCategory category)
     {
@@ -57,8 +58,10 @@ internal static class ArtifactBuffs
         if (category == ArtifactCategory.Uncommon) ApplyMaxHealth();
     }
 
-    // The local player's max health: the level's starting max (GTFO.EZ's health multiplier already
-    // in it) plus BoldMaxHealthPercent per Bold pickup. The gain is healed too, so a pickup shows.
+    // The local player's max health gets BoldMaxHealthPercent of the starting max (the player
+    // datablock's health, GTFO.EZ's multiplier already in it) per Bold pickup. Only the bonus this
+    // adds is changed, never the whole max - so another mod raising or lowering max health at the
+    // same time (GTFO.AbsurdWeapons' Stim Pack overheal) keeps its part. The gain is healed too.
     internal static void ApplyMaxHealth()
     {
         if (!PlayerManager.TryGetLocalPlayerAgent(out var agent) || agent == null) return;
@@ -67,14 +70,18 @@ internal static class ArtifactBuffs
         if (damage.Pointer != _healthOwner)
         {
             _healthOwner = damage.Pointer;
-            _baseMaxHealth = damage.HealthMax;
+            _bonusApplied = 0f;
+            var player = GameDataBlockBase<PlayerDataBlock>.GetBlock(1);
+            _baseMaxHealth = player != null && player.health > 0f ? player.health : damage.HealthMax;
         }
 
-        var target = _baseMaxHealth * (1f + Plugin.ArtifactBoldMaxHealthPercent.Value / 100f * Count(agent, ArtifactCategory.Uncommon));
-        var gain = target - damage.HealthMax;
+        var bonus = _baseMaxHealth * Plugin.ArtifactBoldMaxHealthPercent.Value / 100f * Count(agent, ArtifactCategory.Uncommon);
+        var gain = bonus - _bonusApplied;
         if (Math.Abs(gain) < 0.01f) return;
-        damage.HealthMax = target;
-        damage.SendSetHealth(Math.Min(target, Math.Max(0.01f, damage.Health + Math.Max(0f, gain))));
+        _bonusApplied = bonus;
+        var max = Math.Max(0.01f, damage.HealthMax + gain);
+        damage.HealthMax = max;
+        damage.SendSetHealth(Math.Min(max, Math.Max(0.01f, damage.Health + Math.Max(0f, gain))));
     }
 
     internal static void Reset()
