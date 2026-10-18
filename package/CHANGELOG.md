@@ -28,6 +28,10 @@
   sidestep homing projectiles. Moves you through the game's own character
   controller, so walls stop it short; 1.5 s cooldown. Distance, duration, cooldown, double-tap
   window and an on/off toggle are under the new Dash config section.
+- New **Ping Anywhere** (Experimental, on by default): `PING <KEY>` from any terminal reaches an
+  item anywhere in the level, not just the terminal's own zone; the marker shows for 10 s.
+  Same-zone pings are left to the game's own PING, and any error falls back to it. Technique
+  credit: BetterTerminal by AlexanderMakunin (MIT).
 - New **fog clearing**: Disable Fog alone still left fog in play, so a silent, invisible
   fog-clearing sphere now follows you - the same fog-system sphere the Fog Repeller item carves
   out, without its light, sound or 70 s limit. It starts at 4 m and widens to 25 m over 90 s

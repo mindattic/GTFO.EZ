@@ -62,8 +62,10 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
   **Shift+E** to drop the next bot's equipped tool there instead of yours; **Z**
   instantly recalls every bot-placed tool back into its bot; **X** places your own sentry without
   pulling it out.
-- A level-wide terminal PING spike (off by default), instrumented but not yet confirmed safe in
-  actual play.
+- **Ping Anywhere** (on by default): `PING <KEY>` from any terminal reaches an item anywhere in
+  the level, not just the terminal's own zone. Same-zone pings are left to the game's own PING.
+  Technique credit: [BetterTerminal](https://github.com/AlexanderMakunin/BetterTerminal) by
+  AlexanderMakunin (MIT).
 
 | Input | Action |
 |---|---|
@@ -118,7 +120,7 @@ once, at load time, read from the BepInEx config. Additional Harmony patches cov
 isn't a simple datablock field: the Stim Pack overheal/drain (`SyringeHealPatch`), one-time control
 defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant sentry placement
 (`SentryInstantPlacementPatch`), the dash (`DashPatch`), the experimental bot tool controls
-(`DeployPickupHotkeys`), and the experimental terminal ping spike.
+(`DeployPickupHotkeys`), and Ping Anywhere (`TerminalPingPatch`).
 
 ## Configuration
 
@@ -180,9 +182,9 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
 
 ## Limitations
 
-- The level-wide terminal PING spike (`Experimental` config section, off by default) is
-  instrumented with logging but hasn't had an actual in-game PING attempt to confirm it's safe -
-  see the `TerminalPing_EvaluateInput_Patch` doc comment for the current working theory.
+- Ping Anywhere is compiled but not yet confirmed in play. An earlier attempt broke the terminal
+  by letting the game also evaluate the PING it had already handled; this version owns the
+  command fully (BetterTerminal's approach) and falls back to the game's PING on any error.
 - The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
   "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow) and Z
   are confirmed working in play; the weapon switch-back after placing your own is not yet.

@@ -435,7 +435,7 @@ config.
 ## Attributions
 
 This mod is an independent, from-scratch implementation (no code or data copied from any of the
-projects below) built as a code plugin rather than datablock JSON, specifically so it survives
+projects below, except where noted) built as a code plugin rather than datablock JSON, specifically so it survives
 game updates without needing a rebuild for every patch. Its design still owes a real debt to
 others' prior work:
 
@@ -454,6 +454,12 @@ others' prior work:
   reference and the GTFO-API source are what made it possible to find the real field names
   (`health`, `movementDetectionDistance`, etc.) and the `GameDataInit.Initialize` hook point this
   mod relies on, instead of guessing at an undocumented API.
+- **AlexanderMakunin**, creator of
+  *[BetterTerminal](https://github.com/AlexanderMakunin/BetterTerminal)* (Thunderstore:
+  Daem0n/BetterTerminal, MIT, Copyright (c) 2026 AlexanderMakunin) — Ping Anywhere uses its
+  technique for owning a terminal command: writing the command's output straight into the
+  terminal's buffers so the game doesn't also run it, and expiring the ping marker afterwards. The
+  output-writing helper follows BetterTerminal's `TerminalCommandOutput.WriteImmediate` closely.
 - **The [BepInEx](https://github.com/BepInEx/BepInEx) team** — the modding framework and loader
   this mod (and essentially every other GTFO mod) runs on.
 - **Claude Opus 5.5** (Anthropic) — AI assistant used throughout development: implementing the
@@ -489,6 +495,10 @@ others' prior work:
   sidestep homing projectiles. Moves you through the game's own character
   controller, so walls stop it short; 1.5 s cooldown. Distance, duration, cooldown, double-tap
   window and an on/off toggle are under the new Dash config section.
+- New **Ping Anywhere** (Experimental, on by default): `PING <KEY>` from any terminal reaches an
+  item anywhere in the level, not just the terminal's own zone; the marker shows for 10 s.
+  Same-zone pings are left to the game's own PING, and any error falls back to it. Technique
+  credit: BetterTerminal by AlexanderMakunin (MIT).
 - New **fog clearing**: Disable Fog alone still left fog in play, so a silent, invisible
   fog-clearing sphere now follows you - the same fog-system sphere the Fog Repeller item carves
   out, without its light, sound or 70 s limit. It starts at 4 m and widens to 25 m over 90 s

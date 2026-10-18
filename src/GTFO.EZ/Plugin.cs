@@ -74,8 +74,8 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<string> HealthSyringeDisplayName = null!;
     internal static ConfigEntry<bool> ControlDefaultsApplied = null!;
 
-    // GE-T10 spike - see Patches/TerminalPingPatch.cs. Diagnostic only; off by default.
-    internal static ConfigEntry<bool> ExperimentalGlobalTerminalPing = null!;
+    // G.EZ-T10 - see Patches/TerminalPingPatch.cs.
+    internal static ConfigEntry<bool> TerminalPingAnywhere = null!;
 
     // G.EZ-T34 spike - see Patches/DeployPickupHotkeys.cs. On by default at the user's request to
     // test it live; calls private bot-AI methods directly and is only confirmed to compile, not
@@ -712,11 +712,11 @@ public class Plugin : BasePlugin
             "Multiplies how long you have to hold the interact key to place or retrieve a sentry gun. Default 0 " +
             "(instant) - no charge-up to place, no wait to pick back up. Set to 1.0 to keep vanilla timing.");
 
-        ExperimentalGlobalTerminalPing = Config.Bind("Experimental", "Global Terminal Ping (SPIKE)", false,
-            "GE-T10 spike: logs every terminal command and attempts to PING any item level-wide, not just " +
-            "same-zone ones. Off by default - a prior attempt at this broke the terminal in play. This version " +
-            "never skips the terminal's own command handling and catches its own exceptions, but it's still " +
-            "unverified in play - enable only to help diagnose LogOutput.log, not for normal use.");
+        TerminalPingAnywhere = Config.Bind("Experimental", "Ping Anywhere", true,
+            "PING <KEY> from any terminal reaches an item anywhere in the level, not just in the terminal's own zone " +
+            "(the marker shows for 10 s). Same-zone pings and unknown keys are left to the game's own PING, and any " +
+            "error falls back to it too. Technique credit: BetterTerminal by AlexanderMakunin (MIT). Not yet confirmed " +
+            "in play - set to false if a terminal misbehaves.");
 
         BotsDeployOnShiftE = Config.Bind("Experimental", "Bots Deploy On Shift+E (SPIKE)", true,
             "G.EZ-T34 spike: while you're aiming your own equipped tool at a valid placement spot (the normal " +
