@@ -83,14 +83,6 @@ public class Plugin : BasePlugin
     // confirmed safe by decompiling alone - may be reverted if it doesn't hold up in play.
     internal static ConfigEntry<bool> BotsDeployOnShiftE = null!;
 
-    // G.EZ-T37 - see Patches/DashPatch.cs. Hold Shift and double-tap W/A/S/D for a quick
-    // dash, mainly to duck out of a homing projectile's path on short notice.
-    internal static ConfigEntry<bool> DashEnabled = null!;
-    internal static ConfigEntry<float> DashDistance = null!;
-    internal static ConfigEntry<float> DashSeconds = null!;
-    internal static ConfigEntry<float> DashCooldownSeconds = null!;
-    internal static ConfigEntry<float> DashDoubleTapWindowSeconds = null!;
-
     // G.EZ-T39 - see Patches/FogClearPulse.cs.
     internal static ConfigEntry<bool> FogClearEnabled = null!;
     internal static ConfigEntry<float> FogClearStartRange = null!;
@@ -732,23 +724,6 @@ public class Plugin : BasePlugin
             "directly since there's no vanilla order for 'deploy now' - only confirmed to compile, not confirmed " +
             "safe by decompiling alone. This switch also covers the other experimental sentry keys - Z (recall " +
             "bot tools) and X (place your own) - so false turns all of them off. On by default to test live.");
-
-        DashEnabled = Config.Bind("Dash", "Dash Enabled", true,
-            "Hold Shift and double-tap W, A, S or D for a quick dash that way, relative to where you look - " +
-            "mainly to duck out of a homing projectile's path on short notice. Moves you through the game's own " +
-            "character controller, so it collides with walls and enemies like any other movement.");
-
-        DashDistance = Config.Bind("Dash", "Dash Distance (meters)", 6f,
-            "Meters a full dash covers (it stops sooner if it hits a wall). Default 6.");
-
-        DashSeconds = Config.Bind("Dash", "Dash Duration (seconds)", 0.25f,
-            "Seconds a full dash takes - distance / duration is the dash speed. Default 0.25 (24 m/s at the default distance).");
-
-        DashCooldownSeconds = Config.Bind("Dash", "Dash Cooldown (seconds)", 1.5f,
-            "Seconds before another dash can trigger after one finishes. Default 1.5.");
-
-        DashDoubleTapWindowSeconds = Config.Bind("Dash", "Dash Double-Tap Window (seconds)", 0.3f,
-            "How quickly the two presses of the same direction key must land to count as a double-tap. Default 0.3.");
 
         FogClearEnabled = Config.Bind("Fog Clearing", "Fog Clearing Enabled", true,
             "Keeps a silent, invisible fog-clearing sphere around you - the same fog-system sphere the Fog Repeller " +

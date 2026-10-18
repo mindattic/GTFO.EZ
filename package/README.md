@@ -30,7 +30,6 @@ config is applied; `-` means left at vanilla:
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
-| Dash (hold Shift, double-tap W/A/S/D) | none | 6 m in 0.25 s, 1.5 s cooldown |
 | Artifact pickups (Bold / Aggressive / Muted) | count toward boosters only | +5% max health / +5% damage / 5% harder to detect, each, for the level |
 | Fog clearing around you | none (Fog Repeller item only, 70 s) | always on, 4 m widening to 25 m over 90 s |
 
@@ -425,8 +424,10 @@ either not multiplier-friendly or purely cosmetic/technical.
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
   mod's, so where the two clash it wins - notably loot, which follows its `[Loot]` settings (kits at
   its odds and size, plus Hand Grenades) instead of *Consumables Are Kits* here. Its
-  keys (Home/PgUp/PgDn) don't overlap with this mod's (E, X, Z, Shift, W/A/S/D). It leaves artifacts
+  keys (Home/PgUp/PgDn) don't overlap with this mod's (E, Shift+E, X, Z). It leaves artifacts
   in place, so artifact buffs work with it installed.
+- **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
+  Dodge (hold Shift, double-tap W/A/S/D). Install it if you want the dash back.
 - **GTFO.CrashTestDummies** and **GTFO.SkipDrop:** compatible - they patch level building and the
   elevator drop, nothing this mod touches.
 
@@ -473,6 +474,9 @@ others' prior work:
 
 ### v14
 
+- **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
+  **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
+  install GTFO.AbsurdMoves to keep dashing.
 - New **artifact buffs**: picking up an artifact buffs whoever picked it up for the rest of the
   level - each **Bold** +5% max health (healed too), each **Aggressive** +5% damage to enemies, each
   **Muted** 5% harder for enemies to detect you (capped at 75%). A checkpoint restart that puts an

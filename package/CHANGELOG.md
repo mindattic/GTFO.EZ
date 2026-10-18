@@ -2,6 +2,9 @@
 
 ## v14
 
+- **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
+  **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
+  install GTFO.AbsurdMoves to keep dashing.
 - New **artifact buffs**: picking up an artifact buffs whoever picked it up for the rest of the
   level - each **Bold** +5% max health (healed too), each **Aggressive** +5% damage to enemies, each
   **Muted** 5% harder for enemies to detect you (capped at 75%). A checkpoint restart that puts an

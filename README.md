@@ -42,9 +42,6 @@ vanilla-vs-default table):
 - Revive duration is cut roughly two-thirds.
 - Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
   default. Placing your own switches you straight back to the weapon you had out before.
-- **Dash**: hold Shift and double-tap W/A/S/D for a quick 6 m dash that way, mainly to
-  sidestep homing projectiles. It moves you through the game's own character
-  controller, so walls stop it; 1.5 s cooldown. Tunable under the `Dash` config section.
 - **Artifact buffs**: each artifact you pick up buffs you for the rest of the level - Bold +5% max
   health, Aggressive +5% damage, Muted 5% harder to detect. Tunable under `Artifacts`.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
@@ -73,7 +70,6 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 | Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
 | Z | Recall every bot-placed tool at once |
 | X | Place your own sentry without pulling it out (at your aim if holding it, else just ahead of you) |
-| Hold Shift + double-tap W/A/S/D | Dash that way |
 
 ## Quick start
 
@@ -119,7 +115,7 @@ No datablock JSON is shipped or copied. Everything is a multiplier (or toggle) a
 once, at load time, read from the BepInEx config. Additional Harmony patches cover behaviour that
 isn't a simple datablock field: one-time control
 defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant sentry placement
-(`SentryInstantPlacementPatch`), the dash (`DashPatch`), the experimental bot tool controls
+(`SentryInstantPlacementPatch`), the experimental bot tool controls
 (`DeployPickupHotkeys`), Ping Anywhere (`TerminalPingPatch`), and artifact buffs (`ArtifactBuffs`).
 
 ## Configuration
@@ -129,7 +125,7 @@ All tweaks are multipliers or toggles, tunable after first launch in
 mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
 Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
-type/archetype, Sentries, Dash, Fog Clearing, Artifacts, and Experimental.
+type/archetype, Sentries, Fog Clearing, Artifacts, and Experimental.
 
 BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a *default*
 between versions, an existing install won't pick up the new number on its own -
@@ -188,8 +184,6 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
 - The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
   "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow) and Z
   are confirmed working in play; the weapon switch-back after placing your own is not yet.
-- The dash is compiled and built on the same movement approach as GTFO.AbsurdWeapons' Katana
-  dash, but not yet confirmed in play.
 - Artifact buffs are compiled but not yet confirmed in play. Muted scales the game's per-player
   detection modifier (`PlayerAgent.GetDetectionMod`); whether enemies consult it for ordinary
   movement noise is the part to check.
@@ -220,5 +214,6 @@ project's design and defaults are built on.
 Part of [MindAttic](https://mindattic.com) - see more projects at
 [github.com/mindattic](https://github.com/mindattic). Other GTFO mods from the same team:
 [GTFO.AbsurdWeapons](https://github.com/mindattic/GTFO.AbsurdWeapons),
+[GTFO.AbsurdMoves](https://github.com/mindattic/GTFO.AbsurdMoves) (which now has the dash, as its Dodge),
 [GTFO.CrashTestDummies](https://github.com/mindattic/GTFO.CrashTestDummies), and
 [GTFO.SkipDrop](https://github.com/mindattic/GTFO.SkipDrop).
