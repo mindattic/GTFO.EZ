@@ -1,6 +1,6 @@
 # Changelog
 
-## v12
+## v13
 
 - **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
   matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
