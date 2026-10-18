@@ -98,6 +98,12 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> FogClearRampSeconds = null!;
     internal static ConfigEntry<float> FogClearDensityOverride = null!;
 
+    // G.EZ-T48 - see Patches/ArtifactBuffs.cs.
+    internal static ConfigEntry<bool> ArtifactBuffsEnabled = null!;
+    internal static ConfigEntry<float> ArtifactBoldMaxHealthPercent = null!;
+    internal static ConfigEntry<float> ArtifactAggressiveDamagePercent = null!;
+    internal static ConfigEntry<float> ArtifactMutedQuieterPercent = null!;
+
     // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
     internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
     internal static ConfigEntry<float> DisinfectionResourceMultiplier = null!;
@@ -760,5 +766,19 @@ public class Plugin : BasePlugin
         FogClearDensityOverride = Config.Bind("Fog Clearing", "Density Override", 0f,
             "0 (default) copies the vanilla Fog Repeller's own density. Set a value only if fog doesn't clear - " +
             "LogOutput.log shows the density in use.");
+
+        ArtifactBuffsEnabled = Config.Bind("Artifacts", "Artifact Buffs Enabled", true,
+            "Picking up an artifact buffs whoever picked it up until the level ends (a checkpoint restart that puts " +
+            "the artifact back takes the buff back off). Bold, Aggressive and Muted are the game's Uncommon, Rare " +
+            "and Common artifacts.");
+
+        ArtifactBoldMaxHealthPercent = Config.Bind("Artifacts", "Bold: Max Health (%)", 5f,
+            "Max health added per Bold artifact picked up, in percent of your starting max health (the gain is healed too). Default 5.");
+
+        ArtifactAggressiveDamagePercent = Config.Bind("Artifacts", "Aggressive: Damage (%)", 5f,
+            "Damage dealt to enemies (guns and melee) added per Aggressive artifact picked up. Default 5.");
+
+        ArtifactMutedQuieterPercent = Config.Bind("Artifacts", "Muted: Quieter (%)", 5f,
+            "How much harder enemies find it to detect you, per Muted artifact picked up (capped at 75%). Default 5.");
     }
 }

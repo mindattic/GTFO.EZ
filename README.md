@@ -45,6 +45,8 @@ vanilla-vs-default table):
 - **Dash**: hold Shift and double-tap W/A/S/D for a quick 6 m dash that way, mainly to
   sidestep homing projectiles. It moves you through the game's own character
   controller, so walls stop it; 1.5 s cooldown. Tunable under the `Dash` config section.
+- **Artifact buffs**: each artifact you pick up buffs you for the rest of the level - Bold +5% max
+  health, Aggressive +5% damage, Muted 5% harder to detect. Tunable under `Artifacts`.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
 

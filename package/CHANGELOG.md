@@ -2,6 +2,10 @@
 
 ## v14
 
+- New **artifact buffs**: picking up an artifact buffs whoever picked it up for the rest of the
+  level - each **Bold** +5% max health (healed too), each **Aggressive** +5% damage to enemies, each
+  **Muted** 5% harder for enemies to detect you (capped at 75%). A checkpoint restart that puts an
+  artifact back takes its buff off again. Tunable under the new Artifacts section.
 - **Moved out:** the Stim Pack - the I2-LP's overheal (+50% health past max, draining back down)
   and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
   I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff

@@ -31,6 +31,7 @@ config is applied; `-` means left at vanilla:
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
 | Dash (hold Shift, double-tap W/A/S/D) | none | 6 m in 0.25 s, 1.5 s cooldown |
+| Artifact pickups (Bold / Aggressive / Muted) | count toward boosters only | +5% max health / +5% damage / 5% harder to detect, each, for the level |
 | Fog clearing around you | none (Fog Repeller item only, 70 s) | always on, 4 m widening to 25 m over 90 s |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
@@ -471,6 +472,10 @@ others' prior work:
 
 ### v14
 
+- New **artifact buffs**: picking up an artifact buffs whoever picked it up for the rest of the
+  level - each **Bold** +5% max health (healed too), each **Aggressive** +5% damage to enemies, each
+  **Muted** 5% harder for enemies to detect you (capped at 75%). A checkpoint restart that puts an
+  artifact back takes its buff off again. Tunable under the new Artifacts section.
 - **Moved out:** the Stim Pack - the I2-LP's overheal (+50% health past max, draining back down)
   and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
   I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
