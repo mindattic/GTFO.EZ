@@ -43,7 +43,7 @@
     <Reference Remove="$(BepInEx)\interop\netstandard.dll" />
   </ItemGroup>
 
-  <!-- Pure balance data/math, shared with tests/GTFO.EZ.Core.Tests - see the root README's Layout section. -->
+  <!-- Pure balance data/math, shared with tests/GTFO.EZ.Core.Tests - see the root README's Project layout section. -->
   <ItemGroup>
     <ProjectReference Include="..\GTFO.EZ.Core\GTFO.EZ.Core.csproj" />
   </ItemGroup>
