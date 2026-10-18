@@ -4,6 +4,7 @@ using BepInEx.Unity.IL2CPP;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
+using MindAttic.GTFO.Shared;
 using UnityEngine;
 
 namespace GTFO.EZ.Patches;
@@ -190,30 +191,25 @@ internal static class GameDataInit_Initialize_Patch
     {
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
         var absurdLoot = AbsurdWeaponsLootMixOn();
-        var kits = Plugin.ConsumablesAreKits.Value && !absurdLoot ? KitLoot.Resolve() : null;
         if (absurdLoot) Plugin.Logger.LogInfo("Loot: GTFO.AbsurdWeapons' Loot Mix is on, so it decides which consumables spawn - Consumables Are Kits and the spawn odds here are skipped.");
 
-        // Kits replace a table's items but not its size: a table keeps its share of the loot
-        // (bigger tables, more kits), scaled so the average table gives KitsPerZone kits.
-        var kitsPerZone = kits != null && kits.Count > 0 ? KitLoot.KitsPerZone() : 0f;
-        var averageSpawns = AverageConsumableSpawnsPerZone(consumableMult);
-        var kitSpawns = 0;
-        var kitTables = 0;
+        foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
+            block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
+
+        var kitsFilled = !absurdLoot && Plugin.ConsumablesAreKits.Value && KitLoot.Fill(new KitLootSettings
+            {
+                LogName = "Consumables Are Kits",
+                LootPercent = Plugin.KitLootPercent.Value,
+                MinCharges = Plugin.KitChargesMin.Value,
+                MaxCharges = Plugin.KitChargesMax.Value,
+                HealthWeight = Plugin.HealthKitWeight.Value,
+                ToolWeight = Plugin.ToolKitWeight.Value,
+                AmmoWeight = Plugin.AmmoKitWeight.Value,
+            }) > 0;
 
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
-            block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
-            if (absurdLoot || block.SpawnData == null || block.SpawnData.Count == 0) continue;
-
-            if (kits != null && kits.Count > 0)
-            {
-                block.SpawnData.Clear();
-                foreach (var (id, weight) in kits) block.SpawnData.Add(new ConsumableSpawnData { ItemID = id, Weight = weight });
-                block.SpawnsPerZone = averageSpawns > 0f ? Mathf.RoundToInt(kitsPerZone * block.SpawnsPerZone / averageSpawns) : 0;
-                kitSpawns += block.SpawnsPerZone;
-                kitTables++;
-                continue;
-            }
+            if (absurdLoot || kitsFilled || block.SpawnData == null || block.SpawnData.Count == 0) continue;
 
             // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
             // an item's weight retunes the odds between items rather than the total amount of
@@ -229,28 +225,11 @@ internal static class GameDataInit_Initialize_Patch
             if (totalWeight <= 0f) block.SpawnsPerZone = 0;
         }
 
-        if (kitTables > 0)
-            Plugin.Logger.LogInfo($"Consumables Are Kits: {kitsPerZone:0.##} kit(s) per zone on average ({Plugin.KitLootPercent.Value:0.#}% of the resource " +
-                $"budget) - {kitTables} table(s) went from {averageSpawns:0.##} consumables each on average to {(float)kitSpawns / kitTables:0.##} kits.");
-
         var bigPickupMult = Plugin.BigPickupSpawnMultiplier.Value;
         foreach (var block in GameDataBlockBase<BigPickupDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
         }
-    }
-
-    private static float AverageConsumableSpawnsPerZone(float consumableMult)
-    {
-        var total = 0;
-        var tables = 0;
-        foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
-        {
-            if (block?.SpawnData == null || block.SpawnData.Count == 0) continue;
-            total += ScaleUp(block.SpawnsPerZone, consumableMult);
-            tables++;
-        }
-        return tables == 0 ? 0f : (float)total / tables;
     }
 
     // With GTFO.AbsurdWeapons' Loot Mix on, its mix (kits, Hand Grenades, Stim Packs) replaces every

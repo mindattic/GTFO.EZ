@@ -51,6 +51,10 @@ vanilla-vs-default table):
   basic Sentry Gun.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
+- **Insert** toggles infinite ammo and **Delete** infinite health (your own player only), each
+  announced as a warden message; both start off. Every GTFO.* mod has these two keys, from one
+  shared copy of the code (see Shared code below), and with several installed only one of them
+  answers the keys, so a press never toggles twice.
 - A load confirmation: a "GTFO.EZ vN Active" line under the rundown title on the rundown-select
   screen, and a short warden-intel message in-level once you spawn.
 
@@ -75,6 +79,8 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 |---|---|
 | E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
 | Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
+| Insert | Infinite ammo on/off |
+| Delete | Infinite health on/off |
 | Z | Recall every bot-placed tool at once |
 | X | Place your own sentry without pulling it out (at your aim if holding it, else just ahead of you) |
 
@@ -157,6 +163,7 @@ after `build.ps1`.
 
 ```text
 src/GTFO.EZ/          the plugin project (BepInEx/Il2Cpp - needs the game installed to build)
+  Shared/             code every GTFO.* mod carries a copy of - owned here, published by tools/
 src/GTFO.EZ.Core/     pure balance data/math the plugin uses, with no BepInEx/Il2Cpp dependency -
                       split out so it's unit-testable; ships alongside GTFO.EZ.dll at runtime
 tests/                GTFO.EZ.Core.Tests - NUnit, runs with plain `dotnet test`, no game needed
@@ -167,7 +174,24 @@ package/              exactly what ships to Thunderstore / gets zipped for shari
   icon.png            256x256, resized from reference/logo-1254x1254.png
 reference/            (gitignored) local-only: EasyMode's files, vanilla data dumps, notes
 build.ps1             builds the plugin and packages dist/GTFO.EZ-<version>.zip
+tools/
+  publish-shared.ps1  copies src/GTFO.EZ/Shared into the other GTFO.* mods (-Check: report drift)
 ```
+
+## Shared code
+
+`src/GTFO.EZ/Shared/` is the one place the code shared by every GTFO.* mod is written:
+
+- `SharedOwner.cs` - with several of the mods installed, picks the one that answers shared keys
+  (the first installed of GTFO.EZ, GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.CrashTestDummies)
+  and holds state every copy must agree on once for the whole game process.
+- `InfiniteToggles.cs` - Insert / Delete, infinite ammo and health. Published to all three.
+- `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdWeapons, which runs it with its own
+  settings and adds its Hand Grenades and Stim Packs to the mix.
+
+After changing any of them, run `.	ools\publish-shared.ps1` and commit the copies in each repo;
+`.	ools\publish-shared.ps1 -Check` lists any copy that's out of date. The copies are never edited
+in place.
 
 ## Versioning
 

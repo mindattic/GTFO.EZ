@@ -2,6 +2,8 @@
 
 ## v14
 
+- New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
+  messages, shared by every GTFO.* mod so they never clash when several are installed.
 - **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
   every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
   on, this mod now leaves consumable loot entirely to it.

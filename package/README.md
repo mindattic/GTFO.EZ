@@ -77,8 +77,15 @@ its own, each with its own config section and on/off switch:
 |---|---|
 | E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
 | Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
+| Insert | Infinite ammo on/off |
+| Delete | Infinite health on/off |
 | Z | Recall every bot-placed tool at once |
 | X | Place your own sentry without pulling it out |
+
+**Infinite ammo and health** — **Insert** toggles infinite ammo (every gun and tool stays full,
+no reloads) and **Delete** toggles infinite health (no damage to you; bots and teammates are
+unaffected), each announced as a warden message. Both start off. Every GTFO.* mod has the same two
+keys; with several installed, only one answers, so a press never toggles twice.
 
 **How you know it's loaded** — a "GTFO.EZ vN Active" line appears under the rundown title on the
 rundown-select screen, and a short warden-intel message shows in-level once you spawn.
@@ -514,6 +521,8 @@ others' prior work:
 
 ### v14
 
+- New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
+  messages, shared by every GTFO.* mod so they never clash when several are installed.
 - **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
   every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
   on, this mod now leaves consumable loot entirely to it.
