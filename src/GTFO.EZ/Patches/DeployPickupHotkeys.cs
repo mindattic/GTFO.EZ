@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using Player;
+using SNetwork;
 using UnityEngine;
 
 namespace GTFO.EZ.Patches;
@@ -25,9 +26,15 @@ internal static class DeployPickupHotkeys_Update_Patch
         if (!LocalPlayerDamage.IsMine(__instance)) return;
         if (!Plugin.BotsDeployOnShiftE.Value || !Hotkeys.InPlay) return;
 
-        if (Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
+        // Bots belong to the host: a client running these would only move its own copy of the bot's
+        // turret, leaving host and client disagreeing about it. X (your own sentry) works anywhere.
+        if (SNet.IsMaster && Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E))
+        {
+            Hotkeys.ShiftEPressedAt = Time.time;
+            BotDeployAtAim.TryDeployNext();
+        }
 
-        if (Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
+        if (SNet.IsMaster && Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
 
         if (Input.GetKeyDown(KeyCode.X)) OwnSentryAutoPlace.Place();
     }
@@ -39,6 +46,11 @@ internal static class Hotkeys
     // menu, on the map, etc., where these letters are just text or menu input.
     internal static bool InPlay => FocusStateManager.CurrentState == eFocusState.FPS;
     internal static bool ShiftHeld => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
+    // When the last Shift+E bot deploy was pressed. Only the vanilla placement that same press
+    // triggers is held back - plain E with Shift held for sprinting still places your own sentry.
+    internal static float ShiftEPressedAt = -10f;
+    internal const float ShiftEPressWindow = 0.25f;
 }
 
 // With sentry placement made instant, the plain E inside Shift+E would also complete the
@@ -51,7 +63,7 @@ internal static class SentryGunFirstPerson_PlaceOnGround_ModifierGuard
     private static bool Prefix(SentryGunFirstPerson __instance)
     {
         if (OwnSentryAutoPlace.Placing || !Plugin.BotsDeployOnShiftE.Value) return true;
-        if (!Hotkeys.ShiftHeld) return true;
+        if (!Hotkeys.ShiftHeld || Time.time - Hotkeys.ShiftEPressedAt > Hotkeys.ShiftEPressWindow) return true;
         var own = BotDeployAtAim.LocalSentry();
         return own == null || own.Pointer != __instance.Pointer;
     }
