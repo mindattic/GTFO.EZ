@@ -459,8 +459,9 @@ either not multiplier-friendly or purely cosmetic/technical.
 ## Compatibility
 
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
-  mod's, so where the two clash it wins - notably loot, which follows its `[Loot]` settings (kits at
-  its odds and size, plus Hand Grenades) instead of *Consumables Are Kits* here. Its
+  mod's, so where the two clash it wins - notably loot: with its Loot Mix on, its mix (kits at its odds and size, plus Hand
+  Grenades, and Stim Packs when those are on) is the consumable loot, and this mod's *Consumables
+  Are Kits* and consumable spawn odds are skipped. *Consumable Spawn Multiplier* still applies. Its
   keys (Home/PgUp/PgDn) don't overlap with this mod's (E, Shift+E, X, Z). It leaves artifacts
   in place, so artifact buffs work with it installed.
 - **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
@@ -511,6 +512,9 @@ others' prior work:
 
 ### v14
 
+- **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
+  every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
+  on, this mod now leaves consumable loot entirely to it.
 - **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
   **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
   install GTFO.AbsurdMoves to keep dashing.

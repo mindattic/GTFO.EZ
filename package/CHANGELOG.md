@@ -2,6 +2,9 @@
 
 ## v14
 
+- **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
+  every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
+  on, this mod now leaves consumable loot entirely to it.
 - **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
   **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
   install GTFO.AbsurdMoves to keep dashing.

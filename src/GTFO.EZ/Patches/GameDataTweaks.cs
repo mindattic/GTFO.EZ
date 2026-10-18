@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BepInEx.Unity.IL2CPP;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
@@ -186,12 +187,14 @@ internal static class GameDataInit_Initialize_Patch
     private static void ApplyLootTweaks()
     {
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
-        var kits = Plugin.ConsumablesAreKits.Value ? KitLoot.Resolve() : null;
+        var absurdLoot = AbsurdWeaponsLootMixOn();
+        var kits = Plugin.ConsumablesAreKits.Value && !absurdLoot ? KitLoot.Resolve() : null;
+        if (absurdLoot) Plugin.Logger.LogInfo("Loot: GTFO.AbsurdWeapons' Loot Mix is on, so it decides which consumables spawn - Consumables Are Kits and the spawn odds here are skipped.");
 
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
-            if (block.SpawnData == null || block.SpawnData.Count == 0) continue;
+            if (absurdLoot || block.SpawnData == null || block.SpawnData.Count == 0) continue;
 
             if (kits != null && kits.Count > 0)
             {
@@ -218,6 +221,29 @@ internal static class GameDataInit_Initialize_Patch
         foreach (var block in GameDataBlockBase<BigPickupDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
+        }
+    }
+
+    // With GTFO.AbsurdWeapons' Loot Mix on, its mix (kits, Hand Grenades, Stim Packs) replaces every
+    // consumable table after this runs, so the item lists are left alone here. Zeroing an all-disabled
+    // table's count would otherwise leave it empty under that mix too, and Consumables Are Kits giving
+    // the kits contents first would stop its Kit Size from applying. Its setting is read off its own
+    // config; if that can't be found, a loaded AbsurdWeapons counts as on (its default).
+    private const string AbsurdWeaponsGuid = "MindAttic.GTFO.AbsurdWeapons";
+
+    private static bool AbsurdWeaponsLootMixOn()
+    {
+        try
+        {
+            if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(AbsurdWeaponsGuid, out var info)) return false;
+            if (info.Instance is BasePlugin plugin && plugin.Config.TryGetEntry<bool>("Loot", "Loot Mix Enabled", out var enabled))
+                return enabled.Value;
+            return true;
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogWarning($"Loot: couldn't check for GTFO.AbsurdWeapons, applying this mod's loot settings. {e.Message}");
+            return false;
         }
     }
 

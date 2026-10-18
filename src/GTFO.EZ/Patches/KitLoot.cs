@@ -7,9 +7,8 @@ namespace GTFO.EZ.Patches;
 // The kits for Consumables Are Kits: the game's own health, tool and ammo resource packs. Those
 // normally get their contents from the zone's resource budget; one spawned as a consumable has
 // none of its own, so ConsumableAmmoMin/Max are set to Kit Contents Min/Max (percent of a pack).
-// Same approach as GTFO.AbsurdWeapons' LootMix, which runs after this and takes precedence: with
-// it installed, its own mix (kits at its odds and size, plus Hand Grenades) replaces
-// these tables.
+// Same approach as GTFO.AbsurdWeapons' LootMix, which takes precedence: with its Loot Mix on, this
+// isn't run at all (see GameDataTweaks.AbsurdWeaponsLootMixOn) and its own mix fills the tables.
 internal static class KitLoot
 {
     internal static List<(uint Id, float Weight)> Resolve()
