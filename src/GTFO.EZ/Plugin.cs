@@ -5,6 +5,7 @@ using BepInEx.Unity.IL2CPP;
 using BepInEx.Logging;
 using GTFO.EZ.Core;
 using HarmonyLib;
+using UnityEngine;
 
 namespace GTFO.EZ;
 
@@ -75,6 +76,12 @@ public class Plugin : BasePlugin
 
     // GE-T10 spike - see Patches/TerminalPingPatch.cs. Diagnostic only; off by default.
     internal static ConfigEntry<bool> ExperimentalGlobalTerminalPing = null!;
+
+    // G.EZ-T34 spike - see Patches/DeployPickupHotkeys.cs. On by default at the user's request to
+    // test it live; calls private bot-AI methods directly and is only confirmed to compile, not
+    // confirmed safe by decompiling alone - may be reverted if it doesn't hold up in play.
+    internal static ConfigEntry<KeyCode> BotsDeployKey = null!;
+    internal static ConfigEntry<KeyCode> PickupAllDeployablesKey = null!;
 
     // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
     internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
@@ -691,5 +698,18 @@ public class Plugin : BasePlugin
             "same-zone ones. Off by default - a prior attempt at this broke the terminal in play. This version " +
             "never skips the terminal's own command handling and catches its own exceptions, but it's still " +
             "unverified in play - enable only to help diagnose LogOutput.log, not for normal use.");
+
+        BotsDeployKey = Config.Bind("Experimental", "Bots Deploy Key (SPIKE)", KeyCode.O,
+            "G.EZ-T34 spike: deploys bot1's currently equipped tool (sentry gun, etc.) in place, waits for " +
+            "confirmation it actually went down, then does the same for bot2 and bot3 in turn. Doesn't touch " +
+            "your own deploy, which stays the normal vanilla interact. Calls the bot AI's own placement method " +
+            "directly since there's no vanilla order for 'deploy now' - only confirmed to compile, not confirmed " +
+            "safe by decompiling alone. On by default to test live; set to a different key or None to disable.");
+
+        PickupAllDeployablesKey = Config.Bind("Experimental", "Pickup All Deployables Key (SPIKE)", KeyCode.P,
+            "G.EZ-T34 spike: instantly recalls every deployable any bot has placed and not yet retrieved, all at " +
+            "once, straight into their backpacks - no walking back to each one. Doesn't touch your own pickup, " +
+            "which stays the normal vanilla interact. Only confirmed to compile, not confirmed safe by decompiling " +
+            "alone. On by default to test live; set to a different key or None to disable.");
     }
 }
