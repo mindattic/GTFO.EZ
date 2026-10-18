@@ -9,7 +9,9 @@
 - New **Consumables Are Kits** (Loot, on by default): every consumable found in boxes, lockers or
   lying around is a health, tool or ammo kit holding 20-40% of a pack (weights and contents
   configurable); the zone's normal resource packs still spawn as usual. GTFO.EZ no longer turns
-  disabled consumables into syringes, and its two syringe spawn-odds settings are gone.
+  disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
+  GTFO.AbsurdWeapons installed, its Hand Grenades and Stim Packs join these kits instead of
+  replacing them.
 - **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
   matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
   Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead
