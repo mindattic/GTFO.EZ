@@ -1,0 +1,13 @@
+# This repo's own files are LF in the index; Windows tools that write CRLF get normalized on add.
+# .prose/ and AGENTS.md are written by the shared mindattic-agent-standard installer, so they're
+# left alone here rather than churned every time it runs.
+src/**          text eol=lf
+tests/**        text eol=lf
+docs/**         text eol=lf
+package/*.md    text eol=lf
+package/*.json  text eol=lf
+README.md       text eol=lf
+build.ps1       text eol=lf
+.gitignore      text eol=lf
+.gitattributes  text eol=lf
+*.png           binary
