@@ -44,8 +44,8 @@ vanilla-vs-default table):
 - Revive duration is cut roughly two-thirds.
 - Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
   default. Placing your own switches you straight back to the weapon you had out before.
-- **Dash**: double-tap Shift (plus W/A/S/D for direction, forward if none held) for a quick 6 m
-  dash, mainly to sidestep homing projectiles. It moves you through the game's own character
+- **Dash**: hold Shift and double-tap W/A/S/D for a quick 6 m dash that way, mainly to
+  sidestep homing projectiles. It moves you through the game's own character
   controller, so walls stop it; 1.5 s cooldown. Tunable under the `Dash` config section.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
@@ -71,7 +71,7 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 | Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
 | Alt+E or Z | Recall every bot-placed tool at once |
 | X | Place your own sentry without pulling it out (at your aim if holding it, else just ahead of you) |
-| Shift, Shift (+ W/A/S/D) | Dash |
+| Hold Shift + double-tap W/A/S/D | Dash that way |
 
 ## Quick start
 

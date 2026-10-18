@@ -82,7 +82,7 @@ public class Plugin : BasePlugin
     // confirmed safe by decompiling alone - may be reverted if it doesn't hold up in play.
     internal static ConfigEntry<bool> BotsDeployOnShiftE = null!;
 
-    // G.EZ-T37 - see Patches/DashPatch.cs. Double-tap Shift (+ a movement direction) for a quick
+    // G.EZ-T37 - see Patches/DashPatch.cs. Hold Shift and double-tap W/A/S/D for a quick
     // dash, mainly to duck out of a homing projectile's path on short notice.
     internal static ConfigEntry<bool> DashEnabled = null!;
     internal static ConfigEntry<float> DashDistance = null!;
@@ -727,7 +727,7 @@ public class Plugin : BasePlugin
             "bot tools) and X (place your own) - so false turns all of them off. On by default to test live.");
 
         DashEnabled = Config.Bind("Dash", "Dash Enabled", true,
-            "Double-tap Shift (plus a movement direction, or just Shift alone to dash forward) for a quick dash - " +
+            "Hold Shift and double-tap W, A, S or D for a quick dash that way, relative to where you look - " +
             "mainly to duck out of a homing projectile's path on short notice. Moves you through the game's own " +
             "character controller, so it collides with walls and enemies like any other movement.");
 
@@ -741,7 +741,7 @@ public class Plugin : BasePlugin
             "Seconds before another dash can trigger after one finishes. Default 1.5.");
 
         DashDoubleTapWindowSeconds = Config.Bind("Dash", "Dash Double-Tap Window (seconds)", 0.3f,
-            "How quickly the two Shift presses must land to count as a double-tap. Default 0.3.");
+            "How quickly the two presses of the same direction key must land to count as a double-tap. Default 0.3.");
 
         FogClearEnabled = Config.Bind("Fog Clearing", "Fog Clearing Enabled", true,
             "Keeps a silent, invisible fog-clearing sphere around you - the same fog-system sphere the Fog Repeller " +
