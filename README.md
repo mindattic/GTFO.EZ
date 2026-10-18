@@ -1,85 +1,191 @@
 # GTFO.EZ
 
-Dev repo for **GTFO.EZ**, a BepInEx IL2CPP plugin for GTFO that tunes player stats (health, regen,
-stamina, fall damage, ammo, enemy detection range) for an easier co-op experience. A curated set
-of defaults covers that core experience; underneath it, 530+ config entries expose nearly every
-other per-zone, per-enemy, and per-weapon balance value the game has, for players who want to go
-further — see `package/README.md` for the full breakdown.
+A BepInEx IL2CPP plugin for GTFO that tunes health, regen, stamina, fall damage, ammo, and enemy
+detection for an easier co-op run, with 530+ further config values exposed underneath for players
+who want to go deeper.
 
-Published on Thunderstore: https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/
+![Language](https://img.shields.io/badge/language-C%23%20(.NET%206)-blue)
+![Platform](https://img.shields.io/badge/platform-BepInEx%20IL2CPP-informational)
+![Status](https://img.shields.io/badge/status-active%20(v11)-success)
 
-Unlike Mendu's EasyMode (a datablock-JSON mod via MTFO), this ships no copies of the game's data
-files. It patches `GameDataInit.Initialize` and adjusts fields on the game's own loaded datablocks
-at runtime as multipliers, so it keeps working across patches that rebalance base values instead
-of going stale.
+Try it: install from [Thunderstore](https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/) (listed
+there as `GtfoEZ`, since package names can't contain a period).
 
-## Layout
+## Why
 
+- Play GTFO's existing rundowns without a full difficulty rewrite - this patches fields on the
+  game's own loaded datablocks at load time instead of shipping replacement JSON, so it keeps
+  working across patches that only rebalance base values.
+- Defaults are tuned against other long-running GTFO easy-mode mods' settled-on numbers, not one
+  person's guess, so a fresh group can drop in without an hour of config tuning first.
+- Nothing is hidden: every tunable value, curated or not, lands in the config file BepInEx writes
+  on first launch, so a group can push further (or less) without anyone recompiling.
+- Upgrades don't silently undo a player's own choices: BepInEx normally freezes whatever's already
+  in a `.cfg`, so this mod runs a one-time, per-setting migration whenever a *default* changes,
+  instead of leaving upgraders stuck on a stale number forever.
+
+## Features
+
+**Core tuning** (community-consensus defaults; see `package/README.md` for the full
+vanilla-vs-default table):
+
+- Health, regen rate and regen cap, stamina (removes the in-combat penalty), fall damage amount
+  and max-damage height, weapon/tool ammo, and enemy movement-detection range.
+- I2-LP (health) syringes are a temporary overheal buff instead of a flat heal: inject for +50% of
+  max health, which can push you past 100%, then drains back to your pre-syringe health at 1% of
+  max health per second. The item is renamed "Stim Pack" in-game (pickup, inventory, and terminal
+  key `STIM_PACK`).
+- Glow Stick, Lock Melter, C-Foam Grenade, C-Foam Tripmine, Explosive Trip Mine, and Fog Repeller
+  spawns are disabled by default; their freed loot slots become Stim Pack / melee-buff syringes
+  instead of nothing, so disabling an item doesn't just empty the loot pool.
+- Fog is switched off outright (a density multiplier turned out to have no visible in-game effect,
+  so v11 replaced it with a toggle on the fog's own enabled flag).
+- Revive duration is cut roughly two-thirds.
+- On first launch only, switches on four of the game's own control options (toggle comms menu,
+  toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
+
+**Everything else** - 530+ further config entries covering flashlights, movement speed, friendly
+fire, battery drain, no-air damage, per-enemy health/damage, the full per-difficulty-tier
+`ExpeditionBalanceDataBlock` (loot budgets, enemy caps, level generation, doors), every melee
+weapon, and every ranged weapon archetype plus sentries - all left at vanilla by default. See
+`package/README.md` for the complete breakdown, including real in-game weapon names.
+
+**Experimental** - a level-wide terminal PING spike (off by default, `Experimental` config
+section) that is instrumented but not yet confirmed safe in actual play; see Limitations below.
+
+## Quick start
+
+Requires the [.NET 6 SDK](https://dotnet.microsoft.com/) and `BepInExPack_GTFO` already installed
+and launched at least once ("Modded" start) in a Thunderstore Mod Manager or r2modman profile.
+
+```powershell
+git clone https://github.com/mindattic/GTFO.EZ.git
+cd GTFO.EZ
+.\build.ps1
 ```
+
+This builds against the Thunderstore Mod Manager profile named "Easy Mode DEV" by default
+(`.\build.ps1 -Profile MyProfile` to use another one), places the plugin straight into that
+profile's `BepInEx/plugins/GTFO.EZ/` folder so you can launch the game and test immediately, and
+also produces `dist/GTFO.EZ-<version>.zip` for sharing. A successful load shows "GTFO.EZ vN
+Active..." on the rundown-select screen and again as a warden-intel message in-level.
+
+If you're on the older r2modman app instead, its profiles live under a different path - point the
+build at it directly:
+
+```powershell
+dotnet build .\src\GTFO.EZ\GTFO.EZ.csproj -p:BepInEx="$env:AppData\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
+```
+
+## How it works
+
+```text
+GameDataInit.Initialize (game boot)
+        |
+        v
+  GameDataTweaks postfix patch
+        |
+        +--> ApplyPlayerTweaks / ApplyFallDamageTweaks / ApplyAmmoTweaks / ...
+        |      (each of the 9 tweak categories runs in its own try/catch -
+        |       one broken category logs and skips, the rest still apply)
+        v
+  multiplies fields directly on the game's own loaded datablocks
+  (PlayerDataBlock, FogSettingsDataBlock, ExpeditionBalanceDataBlock, ...)
+```
+
+No datablock JSON is shipped or copied. Everything is a multiplier (or toggle) applied in memory
+once, at load time, read from the BepInEx config. Additional Harmony patches cover behaviour that
+isn't a simple datablock field: the Stim Pack overheal/drain (`SyringeHealPatch`), one-time control
+defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, and the experimental
+terminal ping spike.
+
+## Configuration
+
+All tweaks are multipliers or toggles, tunable after first launch in
+`BepInEx/config/MindAttic.GTFO.EZ.cfg` - no rebuild needed to retune a value. Config sections
+mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
+Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
+Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
+type/archetype, Sentries, and Experimental.
+
+BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a *default*
+between versions, an existing install won't pick up the new number on its own -
+`Plugin.ApplyConfigDefaultMigrations` applies the one-time, per-setting correction instead of
+leaving upgraders silently stuck on a stale default (see `package/CHANGELOG.md` for the version
+each migration was introduced in).
+
+## Testing
+
+```powershell
+dotnet test tests\GTFO.EZ.Core.Tests\GTFO.EZ.Core.Tests.csproj
+```
+
+No game install or BepInEx profile needed - `GTFO.EZ.Core` holds the plugin's pure balance data and
+math (weapon/melee config-table generation, the `WeaponMult`/`MeleeMult`/`ScaleInt` multiplier and
+rounding logic, config-key validation) with no BepInEx/Il2Cpp dependency, so it's unit tested
+directly with NUnit. The datablock patches themselves (`src/GTFO.EZ/Patches/`) can't be unit
+tested - they only run against the game's own loaded data - so verify those by launching the game
+after `build.ps1`.
+
+## Project layout
+
+```text
 src/GTFO.EZ/          the plugin project (BepInEx/Il2Cpp - needs the game installed to build)
 src/GTFO.EZ.Core/     pure balance data/math the plugin uses, with no BepInEx/Il2Cpp dependency -
                       split out so it's unit-testable; ships alongside GTFO.EZ.dll at runtime
 tests/                GTFO.EZ.Core.Tests - NUnit, runs with plain `dotnet test`, no game needed
 package/              exactly what ships to Thunderstore / gets zipped for sharing
   manifest.json       Thunderstore package name is "GtfoEZ" (no period allowed there)
-  README.md           becomes the Thunderstore page
+  README.md           becomes the Thunderstore page - full vanilla-vs-default tables and changelog
   CHANGELOG.md
   icon.png            256x256, resized from reference/logo-1254x1254.png
 reference/            (gitignored) local-only: EasyMode's files, vanilla data dumps, notes
 build.ps1             builds the plugin and packages dist/GTFO.EZ-<version>.zip
 ```
 
-## Building
-
-Requires BepInExPack_GTFO already installed, and launched at least once ("Modded" start), in a
-Thunderstore Mod Manager or r2modman profile.
-
-```powershell
-.\build.ps1                      # uses the Thunderstore Mod Manager profile "Easy Mode DEV"
-.\build.ps1 -Profile MyProfile
-```
-
-If you're on the older r2modman app instead of Thunderstore Mod Manager, its profiles live under
-a different path — pass it directly instead:
-```powershell
-dotnet build .\src\GTFO.EZ\GTFO.EZ.csproj -p:BepInEx="$env:AppData\r2modmanPlus-local\GTFO\profiles\Default\BepInEx"
-```
-
-This builds straight into that profile's `BepInEx/plugins/GTFO.EZ/` folder (so you can launch the
-game and test immediately) and also produces `dist/GTFO.EZ-<version>.zip` for sharing or upload.
-
-## Testing
-
-```powershell
-dotnet test tests/GTFO.EZ.Core.Tests/GTFO.EZ.Core.Tests.csproj
-```
-
-No game install or BepInEx profile needed - `GTFO.EZ.Core` holds the plugin's pure balance data
-and math (weapon/melee config-table generation, the `ScaleInt`/multiplier-composition logic) with
-no BepInEx/Il2Cpp dependency, so it's unit-tested directly. The actual datablock patches in
-`src/GTFO.EZ/Patches/` still can't be unit tested - they only run against the game's own loaded
-data - so verify those by launching the game after `build.ps1`.
-
-## Config
-
-All tweaks are multipliers, tunable after first launch in
-`BepInEx/config/MindAttic.GTFO.EZ.cfg` — no rebuild needed to retune values.
-
-BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a default
-between versions, an existing install won't pick up the new number on its own — see
-`Plugin.ApplyConfigDefaultMigrations` for the one-time, per-setting correction this mod applies
-instead of leaving upgraders silently stuck on a stale default.
-
 ## Versioning
 
-v1, v2, v3... — major-only bumps, matching the convention across other MindAttic projects.
-Thunderstore requires `manifest.json`'s `version_number` to be strict `x.y.z`, so "v1" is
-`1.0.0`, "v2" is `2.0.0`, and so on (minor/patch stay 0). `package/CHANGELOG.md` headers use the
-short `vN` form; the manifest keeps the `N.0.0` form Thunderstore requires.
+v1, v2, v3... - major-only bumps, matching the convention across other MindAttic projects.
+Thunderstore requires `manifest.json`'s `version_number` to be strict `x.y.z`, so "v1" is `1.0.0`,
+"v2" is `2.0.0`, and so on (minor/patch stay 0). `package/CHANGELOG.md` headers use the short `vN`
+form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release: v11.
 
 ## Sharing with friends
 
 - **Private:** Import the zip from `dist/` as a local mod in your mod manager, then
   `Settings -> Profile -> Export profile as code` and send friends the code.
 - **Public:** Published on Thunderstore at https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/.
-  Everyone in a lobby needs the identical mod + config.
+  Everyone in a lobby needs the identical mod and config.
+
+## Limitations
+
+- The level-wide terminal PING spike (`Experimental` config section, off by default) is
+  instrumented with logging but hasn't had an actual in-game PING attempt to confirm it's safe -
+  see the `TerminalPing_EvaluateInput_Patch` doc comment for the current working theory.
+- Datablock patches can only be verified by launching the game; they have no automated test
+  coverage (see Testing above).
+
+## Documentation
+
+- `docs/USER_STORIES.md` - the project's living feature/ticket log (generated from the shared
+  workflow database; don't hand-edit it).
+- `package/README.md` - the Thunderstore page: the complete vanilla-vs-default stat tables and the
+  full version-by-version changelog.
+- `AGENTS.md` - entrypoint for LLM agents working in this repo.
+
+## License
+
+No LICENSE file is included in this repository; all rights are reserved.
+
+## Attributions
+
+See `package/README.md` for full credits to the other GTFO mods and the modding community this
+project's design and defaults are built on.
+
+---
+
+Part of [MindAttic](https://mindattic.com) - see more projects at
+[github.com/mindattic](https://github.com/mindattic). Other GTFO mods from the same team:
+[GTFO.AbsurdWeapons](https://github.com/mindattic/GTFO.AbsurdWeapons),
+[GTFO.CrashTestDummies](https://github.com/mindattic/GTFO.CrashTestDummies), and
+[GTFO.SkipDrop](https://github.com/mindattic/GTFO.SkipDrop).
