@@ -162,10 +162,16 @@ internal static class TerminalPingAnywhere_Tick_Patch
 {
     [HarmonyPatch(nameof(Dam_PlayerDamageLocal.Update))]
     [HarmonyPostfix]
-    private static void Update_Postfix() => TerminalPingAnywhere.Tick();
+    private static void Update_Postfix(Dam_PlayerDamageLocal __instance)
+    {
+        if (LocalPlayerDamage.IsMine(__instance)) TerminalPingAnywhere.Tick();
+    }
 
     // A new level: the old level's marker ids mean nothing any more.
     [HarmonyPatch(nameof(Dam_PlayerDamageLocal.Setup))]
     [HarmonyPostfix]
-    private static void Setup_Postfix() => TerminalPingAnywhere.Clear();
+    private static void Setup_Postfix(Dam_PlayerDamageLocal __instance)
+    {
+        if (LocalPlayerDamage.IsMine(__instance)) TerminalPingAnywhere.Clear();
+    }
 }

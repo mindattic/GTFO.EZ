@@ -122,7 +122,10 @@ internal static class ArtifactBuffs_Patches
 
     [HarmonyPatch(typeof(Dam_PlayerDamageLocal), nameof(Dam_PlayerDamageLocal.Setup))]
     [HarmonyPostfix]
-    private static void AfterLevelSetup() => ArtifactBuffs.Reset();
+    private static void AfterLevelSetup(Dam_PlayerDamageLocal __instance)
+    {
+        if (LocalPlayerDamage.IsMine(__instance)) ArtifactBuffs.Reset();
+    }
 
     [HarmonyPatch(typeof(Dam_EnemyDamageLimb), nameof(Dam_EnemyDamageLimb.BulletDamage))]
     [HarmonyPrefix]

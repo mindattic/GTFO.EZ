@@ -15,11 +15,17 @@ internal static class FogClearPulse_Patch
 {
     [HarmonyPatch(nameof(Dam_PlayerDamageLocal.Update))]
     [HarmonyPostfix]
-    private static void Update_Postfix() => FogClearPulse.Tick();
+    private static void Update_Postfix(Dam_PlayerDamageLocal __instance)
+    {
+        if (LocalPlayerDamage.IsMine(__instance)) FogClearPulse.Tick();
+    }
 
     [HarmonyPatch(nameof(Dam_PlayerDamageLocal.Setup))]
     [HarmonyPostfix]
-    private static void Setup_Postfix() => FogClearPulse.Reset();
+    private static void Setup_Postfix(Dam_PlayerDamageLocal __instance)
+    {
+        if (LocalPlayerDamage.IsMine(__instance)) FogClearPulse.Reset();
+    }
 }
 
 internal static class FogClearPulse

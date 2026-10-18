@@ -20,8 +20,9 @@ namespace GTFO.EZ.Patches;
 internal static class DeployPickupHotkeys_Update_Patch
 {
     [HarmonyPostfix]
-    private static void Postfix()
+    private static void Postfix(Dam_PlayerDamageLocal __instance)
     {
+        if (!LocalPlayerDamage.IsMine(__instance)) return;
         if (!Plugin.BotsDeployOnShiftE.Value || !Hotkeys.InPlay) return;
 
         if (Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
