@@ -18,7 +18,8 @@ internal static class PlayerAgent_Setup_Patch
     [HarmonyPostfix]
     private static void Postfix(PlayerAgent __instance)
     {
-        if (!__instance.IsLocallyOwned) return;
+        // The host's bots are locally owned too; only the player's own agent announces.
+        if (!__instance.IsLocallyOwned || __instance.Owner == null || __instance.Owner.IsBot) return;
         GuiManager.PlayerLayer?.ShowWardenIntel(Plugin.EasterEggMessage, EasyModeAnnouncementDelaySeconds, EasyModeAnnouncementDurationSeconds);
     }
 }
