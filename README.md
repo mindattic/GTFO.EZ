@@ -42,7 +42,10 @@ vanilla-vs-default table):
   so v11 replaced it with a toggle on the fog's own enabled flag).
 - Revive duration is cut roughly two-thirds.
 - Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
-  default.
+  default. Placing your own switches you straight back to the weapon you had out before.
+- **Dash**: double-tap Shift (plus W/A/S/D for direction, forward if none held) for a quick 6 m
+  dash, mainly to sidestep homing projectiles. It moves you through the game's own character
+  controller, so walls stop it; 1.5 s cooldown. Tunable under the `Dash` config section.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
 
@@ -52,8 +55,20 @@ fire, battery drain, no-air damage, per-enemy health/damage, the full per-diffic
 weapon, and every ranged weapon archetype plus sentries - all left at vanilla by default. See
 `package/README.md` for the complete breakdown, including real in-game weapon names.
 
-**Experimental** - a level-wide terminal PING spike (off by default, `Experimental` config
-section) that is instrumented but not yet confirmed safe in actual play; see Limitations below.
+**Experimental** (`Experimental` config section; see Limitations below):
+
+- **Bot tool controls** (on by default): aim your own sentry's placement ghost and press
+  **Shift+E** to drop the next bot's equipped tool there instead of yours; **Alt+E** instantly
+  recalls every bot-placed tool back into its bot.
+- A level-wide terminal PING spike (off by default), instrumented but not yet confirmed safe in
+  actual play.
+
+| Input | Action |
+|---|---|
+| E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
+| Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
+| Alt+E | Recall every bot-placed tool at once |
+| Shift, Shift (+ W/A/S/D) | Dash |
 
 ## Quick start
 
@@ -98,8 +113,9 @@ GameDataInit.Initialize (game boot)
 No datablock JSON is shipped or copied. Everything is a multiplier (or toggle) applied in memory
 once, at load time, read from the BepInEx config. Additional Harmony patches cover behaviour that
 isn't a simple datablock field: the Stim Pack overheal/drain (`SyringeHealPatch`), one-time control
-defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, and the experimental
-terminal ping spike.
+defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant sentry placement
+(`SentryInstantPlacementPatch`), the dash (`DashPatch`), the experimental bot tool controls
+(`DeployPickupHotkeys`), and the experimental terminal ping spike.
 
 ## Configuration
 
@@ -108,7 +124,7 @@ All tweaks are multipliers or toggles, tunable after first launch in
 mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
 Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
-type/archetype, Sentries, and Experimental.
+type/archetype, Sentries, Dash, and Experimental.
 
 BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a *default*
 between versions, an existing install won't pick up the new number on its own -
@@ -164,6 +180,11 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
 - The level-wide terminal PING spike (`Experimental` config section, off by default) is
   instrumented with logging but hasn't had an actual in-game PING attempt to confirm it's safe -
   see the `TerminalPing_EvaluateInput_Patch` doc comment for the current working theory.
+- The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
+  "deploy now" order). Shift+E placement is confirmed working in play; Alt+E recall and
+  the clear-slot/weapon-switch-back after placing are compiled but not yet confirmed in play.
+- The dash is compiled and built on the same movement approach as GTFO.AbsurdWeapons' Katana
+  dash, but not yet confirmed in play.
 - Datablock patches can only be verified by launching the game; they have no automated test
   coverage (see Testing above).
 
