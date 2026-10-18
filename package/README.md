@@ -464,6 +464,10 @@ others' prior work:
   matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
   Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead
   of scaling a density value that didn't render differently.
+- **Bug fix:** if the I2-LP life buff was still holding max health raised (the overheal case where
+  native code's own cap had to be lifted) when a level ended, that raised cap stuck forever -
+  nothing restored it going into the next level, so max health could creep upward for the rest of
+  the expedition. Starting a new level now restores it first if it was still raised.
 
 ### v11
 

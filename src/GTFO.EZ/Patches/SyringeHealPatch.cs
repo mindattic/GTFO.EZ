@@ -58,9 +58,12 @@ internal static class SyringeLifeBuff_Tick_Patch
     private static void Update_Postfix(Dam_PlayerDamageLocal __instance) => SyringeLifeBuff.Tick(__instance);
 
     // A new level means a new local player, so a buff still running from the last one is dropped.
+    // Passes the instance along so a HealthMax raised for the buff that just ended gets restored
+    // on it specifically, rather than left inflated forever on a player object the game reuses
+    // across levels within the same expedition (see SyringeLifeBuff.Clear).
     [HarmonyPatch(nameof(Dam_PlayerDamageLocal.Setup))]
     [HarmonyPostfix]
-    private static void Setup_Postfix() => SyringeLifeBuff.Clear();
+    private static void Setup_Postfix(Dam_PlayerDamageLocal __instance) => SyringeLifeBuff.Clear(__instance);
 }
 
 // Turns the I2-LP into a temporary life buff: the health you had when injecting is the baseline,
@@ -126,8 +129,19 @@ internal static class SyringeLifeBuff
         Plugin.Logger.LogInfo($"I2-LP life buff: heal of {amount:0.##} HP kept, baseline now {_baseline:0.##} HP.");
     }
 
-    internal static void Clear()
+    // Drops the buff from tracking. If the buff had raised HealthMax and the caller can hand back
+    // the exact live instance that was raised, restores it first - otherwise an inflated max would
+    // stick on that object forever, since nothing else ever lowers it back once tracking stops.
+    // (Grant's own "different owner" call site never has that instance to hand back, but it also
+    // never needs to: this patch only ever tracks the local player's own Dam_SyncedDamageBase, so
+    // there's no real scenario where the owner changes out from under a still-raised buff.)
+    internal static void Clear(Dam_SyncedDamageBase? sameInstance = null)
     {
+        if (_maxRaised && sameInstance != null && sameInstance.Pointer == _owner)
+        {
+            sameInstance.HealthMax = _originalMax;
+        }
+
         _owner = IntPtr.Zero;
         _active = false;
         _maxRaised = false;

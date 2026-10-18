@@ -4,7 +4,7 @@ project: GTFO.EZ
 code: G.EZ
 layer: stories
 status: living
-updated: 2026-10-15
+updated: 2026-10-17
 ---
 <!-- GENERATED from MindAttic.Workflow/data/workflow.db by `workflow db render`. Do not edit: this file is rewritten from the database; change stories and tickets with the workflow CLI. -->
 
@@ -52,3 +52,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T29 | 2026-10-16 | docs | open | Bring README.md up to date with the code as it is now (what it is, setup, usage, commands, current state), following codex-standard/README-STYLE.md; README.htm regenerated if the repo has one | user request 2026-10-16: approved repo sweep |
 | G.EZ-T30 | 2026-10-16 | docs | closed | Update USER_STORIES.md | — |
 | G.EZ-T31 | 2026-10-17 | fix | closed | 90% Fog Density Multiplier had no visible effect in-game; replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead of scaling density | src/GTFO.EZ/Plugin.cs DisableFog, src/GTFO.EZ/Patches/GameDataTweaks.cs ApplyFogTweaks |
+| G.EZ-T33 | 2026-10-17 | fix | open | I2-LP life buff left max health raised forever if a level transition happened while the buff still had HealthMax raised (SyringeLifeBuff.Clear never restored it, only End did) | found via exhaustive /bughunt pass for G.EZ-T26 |
