@@ -22,15 +22,38 @@ internal static class DeployPickupHotkeys_Update_Patch
     [HarmonyPostfix]
     private static void Postfix()
     {
-        if (!Plugin.BotsDeployOnShiftE.Value) return;
+        if (!Plugin.BotsDeployOnShiftE.Value || !Hotkeys.InPlay) return;
 
-        var shiftHeld = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        if (shiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
+        if (Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
 
-        var altHeld = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
-        if ((altHeld && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
+        if ((Hotkeys.AltHeld && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
 
         if (Input.GetKeyDown(KeyCode.X)) OwnSentryAutoPlace.Place();
+    }
+}
+
+internal static class Hotkeys
+{
+    // Only in normal first-person play - not while typing at a terminal or in chat, in the Q comms
+    // menu, on the map, etc., where these letters are just text or menu input.
+    internal static bool InPlay => FocusStateManager.CurrentState == eFocusState.FPS;
+    internal static bool ShiftHeld => Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+    internal static bool AltHeld => Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
+}
+
+// With sentry placement made instant, the plain E inside Shift+E / Alt+E would also complete the
+// vanilla placement of your own held sentry in the same press. Hold that back for your own sentry
+// only - a bot's placement and X's own call go through.
+[HarmonyPatch(typeof(SentryGunFirstPerson), nameof(SentryGunFirstPerson.PlaceOnGround))]
+internal static class SentryGunFirstPerson_PlaceOnGround_ModifierGuard
+{
+    [HarmonyPrefix]
+    private static bool Prefix(SentryGunFirstPerson __instance)
+    {
+        if (OwnSentryAutoPlace.Placing || !Plugin.BotsDeployOnShiftE.Value) return true;
+        if (!Hotkeys.ShiftHeld && !Hotkeys.AltHeld) return true;
+        var own = BotDeployAtAim.LocalSentry();
+        return own == null || own.Pointer != __instance.Pointer;
     }
 }
 
@@ -50,9 +73,12 @@ internal static class SentryGunFirstPerson_PlaceOnGround_Patch
             // Pointer, not ==: two Il2Cpp wrappers around the same native object aren't reference-equal.
             if (!localBackpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem?.Instance?.Pointer != __instance.Pointer) return;
 
-            if (!PlayerManager.TryGetLocalPlayerAgent(out var localAgent) || localAgent == null) return;
+            if (!PlayerManager.TryGetLocalPlayerAgent(out var localAgent) || localAgent?.Inventory == null) return;
+            // Only when you were actually holding the sentry - X places it from the backpack while
+            // you hold something else, and that weapon must stay in your hands.
+            if (localAgent.Inventory.WieldedSlot != InventorySlot.GearClass) return;
             var lastSlot = InventorySlot.None;
-            if (!localBackpack.GetLastEquippedGear(ref lastSlot) || lastSlot == InventorySlot.None) return;
+            if (!localBackpack.GetLastEquippedGear(ref lastSlot) || lastSlot == InventorySlot.None || lastSlot == InventorySlot.GearClass) return;
             if (!localBackpack.TryGetBackpackItem(lastSlot, out var previousItem) || previousItem?.Instance == null) return;
             var previousEquippable = previousItem.Instance.TryCast<ItemEquippable>();
             if (previousEquippable == null) return;
@@ -175,6 +201,9 @@ internal static class OwnSentryAutoPlace
     private const float GroundProbeHeight = 1.5f;
     private const float GroundProbeDepth = 4f;
 
+    // Lets X's own PlaceOnGround call past the Shift/Alt modifier guard.
+    internal static bool Placing;
+
     internal static void Place()
     {
         try
@@ -201,12 +230,17 @@ internal static class OwnSentryAutoPlace
             sentry.m_placePos = pose.position;
             sentry.m_cameraLookRot = pose.rotation;
             sentry.m_lastCanPlace = true;
+            Placing = true;
             sentry.PlaceOnGround();
             Plugin.Logger.LogInfo("X: placed your sentry.");
         }
         catch (Exception e)
         {
             Plugin.Logger.LogWarning($"X: couldn't place your sentry. {e}");
+        }
+        finally
+        {
+            Placing = false;
         }
     }
 

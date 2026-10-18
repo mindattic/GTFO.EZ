@@ -48,6 +48,7 @@ internal static class FogClearPulse
         _sphere = null;
         _elapsed = 0f;
         _retryIn = 0f;
+        _failed = false; // a failure (e.g. mid level unload) only switches it off until the next level
     }
 
     internal static void Tick()
@@ -73,9 +74,9 @@ internal static class FogClearPulse
         }
         catch (Exception e)
         {
-            // Stops for the rest of the session rather than throwing every frame.
+            // Stops until the next level rather than throwing every frame.
             _failed = true;
-            Plugin.Logger.LogError($"Fog Clearing: failed, turning it off for this session. {e}");
+            Plugin.Logger.LogError($"Fog Clearing: failed, turning it off until the next level. {e}");
         }
     }
 
