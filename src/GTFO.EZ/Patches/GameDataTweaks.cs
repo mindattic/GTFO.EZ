@@ -179,60 +179,39 @@ internal static class GameDataInit_Initialize_Patch
         }
     }
 
-    // Consumables (med/ammo packs, syringes) and big pickups (fog turbines, artifacts) are
-    // separate distribution datablocks, each with its own spawns-per-zone count.
+    // Consumables (what boxes and lockers hold, and what lies around a zone) and big pickups (fog
+    // turbines, artifacts) are separate distribution datablocks, each with its own spawns-per-zone
+    // count. Med/ammo/tool kits from the zone's resource budget are a separate system again and are
+    // never touched here.
     private static void ApplyLootTweaks()
     {
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
-
-        // Only an enabled syringe can take a disabled item's slot (see below) - these two flags
-        // are plain config reads, the same for every table, so they're resolved once rather than
-        // on every iteration of the per-table loop below.
-        var healthSyringeOn = Plugin.HealthSyringeSpawnWeightMultiplier.Value > 0f;
-        var meleeSyringeOn = Plugin.MeleeBuffSyringeSpawnWeightMultiplier.Value > 0f;
+        var kits = Plugin.ConsumablesAreKits.Value ? KitLoot.Resolve() : null;
 
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
+            if (block.SpawnData == null || block.SpawnData.Count == 0) continue;
+
+            if (kits != null && kits.Count > 0)
+            {
+                block.SpawnData.Clear();
+                foreach (var (id, weight) in kits) block.SpawnData.Add(new ConsumableSpawnData { ItemID = id, Weight = weight });
+                continue;
+            }
 
             // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
             // an item's weight retunes the odds between items rather than the total amount of
             // loot (that's the SpawnsPerZone scale above). Both glow stick colors share one entry.
-            //
-            // A disabled item (multiplier 0) doesn't just drop out: its slot becomes a syringe at
-            // the item's original odds, alternating I2-LP (health) and IIx (melee) per table.
-            // Dropping out alone hands its share to whatever's left - in 23 vanilla tables that's
-            // only the Long Range Flashlight, and 25 tables would have nothing left at all (an
-            // all-zero lottery with undefined draws). Med/ammo/tool packs would be the obvious
-            // pick, but those items carry no contents of their own (the per-zone resource budget
-            // fills them) and would likely spawn empty from here; syringes carry their own.
-            // Only an enabled syringe can take a slot - alternating onto a disabled one would just
-            // zero the slot out again.
-            var nextIsHealthSyringe = true;
             var totalWeight = 0f;
             foreach (var entry in block.SpawnData)
             {
-                if (ConsumableWeightMultipliers.TryGetValue(entry.ItemID, out var getMultiplier))
-                {
-                    var multiplier = getMultiplier();
-                    if (multiplier <= 0f && (healthSyringeOn || meleeSyringeOn))
-                    {
-                        var useHealthSyringe = healthSyringeOn && (!meleeSyringeOn || nextIsHealthSyringe);
-                        entry.ItemID = useHealthSyringe ? HealthSyringeItemId : MeleeSyringeItemId;
-                        nextIsHealthSyringe = !useHealthSyringe;
-                        multiplier = ConsumableWeightMultipliers[entry.ItemID]();
-                    }
-                    entry.Weight *= multiplier;
-                }
+                if (ConsumableWeightMultipliers.TryGetValue(entry.ItemID, out var getMultiplier)) entry.Weight *= getMultiplier();
                 totalWeight += entry.Weight;
             }
 
-            // Only reachable if both syringes are disabled too - spawn nothing rather than run an
-            // all-zero lottery.
-            if (block.SpawnData.Count > 0 && totalWeight <= 0f)
-            {
-                block.SpawnsPerZone = 0;
-            }
+            // Every item in this table disabled - spawn nothing rather than run an all-zero lottery.
+            if (totalWeight <= 0f) block.SpawnsPerZone = 0;
         }
 
         var bigPickupMult = Plugin.BigPickupSpawnMultiplier.Value;
@@ -241,9 +220,6 @@ internal static class GameDataInit_Initialize_Patch
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
         }
     }
-
-    private const uint HealthSyringeItemId = 140;
-    private const uint MeleeSyringeItemId = 142;
 
     // ItemIDs confirmed by logging GameDataBlockBase<ItemDataBlock> entries referenced from
     // ConsumableDistributionDataBlock.SpawnData at runtime - not documented anywhere official.
@@ -256,8 +232,6 @@ internal static class GameDataInit_Initialize_Patch
         { 117, () => Plugin.FogRepellerSpawnWeightMultiplier.Value },      // Fog Repeller
         { 116, () => Plugin.LockMelterSpawnWeightMultiplier.Value },       // Lock Melter
         { 139, () => Plugin.ExplosiveTripMineSpawnWeightMultiplier.Value }, // Explosive Trip Mine
-        { 142, () => Plugin.MeleeBuffSyringeSpawnWeightMultiplier.Value }, // IIx Syringe
-        { 140, () => Plugin.HealthSyringeSpawnWeightMultiplier.Value },    // I2-LP Syringe
         { 144, () => Plugin.CFoamTripmineSpawnWeightMultiplier.Value },    // C-Foam Tripmine
     };
 

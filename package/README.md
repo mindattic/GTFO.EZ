@@ -26,12 +26,7 @@ config is applied; `-` means left at vanilla:
 | Fall height where damage maxes out | 20m | 30m (+50%) |
 | Weapon/tool ammo (reserve, starting, refill packs) | x1 | x1.5 (+50%) |
 | Enemy movement-noise detection distance | 8m (sleepers: 20m) | 6m (sleepers: 15m) (-25%) |
-| Glow stick spawn odds (both colors) | enabled | disabled (-100%) |
-| Lock Melter spawn odds | varies by zone | disabled (-100%) |
-| C-Foam Grenade spawn odds | varies by zone | disabled (-100%) |
-| Explosive Trip Mine spawn odds | varies by zone | disabled (-100%) |
-| C-Foam Tripmine spawn odds | varies by zone | disabled (-100%) |
-| Fog Repeller spawn odds | varies by zone | disabled (-100%) |
+| Consumables (boxes, lockers, lying around) | mixed items | health, tool and ammo kits only, 20-40% of a pack each |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
@@ -124,7 +119,7 @@ itself:
 
 | Stat | Vanilla | Default |
 |---|---|---|
-| Consumable spawns per zone (med/ammo packs, syringes) | varies by zone | - |
+| Consumable spawns per zone (kits, or vanilla items with Consumables Are Kits off) | varies by zone | - |
 | Big pickup spawns per zone (fog turbines, artifacts, etc.) | varies by zone | - |
 
 ## Miscellaneous (exposed, but not part of the core tuning)
@@ -134,21 +129,21 @@ detection/glow sticks, above) was already settled. It's real, functional, and fu
 but less curated and less load-bearing for the mod's "easy mode" identity than the stats above —
 expect it to matter more for players who want to go deeper than the defaults, not for a first install.
 
-**Consumable spawn odds** — Glow Stick, Lock Melter, C-Foam Grenade, Explosive Trip Mine, C-Foam
-Tripmine, and Fog Repeller are covered above (all disabled by default); these other items share the
-same weighted lottery but are all left at vanilla:
+**Consumable spawn odds** — only used with `Consumables Are Kits` turned off (it's on by default,
+and replaces every consumable with a kit). They retune the weighted lottery that decides *which*
+consumable fills a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier`
+above). Setting one to 0 removes that item, and its share goes to the rest; a loot table with
+every item disabled spawns nothing.
 
 | Stat | Vanilla | Default |
 |---|---|---|
+| Glow stick spawn odds (both colors) | enabled | disabled (-100%) |
+| Lock Melter spawn odds | varies by zone | disabled (-100%) |
+| C-Foam Grenade spawn odds | varies by zone | disabled (-100%) |
+| Explosive Trip Mine spawn odds | varies by zone | disabled (-100%) |
+| C-Foam Tripmine spawn odds | varies by zone | disabled (-100%) |
+| Fog Repeller spawn odds | varies by zone | disabled (-100%) |
 | Long Range Flashlight spawn odds | varies by zone | - |
-| Melee Buff (IIx) Syringe spawn odds | varies by zone | - |
-| Health (I2-LP) Syringe spawn odds | varies by zone | - |
-
-These spawn-odds stats (glow stick included) all retune the same weighted lottery that decides
-*which* consumable fills a spawn slot — they don't change *how many* consumables spawn (that's
-the `Consumable Spawn Multiplier` above). Setting one to 0 removes that item from the loot pool
-and turns its slot into a syringe at the same odds, alternating I2-LP (health) and IIx (melee
-buff) - so a disabled item's share becomes something useful rather than more of whatever's left.
 
 **Expedition balance** — `ExpeditionBalanceDataBlock` is the game's own per-difficulty-tier budget
 table (one entry per tier: Easy/Normal/Hard/..., scaled uniformly). This is by far the largest
@@ -470,7 +465,11 @@ others' prior work:
 - **Moved out:** the Stim Pack - the I2-LP's overheal (+50% health past max, draining back down)
   and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
   I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
-  drain, display name) are gone; loot slots freed by disabled items still become syringes.
+  drain, display name) are gone.
+- New **Consumables Are Kits** (Loot, on by default): every consumable found in boxes, lockers or
+  lying around is a health, tool or ammo kit holding 20-40% of a pack (weights and contents
+  configurable); the zone's normal resource packs still spawn as usual. GTFO.EZ no longer turns
+  disabled consumables into syringes, and its two syringe spawn-odds settings are gone.
 - **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
   matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
   Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead

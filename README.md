@@ -31,9 +31,10 @@ vanilla-vs-default table):
 
 - Health, regen rate and regen cap, stamina (removes the in-combat penalty), fall damage amount
   and max-damage height, weapon/tool ammo, and enemy movement-detection range.
-- Glow Stick, Lock Melter, C-Foam Grenade, C-Foam Tripmine, Explosive Trip Mine, and Fog Repeller
-  spawns are disabled by default; their freed loot slots become health / melee-buff syringes
-  instead of nothing, so disabling an item doesn't just empty the loot pool.
+- Every consumable found in boxes, lockers or lying around is a health, tool or ammo kit holding
+  20-40% of a pack; the zone's normal resource packs still spawn as usual. Turn off `Consumables
+  Are Kits` (Loot) for vanilla consumables, where glow sticks, lock melters, C-foam, trip mines
+  and fog repellers are disabled by default.
 - Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
   fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
   widening from 4 m to 25 m over 90 s each level. Tunable under `Fog Clearing`.
