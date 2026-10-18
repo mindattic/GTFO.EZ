@@ -37,6 +37,7 @@ config is applied; `-` means left at vanilla:
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
+| Dash (double-tap Shift + direction) | none | 6 m in 0.25 s, 1.5 s cooldown |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
 (fast regen with no delay makes you nearly unkillable in a slow fight), the no-damage fall height
@@ -483,6 +484,10 @@ others' prior work:
 - Sentry guns place and pick back up instantly now - the hold-to-confirm charge is gone by
   default. New "Deploy/Pickup Interaction Duration Multiplier" under Sentries, default 0; set to
   1.0 to restore the vanilla hold time.
+- New **dash**: double-tap Shift (plus W/A/S/D for direction, forward if none held) for a quick
+  6 m dash, mainly to sidestep homing projectiles. Moves you through the game's own character
+  controller, so walls stop it short; 1.5 s cooldown. Distance, duration, cooldown, double-tap
+  window and an on/off toggle are under the new Dash config section.
 
 ### v11
 
