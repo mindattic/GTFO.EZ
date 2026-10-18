@@ -16,9 +16,10 @@
   and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
   I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
   drain, display name) are gone.
-- New **Consumables Are Kits** (Loot, on by default): every consumable found in boxes, lockers or
-  lying around is a health, tool or ammo kit holding 20-40% of a pack (weights and contents
-  configurable); the zone's normal resource packs still spawn as usual. GTFO.EZ no longer turns
+- New **Consumables Are Kits** (Loot, on by default): consumables found in lockers, boxes or lying
+  around are a few small health, tool and ammo kits of 1-2 charges each, adding about 20% to the
+  zone's normal resource packs (which spawn as usual), split the way the zone's resource budget
+  is. *Kit Loot (%)*, *Kit Charges Min/Max* and the per-kind weights are configurable. GTFO.EZ no longer turns
   disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
   GTFO.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
   Hand Grenades.

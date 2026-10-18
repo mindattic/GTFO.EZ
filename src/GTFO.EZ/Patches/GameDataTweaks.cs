@@ -4,6 +4,7 @@ using BepInEx.Unity.IL2CPP;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
+using UnityEngine;
 
 namespace GTFO.EZ.Patches;
 
@@ -28,8 +29,9 @@ internal static class GameDataInit_Initialize_Patch
         RunTweakCategory("detection", ApplyDetectionTweaks);
         RunTweakCategory("enemy balance", ApplyEnemyBalanceTweaks);
         RunTweakCategory("fog", ApplyFogTweaks);
-        RunTweakCategory("loot", ApplyLootTweaks);
         RunTweakCategory("expedition balance", ApplyExpeditionBalanceTweaks);
+        // After expedition balance: the kit count follows the zone resource budget it just set.
+        RunTweakCategory("loot", ApplyLootTweaks);
         RunTweakCategory("melee", ApplyMeleeTweaks);
         RunTweakCategory("weapon", ApplyWeaponTweaks);
         Plugin.Logger.LogInfo("GTFO.EZ tweaks applied. Goo goo. Gah gah.");
@@ -191,6 +193,13 @@ internal static class GameDataInit_Initialize_Patch
         var kits = Plugin.ConsumablesAreKits.Value && !absurdLoot ? KitLoot.Resolve() : null;
         if (absurdLoot) Plugin.Logger.LogInfo("Loot: GTFO.AbsurdWeapons' Loot Mix is on, so it decides which consumables spawn - Consumables Are Kits and the spawn odds here are skipped.");
 
+        // Kits replace a table's items but not its size: a table keeps its share of the loot
+        // (bigger tables, more kits), scaled so the average table gives KitsPerZone kits.
+        var kitsPerZone = kits != null && kits.Count > 0 ? KitLoot.KitsPerZone() : 0f;
+        var averageSpawns = AverageConsumableSpawnsPerZone(consumableMult);
+        var kitSpawns = 0;
+        var kitTables = 0;
+
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
@@ -200,6 +209,9 @@ internal static class GameDataInit_Initialize_Patch
             {
                 block.SpawnData.Clear();
                 foreach (var (id, weight) in kits) block.SpawnData.Add(new ConsumableSpawnData { ItemID = id, Weight = weight });
+                block.SpawnsPerZone = averageSpawns > 0f ? Mathf.RoundToInt(kitsPerZone * block.SpawnsPerZone / averageSpawns) : 0;
+                kitSpawns += block.SpawnsPerZone;
+                kitTables++;
                 continue;
             }
 
@@ -217,11 +229,28 @@ internal static class GameDataInit_Initialize_Patch
             if (totalWeight <= 0f) block.SpawnsPerZone = 0;
         }
 
+        if (kitTables > 0)
+            Plugin.Logger.LogInfo($"Consumables Are Kits: {kitsPerZone:0.##} kit(s) per zone on average ({Plugin.KitLootPercent.Value:0.#}% of the resource " +
+                $"budget) - {kitTables} table(s) went from {averageSpawns:0.##} consumables each on average to {(float)kitSpawns / kitTables:0.##} kits.");
+
         var bigPickupMult = Plugin.BigPickupSpawnMultiplier.Value;
         foreach (var block in GameDataBlockBase<BigPickupDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
         }
+    }
+
+    private static float AverageConsumableSpawnsPerZone(float consumableMult)
+    {
+        var total = 0;
+        var tables = 0;
+        foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
+        {
+            if (block?.SpawnData == null || block.SpawnData.Count == 0) continue;
+            total += ScaleUp(block.SpawnsPerZone, consumableMult);
+            tables++;
+        }
+        return tables == 0 ? 0f : (float)total / tables;
     }
 
     // With GTFO.AbsurdWeapons' Loot Mix on, its mix (kits, Hand Grenades, Stim Packs) replaces every

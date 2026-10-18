@@ -70,8 +70,9 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> HealthKitWeight = null!;
     internal static ConfigEntry<float> ToolKitWeight = null!;
     internal static ConfigEntry<float> AmmoKitWeight = null!;
-    internal static ConfigEntry<int> KitContentsMin = null!;
-    internal static ConfigEntry<int> KitContentsMax = null!;
+    internal static ConfigEntry<float> KitLootPercent = null!;
+    internal static ConfigEntry<int> KitChargesMin = null!;
+    internal static ConfigEntry<int> KitChargesMax = null!;
     internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
     internal static ConfigEntry<bool> ControlDefaultsApplied = null!;
 
@@ -364,24 +365,29 @@ public class Plugin : BasePlugin
             "Multiplies how long it takes to revive a downed teammate. Lower is faster. Default 0.33 (33% of vanilla).");
 
         ConsumablesAreKits = Config.Bind("Loot", "Consumables Are Kits", true,
-            "Every consumable found in boxes, lockers or lying around is a health, tool or ammo kit instead (odds below). " +
-            "Kits from the zone's resource budget still spawn as normal. Off: vanilla consumables, retuned by the per-item " +
-            "weights further down. Takes effect on restart.");
+            "Consumables found in lockers, boxes or lying around are small health, tool and ammo kits, and only a few of " +
+            "them (see Kit Loot) - on top of the zone's normal resource packs, which are left as they are. Off: vanilla " +
+            "consumables, retuned by the per-item weights further down. Takes effect on restart.");
+
+        KitLootPercent = Config.Bind("Loot", "Kit Loot (%)", 20f,
+            "With Consumables Are Kits on: how much the kits found as loot add, in percent of a zone's normal health, ammo " +
+            "and tool pack budget (averaged over the difficulty tiers). Default 20 - about a fifth more kits than the resource " +
+            "packs alone. Takes effect on restart.");
 
         HealthKitWeight = Config.Bind("Loot", "Health Kit Weight", 1f,
-            "With Consumables Are Kits on: relative odds a consumable is a health kit. Takes effect on restart.");
+            "With Consumables Are Kits on: multiplies the odds a kit is a health kit. The odds already follow the zone's own health pack budget; 1 keeps that split. Takes effect on restart.");
 
         ToolKitWeight = Config.Bind("Loot", "Tool Kit Weight", 1f,
-            "With Consumables Are Kits on: relative odds a consumable is a tool kit. Takes effect on restart.");
+            "With Consumables Are Kits on: multiplies the odds a kit is a tool kit. The odds already follow the zone's own tool pack budget; 1 keeps that split. Takes effect on restart.");
 
         AmmoKitWeight = Config.Bind("Loot", "Ammo Kit Weight", 1f,
-            "With Consumables Are Kits on: relative odds a consumable is an ammo kit. Takes effect on restart.");
+            "With Consumables Are Kits on: multiplies the odds a kit is an ammo kit. The odds already follow the zone's own ammo pack budget; 1 keeps that split. Takes effect on restart.");
 
-        KitContentsMin = Config.Bind("Loot", "Kit Contents Min (%)", 20,
-            "Least a kit found as a consumable holds, in percent of a full pack (20 = one use). Takes effect on restart.");
+        KitChargesMin = Config.Bind("Loot", "Kit Charges Min", 1,
+            "Fewest charges a kit found as loot holds. One charge is one use, 20% of a full pack. Takes effect on restart.");
 
-        KitContentsMax = Config.Bind("Loot", "Kit Contents Max (%)", 40,
-            "Most a kit found as a consumable holds, in percent of a full pack. Takes effect on restart.");
+        KitChargesMax = Config.Bind("Loot", "Kit Charges Max", 2,
+            "Most charges a kit found as loot holds. Takes effect on restart.");
 
         // With Consumables Are Kits off: each consumable is picked from a shared weighted lottery,
         // so these retune the odds between them rather than the total amount of loot (that's

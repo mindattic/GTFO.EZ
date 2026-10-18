@@ -26,7 +26,7 @@ config is applied; `-` means left at vanilla:
 | Fall height where damage maxes out | 20m | 30m (+50%) |
 | Weapon/tool ammo (reserve, starting, refill packs) | x1 | x1.5 (+50%) |
 | Enemy movement-noise detection distance | 8m (sleepers: 20m) | 6m (sleepers: 15m) (-25%) |
-| Consumables (boxes, lockers, lying around) | mixed items | health, tool and ammo kits only, 20-40% of a pack each |
+| Consumables (lockers, boxes, lying around) | mixed items | a few small health, tool and ammo kits, 1-2 charges each, adding about 20% to the zone's resource packs |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
@@ -53,9 +53,11 @@ its own, each with its own config section and on/off switch:
   capped at 75%. A checkpoint restart that puts an artifact back takes its buff off again.
 - **Fog clearing** (`Fog Clearing`): a silent, invisible version of the Fog Repeller's sphere
   follows you, clearing 4 m around you at the start of a level and widening to 25 m over 90 s.
-- **Kit loot** (`Loot` → *Consumables Are Kits*): every consumable in boxes, lockers or lying
-  around becomes a health, tool or ammo kit holding 20-40% of a pack. The zone's normal resource
-  packs still spawn as usual. Turn it off for vanilla consumables.
+- **Kit loot** (`Loot` → *Consumables Are Kits*): consumables in lockers, boxes or lying around
+  are small health, tool and ammo kits of 1 or 2 charges (one charge is one use, 20% of a pack),
+  and sparse: together they add about 20% (*Kit Loot*) to the zone's normal resource packs, which
+  are left as they are. The split between health, ammo and tool kits follows the zone's own
+  resource budget. Turn it off for vanilla consumables.
 - **Instant sentries** (`Sentries`): sentry guns place and pick back up with no hold-to-confirm,
   and placing your own switches you straight back to the weapon you had out.
 - **Bots Always Equip Sentry Gun** (`Bots`, *off* by default): forces every bot's tool slot to the
@@ -167,7 +169,7 @@ but less curated and less load-bearing for the mod's "easy mode" identity than t
 expect it to matter more for players who want to go deeper than the defaults, not for a first install.
 
 **Consumable spawn odds** — only used with `Consumables Are Kits` turned off (it's on by default,
-and replaces every consumable with a kit). They retune the weighted lottery that decides *which*
+and makes the consumables a few small kits instead). They retune the weighted lottery that decides *which*
 consumable fills a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier`
 above). Setting one to 0 removes that item, and its share goes to the rest; a loot table with
 every item disabled spawns nothing.
@@ -526,9 +528,10 @@ others' prior work:
   and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
   I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
   drain, display name) are gone.
-- New **Consumables Are Kits** (Loot, on by default): every consumable found in boxes, lockers or
-  lying around is a health, tool or ammo kit holding 20-40% of a pack (weights and contents
-  configurable); the zone's normal resource packs still spawn as usual. GTFO.EZ no longer turns
+- New **Consumables Are Kits** (Loot, on by default): consumables found in lockers, boxes or lying
+  around are a few small health, tool and ammo kits of 1-2 charges each, adding about 20% to the
+  zone's normal resource packs (which spawn as usual), split the way the zone's resource budget
+  is. *Kit Loot (%)*, *Kit Charges Min/Max* and the per-kind weights are configurable. GTFO.EZ no longer turns
   disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
   GTFO.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
   Hand Grenades.

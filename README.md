@@ -31,8 +31,9 @@ vanilla-vs-default table):
 
 - Health, regen rate and regen cap, stamina (removes the in-combat penalty), fall damage amount
   and max-damage height, weapon/tool ammo, and enemy movement-detection range.
-- Every consumable found in boxes, lockers or lying around is a health, tool or ammo kit holding
-  20-40% of a pack; the zone's normal resource packs still spawn as usual. Turn off `Consumables
+- Consumables found in lockers, boxes or lying around are small health, tool and ammo kits of 1-2
+  charges (one use each), and only a few: together they add about 20% to the zone's normal resource
+  packs, which spawn as usual. Turn off `Consumables
   Are Kits` (Loot) for vanilla consumables, where glow sticks, lock melters, C-foam, trip mines
   and fog repellers are disabled by default. With GTFO.AbsurdWeapons installed and its Loot Mix
   on, its mix is the consumable loot (kits at its odds and size, plus Hand Grenades and, when on,
