@@ -424,7 +424,7 @@ either not multiplier-friendly or purely cosmetic/technical.
 
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
   mod's, so where the two clash it wins - notably loot, which follows its `[Loot]` settings (kits at
-  its odds and size, plus Hand Grenades and Stim Packs) instead of *Consumables Are Kits* here. Its
+  its odds and size, plus Hand Grenades) instead of *Consumables Are Kits* here. Its
   keys (Home/PgUp/PgDn) don't overlap with this mod's (E, X, Z, Shift, W/A/S/D). It leaves artifacts
   in place, so artifact buffs work with it installed.
 - **GTFO.CrashTestDummies** and **GTFO.SkipDrop:** compatible - they patch level building and the
@@ -486,7 +486,7 @@ others' prior work:
   configurable); the zone's normal resource packs still spawn as usual. GTFO.EZ no longer turns
   disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
   GTFO.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
-  Hand Grenades and Stim Packs.
+  Hand Grenades.
 - New **Ping Anywhere** (Experimental, on by default): `PING <KEY>` from any terminal reaches an
   item anywhere in the level, not just the terminal's own zone; the marker shows for 10 s.
   Same-zone pings are left to the game's own PING, and any error falls back to it. Technique

@@ -15,7 +15,7 @@
   configurable); the zone's normal resource packs still spawn as usual. GTFO.EZ no longer turns
   disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
   GTFO.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
-  Hand Grenades and Stim Packs.
+  Hand Grenades.
 - New **Ping Anywhere** (Experimental, on by default): `PING <KEY>` from any terminal reaches an
   item anywhere in the level, not just the terminal's own zone; the marker shows for 10 s.
   Same-zone pings are left to the game's own PING, and any error falls back to it. Technique

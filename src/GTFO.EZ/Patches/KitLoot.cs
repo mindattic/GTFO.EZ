@@ -8,7 +8,7 @@ namespace GTFO.EZ.Patches;
 // normally get their contents from the zone's resource budget; one spawned as a consumable has
 // none of its own, so ConsumableAmmoMin/Max are set to Kit Contents Min/Max (percent of a pack).
 // Same approach as GTFO.AbsurdWeapons' LootMix, which runs after this and takes precedence: with
-// it installed, its own mix (kits at its odds and size, plus Hand Grenades and Stim Packs) replaces
+// it installed, its own mix (kits at its odds and size, plus Hand Grenades) replaces
 // these tables.
 internal static class KitLoot
 {

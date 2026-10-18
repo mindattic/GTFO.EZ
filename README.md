@@ -35,7 +35,7 @@ vanilla-vs-default table):
   20-40% of a pack; the zone's normal resource packs still spawn as usual. Turn off `Consumables
   Are Kits` (Loot) for vanilla consumables, where glow sticks, lock melters, C-foam, trip mines
   and fog repellers are disabled by default. With GTFO.AbsurdWeapons installed, its loot
-  settings take precedence: kits at its odds and size, plus Hand Grenades and Stim Packs.
+  settings take precedence: kits at its odds and size, plus Hand Grenades.
 - Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
   fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
   widening from 4 m to 25 m over 90 s each level. Tunable under `Fog Clearing`.
