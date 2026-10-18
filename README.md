@@ -59,8 +59,9 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 **Experimental** (`Experimental` config section; see Limitations below):
 
 - **Bot tool controls** (on by default): aim your own sentry's placement ghost and press
-  **Shift+E** to drop the next bot's equipped tool there instead of yours; **Alt+E** instantly
-  recalls every bot-placed tool back into its bot.
+  **Shift+E** to drop the next bot's equipped tool there instead of yours; **Alt+E** or **Z**
+  instantly recalls every bot-placed tool back into its bot; **X** places your own sentry without
+  pulling it out.
 - A level-wide terminal PING spike (off by default), instrumented but not yet confirmed safe in
   actual play.
 
@@ -68,7 +69,8 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 |---|---|
 | E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
 | Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
-| Alt+E | Recall every bot-placed tool at once |
+| Alt+E or Z | Recall every bot-placed tool at once |
+| X | Place your own sentry without pulling it out (at your aim if holding it, else just ahead of you) |
 | Shift, Shift (+ W/A/S/D) | Dash |
 
 ## Quick start
@@ -182,8 +184,8 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
   instrumented with logging but hasn't had an actual in-game PING attempt to confirm it's safe -
   see the `TerminalPing_EvaluateInput_Patch` doc comment for the current working theory.
 - The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
-  "deploy now" order). Shift+E placement is confirmed working in play; Alt+E recall and
-  the clear-slot/weapon-switch-back after placing are compiled but not yet confirmed in play.
+  "deploy now" order). Shift+E placement is confirmed working in play; Alt+E/Z recall, X
+  auto-place, and the weapon switch-back after placing are compiled but not yet confirmed in play.
 - The dash is compiled and built on the same movement approach as GTFO.AbsurdWeapons' Katana
   dash, but not yet confirmed in play.
 - Fog clearing is compiled but not yet confirmed in play; its density is read from the vanilla

@@ -28,7 +28,9 @@ internal static class DeployPickupHotkeys_Update_Patch
         if (shiftHeld && Input.GetKeyDown(KeyCode.E)) BotDeployAtAim.TryDeployNext();
 
         var altHeld = Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt);
-        if (altHeld && Input.GetKeyDown(KeyCode.E)) PickupAllBotTools.Activate();
+        if ((altHeld && Input.GetKeyDown(KeyCode.E)) || Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();
+
+        if (Input.GetKeyDown(KeyCode.X)) OwnSentryAutoPlace.Place();
     }
 }
 
@@ -45,9 +47,8 @@ internal static class SentryGunFirstPerson_PlaceOnGround_Patch
         {
             var localBackpack = PlayerBackpackManager.LocalBackpack;
             if (localBackpack == null) return;
-            if (!localBackpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem?.Instance != __instance) return;
-
-            localBackpack.TryClearSlot(InventorySlot.GearClass);
+            // Pointer, not ==: two Il2Cpp wrappers around the same native object aren't reference-equal.
+            if (!localBackpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem?.Instance?.Pointer != __instance.Pointer) return;
 
             if (!PlayerManager.TryGetLocalPlayerAgent(out var localAgent) || localAgent == null) return;
             var lastSlot = InventorySlot.None;
@@ -121,7 +122,10 @@ internal static class BotDeployAtAim
                 var desc = new PlayerBotActionDeploySentryGun.Descriptor(bot) { InstallationPose = pose };
                 var action = new PlayerBotActionDeploySentryGun(desc) { m_backpackItem = backpackItem };
                 action.PlaceSentryGunOnGround();
-                backpack.TryClearSlot(InventorySlot.GearClass);
+                // Marks it placed-but-still-owned, the bookkeeping the bot's own AI does after this
+                // call. Clearing the slot instead (an earlier version) orphaned the turret, which
+                // broke bot item commands and gave Alt+E nothing to recall.
+                backpack.SetDeployed(InventorySlot.GearClass, true);
                 Plugin.Logger.LogInfo("Shift+E: deployed a bot's tool at your aim.");
                 return;
             }
@@ -137,18 +141,85 @@ internal static class BotDeployAtAim
     // Mirrors exactly what the player's own SentryGunFirstPerson.Update() already computes every
     // frame for their own placement ghost - m_placePos/m_cameraLookRot are the validated spot,
     // m_lastCanPlace is the same green/red check the player sees. No separate raycast of our own.
-    private static bool TryGetAimPose(out Pose pose)
+    internal static bool TryGetAimPose(out Pose pose)
     {
         pose = default;
 
-        var backpack = PlayerBackpackManager.LocalBackpack;
-        if (backpack == null) return false;
-        if (!backpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem?.Instance == null) return false;
-
-        var sentry = backpackItem.Instance.TryCast<SentryGunFirstPerson>();
-        if (sentry == null || !sentry.m_lastCanPlace) return false;
+        var sentry = LocalSentry();
+        // Only while it's actually in hand: m_placePos/m_lastCanPlace stop updating once it's put
+        // away, so reading them then would reuse wherever it was last aimed.
+        if (sentry == null || !sentry.m_lastCanPlace || !IsWielded(InventorySlot.GearClass)) return false;
 
         pose = new Pose(sentry.m_placePos, sentry.m_cameraLookRot);
+        return true;
+    }
+
+    internal static SentryGunFirstPerson? LocalSentry()
+    {
+        var backpack = PlayerBackpackManager.LocalBackpack;
+        if (backpack == null) return null;
+        if (!backpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem?.Instance == null) return null;
+        return backpackItem.Instance.TryCast<SentryGunFirstPerson>();
+    }
+
+    private static bool IsWielded(InventorySlot slot) =>
+        PlayerManager.TryGetLocalPlayerAgent(out var agent) && agent?.Inventory != null && agent.Inventory.WieldedSlot == slot;
+}
+
+// X: places your own sentry without pulling it out first - at your current placement aim if you're
+// already holding it on a valid spot, otherwise on the ground a step in front of you, facing where
+// you look. Goes through the sentry's own PlaceOnGround, the same call a normal placement ends in.
+internal static class OwnSentryAutoPlace
+{
+    private const float StepAhead = 1.5f;
+    private const float GroundProbeHeight = 1.5f;
+    private const float GroundProbeDepth = 4f;
+
+    internal static void Place()
+    {
+        try
+        {
+            var backpack = PlayerBackpackManager.LocalBackpack;
+            var sentry = BotDeployAtAim.LocalSentry();
+            if (backpack == null || sentry == null)
+            {
+                Plugin.Logger.LogInfo("X: you don't have a sentry gun equipped.");
+                return;
+            }
+            if (backpack.IsDeployed(InventorySlot.GearClass))
+            {
+                Plugin.Logger.LogInfo("X: your sentry is already placed.");
+                return;
+            }
+
+            if (!BotDeployAtAim.TryGetAimPose(out var pose) && !TryGroundAhead(out pose))
+            {
+                Plugin.Logger.LogInfo("X: no ground in front of you to place on.");
+                return;
+            }
+
+            sentry.m_placePos = pose.position;
+            sentry.m_cameraLookRot = pose.rotation;
+            sentry.m_lastCanPlace = true;
+            sentry.PlaceOnGround();
+            Plugin.Logger.LogInfo("X: placed your sentry.");
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogWarning($"X: couldn't place your sentry. {e}");
+        }
+    }
+
+    private static bool TryGroundAhead(out Pose pose)
+    {
+        pose = default;
+        if (!PlayerManager.TryGetLocalPlayerAgent(out var agent) || agent == null) return false;
+
+        var forward = agent.FPSCamera != null ? agent.FPSCamera.FlatForward : agent.transform.forward;
+        var origin = agent.transform.position + forward * StepAhead + Vector3.up * GroundProbeHeight;
+        if (!Physics.Raycast(origin, Vector3.down, out var hit, GroundProbeDepth, LayerManager.MASK_WORLD)) return false;
+
+        pose = new Pose(hit.point, Quaternion.LookRotation(forward, Vector3.up));
         return true;
     }
 }
@@ -172,32 +243,27 @@ internal static class PickupAllBotTools
         }
 
         var recalled = 0;
+        // Each bot's placed tool is read straight off its own backpack. The game's
+        // GatherDeployables.Descriptor.Evaluate lists them too, but its interop wrapper throws a
+        // TypeLoadException on Il2CppSystem List`1 every call, so it can't be used.
         foreach (var bot in bots)
         {
-            Il2CppSystem.Collections.Generic.List<ItemEquippable> deployedItems;
             try
             {
-                if (!PlayerBotActionGatherDeployables.Descriptor.Evaluate(bot, out deployedItems) || deployedItems == null) continue;
+                var backpack = bot?.Backpack;
+                if (backpack == null || !backpack.IsDeployed(InventorySlot.GearClass)) continue;
+                if (!backpack.TryGetDeployedItem(InventorySlot.GearClass, out var deployed) || deployed == null) continue;
+                var item = deployed.TryCast<ItemEquippable>();
+                if (item == null) continue;
+
+                var desc = new PlayerBotActionGatherDeployables.Descriptor(bot);
+                var action = new PlayerBotActionGatherDeployables(desc) { m_targetItem = item };
+                action.PickUpItem();
+                recalled++;
             }
             catch (Exception e)
             {
-                Plugin.Logger.LogWarning($"Alt+E: couldn't check a bot's deployed items, skipping it. {e}");
-                continue;
-            }
-
-            foreach (var item in deployedItems)
-            {
-                try
-                {
-                    var desc = new PlayerBotActionGatherDeployables.Descriptor(bot);
-                    var action = new PlayerBotActionGatherDeployables(desc) { m_targetItem = item };
-                    action.PickUpItem();
-                    recalled++;
-                }
-                catch (Exception e)
-                {
-                    Plugin.Logger.LogWarning($"Alt+E: couldn't recall one item, skipping it. {e}");
-                }
+                Plugin.Logger.LogWarning($"Alt+E: couldn't recall a bot's tool, skipping it. {e}");
             }
         }
 
