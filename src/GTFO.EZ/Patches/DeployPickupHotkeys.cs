@@ -232,6 +232,9 @@ internal static class OwnSentryAutoPlace
             sentry.m_lastCanPlace = true;
             Placing = true;
             sentry.PlaceOnGround();
+            // PlaceOnGround leaves the yellow ground arrow showing; the vanilla flow only hides it
+            // when you put the sentry away, which never happens when X places it from the backpack.
+            sentry.m_placementIndicator?.SetVisible(false);
             Plugin.Logger.LogInfo("X: placed your sentry.");
         }
         catch (Exception e)
@@ -277,30 +280,46 @@ internal static class PickupAllBotTools
         }
 
         var recalled = 0;
-        // Each bot's placed tool is read straight off its own backpack. The game's
-        // GatherDeployables.Descriptor.Evaluate lists them too, but its interop wrapper throws a
-        // TypeLoadException on Il2CppSystem List`1 every call, so it can't be used.
-        foreach (var bot in bots)
+        // Placed sentries are found in the level and matched to their bot through the backpack each
+        // one records it belongs to. Neither backpack lookup works for this: the game's
+        // GatherDeployables.Descriptor.Evaluate wrapper throws a TypeLoadException on Il2CppSystem
+        // List`1, and TryGetDeployedItem finds no replicator for a sentry Shift+E placed (the game
+        // logs "Non replicatior found with key 0").
+        UnityEngine.Object[] placed;
+        try
+        {
+            placed = UnityEngine.Object.FindObjectsOfType(Il2CppInterop.Runtime.Il2CppType.Of<SentryGunInstance>());
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogWarning($"Alt+E: couldn't list placed sentries. {e}");
+            return;
+        }
+
+        foreach (var obj in placed)
         {
             try
             {
-                var backpack = bot?.Backpack;
-                if (backpack == null || !backpack.IsDeployed(InventorySlot.GearClass)) continue;
-                if (!backpack.TryGetDeployedItem(InventorySlot.GearClass, out var deployed) || deployed == null) continue;
-                var item = deployed.TryCast<ItemEquippable>();
-                if (item == null) continue;
+                var sentry = obj?.TryCast<SentryGunInstance>();
+                var owner = sentry?.m_belongsToBackpack;
+                if (sentry == null || owner == null) continue;
+
+                PlayerAIBot? bot = null;
+                foreach (var candidate in bots)
+                    if (candidate?.Backpack != null && candidate.Backpack.Pointer == owner.Pointer) bot = candidate;
+                if (bot == null) continue; // yours, or a teammate's - not a bot's
 
                 var desc = new PlayerBotActionGatherDeployables.Descriptor(bot);
-                var action = new PlayerBotActionGatherDeployables(desc) { m_targetItem = item };
+                var action = new PlayerBotActionGatherDeployables(desc) { m_targetItem = sentry };
                 action.PickUpItem();
                 recalled++;
             }
             catch (Exception e)
             {
-                Plugin.Logger.LogWarning($"Alt+E: couldn't recall a bot's tool, skipping it. {e}");
+                Plugin.Logger.LogWarning($"Alt+E: couldn't recall a bot's sentry, skipping it. {e}");
             }
         }
 
-        Plugin.Logger.LogInfo($"Alt+E: recalled {recalled} bot tool(s).");
+        Plugin.Logger.LogInfo($"Alt+E: recalled {recalled} bot sentry(s) of {placed.Length} placed in the level.");
     }
 }
