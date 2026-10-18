@@ -38,6 +38,7 @@ config is applied; `-` means left at vanilla:
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
 | Dash (double-tap Shift + direction) | none | 6 m in 0.25 s, 1.5 s cooldown |
+| Fog clearing around you | none (Fog Repeller item only, 70 s) | always on, 4 m widening to 25 m over 90 s |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
 (fast regen with no delay makes you nearly unkillable in a slow fight), the no-damage fall height
@@ -488,6 +489,11 @@ others' prior work:
   6 m dash, mainly to sidestep homing projectiles. Moves you through the game's own character
   controller, so walls stop it short; 1.5 s cooldown. Distance, duration, cooldown, double-tap
   window and an on/off toggle are under the new Dash config section.
+- New **fog clearing**: Disable Fog alone still left fog in play, so a silent, invisible
+  fog-clearing sphere now follows you - the same fog-system sphere the Fog Repeller item carves
+  out, without its light, sound or 70 s limit. It starts at 4 m and widens to 25 m over 90 s
+  each level, so the longer you're in, the less fog there is. Its strength copies the vanilla
+  Fog Repeller's own; tunable under the new Fog Clearing section.
 
 ### v11
 

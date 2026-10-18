@@ -28,6 +28,11 @@
   6 m dash, mainly to sidestep homing projectiles. Moves you through the game's own character
   controller, so walls stop it short; 1.5 s cooldown. Distance, duration, cooldown, double-tap
   window and an on/off toggle are under the new Dash config section.
+- New **fog clearing**: Disable Fog alone still left fog in play, so a silent, invisible
+  fog-clearing sphere now follows you - the same fog-system sphere the Fog Repeller item carves
+  out, without its light, sound or 70 s limit. It starts at 4 m and widens to 25 m over 90 s
+  each level, so the longer you're in, the less fog there is. Its strength copies the vanilla
+  Fog Repeller's own; tunable under the new Fog Clearing section.
 
 ## v11
 

@@ -38,8 +38,9 @@ vanilla-vs-default table):
 - Glow Stick, Lock Melter, C-Foam Grenade, C-Foam Tripmine, Explosive Trip Mine, and Fog Repeller
   spawns are disabled by default; their freed loot slots become Stim Pack / melee-buff syringes
   instead of nothing, so disabling an item doesn't just empty the loot pool.
-- Fog is switched off outright (a density multiplier turned out to have no visible in-game effect,
-  so v11 replaced it with a toggle on the fog's own enabled flag).
+- Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
+  fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
+  widening from 4 m to 25 m over 90 s each level. Tunable under `Fog Clearing`.
 - Revive duration is cut roughly two-thirds.
 - Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
   default. Placing your own switches you straight back to the weapon you had out before.
@@ -124,7 +125,7 @@ All tweaks are multipliers or toggles, tunable after first launch in
 mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
 Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
-type/archetype, Sentries, Dash, and Experimental.
+type/archetype, Sentries, Dash, Fog Clearing, and Experimental.
 
 BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a *default*
 between versions, an existing install won't pick up the new number on its own -
@@ -185,6 +186,8 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
   the clear-slot/weapon-switch-back after placing are compiled but not yet confirmed in play.
 - The dash is compiled and built on the same movement approach as GTFO.AbsurdWeapons' Katana
   dash, but not yet confirmed in play.
+- Fog clearing is compiled but not yet confirmed in play; its density is read from the vanilla
+  Fog Repeller prefab at runtime (logged), with a Density Override if that doesn't clear fog.
 - Datablock patches can only be verified by launching the game; they have no automated test
   coverage (see Testing above).
 

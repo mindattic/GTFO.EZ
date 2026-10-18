@@ -90,6 +90,13 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> DashCooldownSeconds = null!;
     internal static ConfigEntry<float> DashDoubleTapWindowSeconds = null!;
 
+    // G.EZ-T39 - see Patches/FogClearPulse.cs.
+    internal static ConfigEntry<bool> FogClearEnabled = null!;
+    internal static ConfigEntry<float> FogClearStartRange = null!;
+    internal static ConfigEntry<float> FogClearMaxRange = null!;
+    internal static ConfigEntry<float> FogClearRampSeconds = null!;
+    internal static ConfigEntry<float> FogClearDensityOverride = null!;
+
     // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
     internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
     internal static ConfigEntry<float> DisinfectionResourceMultiplier = null!;
@@ -734,5 +741,22 @@ public class Plugin : BasePlugin
 
         DashDoubleTapWindowSeconds = Config.Bind("Dash", "Dash Double-Tap Window (seconds)", 0.3f,
             "How quickly the two Shift presses must land to count as a double-tap. Default 0.3.");
+
+        FogClearEnabled = Config.Bind("Fog Clearing", "Fog Clearing Enabled", true,
+            "Keeps a silent, invisible fog-clearing sphere around you - the same fog-system sphere the Fog Repeller " +
+            "item uses, without its light, sound or time limit. It widens the longer you're in a level.");
+
+        FogClearStartRange = Config.Bind("Fog Clearing", "Start Range (meters)", 4f,
+            "Radius of clear air around you when a level starts. Default 4.");
+
+        FogClearMaxRange = Config.Bind("Fog Clearing", "Max Range (meters)", 25f,
+            "Radius it grows to. Default 25 (the vanilla Fog Repeller's own range is logged on first use, for comparison).");
+
+        FogClearRampSeconds = Config.Bind("Fog Clearing", "Ramp Seconds", 90f,
+            "Seconds from Start Range to Max Range. Default 90. 0 = full range straight away.");
+
+        FogClearDensityOverride = Config.Bind("Fog Clearing", "Density Override", 0f,
+            "0 (default) copies the vanilla Fog Repeller's own density. Set a value only if fog doesn't clear - " +
+            "LogOutput.log shows the density in use.");
     }
 }
