@@ -187,6 +187,13 @@ internal static class GameDataInit_Initialize_Patch
     private static void ApplyLootTweaks()
     {
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
+
+        // Only an enabled syringe can take a disabled item's slot (see below) - these two flags
+        // are plain config reads, the same for every table, so they're resolved once rather than
+        // on every iteration of the per-table loop below.
+        var healthSyringeOn = Plugin.HealthSyringeSpawnWeightMultiplier.Value > 0f;
+        var meleeSyringeOn = Plugin.MeleeBuffSyringeSpawnWeightMultiplier.Value > 0f;
+
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
@@ -204,8 +211,6 @@ internal static class GameDataInit_Initialize_Patch
             // fills them) and would likely spawn empty from here; syringes carry their own.
             // Only an enabled syringe can take a slot - alternating onto a disabled one would just
             // zero the slot out again.
-            var healthSyringeOn = Plugin.HealthSyringeSpawnWeightMultiplier.Value > 0f;
-            var meleeSyringeOn = Plugin.MeleeBuffSyringeSpawnWeightMultiplier.Value > 0f;
             var nextIsHealthSyringe = true;
             var totalWeight = 0f;
             foreach (var entry in block.SpawnData)
