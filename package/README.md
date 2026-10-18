@@ -468,14 +468,13 @@ others' prior work:
   native code's own cap had to be lifted) when a level ended, that raised cap stuck forever -
   nothing restored it going into the next level, so max health could creep upward for the rest of
   the expedition. Starting a new level now restores it first if it was still raised.
-- **Experimental (SPIKE), on by default:** two new hotkeys under Experimental - O deploys bot1's
-  equipped tool in place, waits for confirmation it actually went down, then does the same for
-  bot2 and bot3; P instantly recalls every deployable any bot has placed and not yet retrieved,
-  straight into their backpacks, no walking required. Your own deploy and pickup are untouched -
-  still the normal vanilla interact. There's no vanilla order for "deploy now" or "pick that up
-  now" to route through, so this calls the bot AI's own placement/pickup methods directly; only
-  confirmed to compile, not confirmed safe by decompiling alone - set either key to None to
-  disable, or report back if it needs reverting.
+- **Experimental (SPIKE), on by default:** while aiming your own equipped tool at a valid
+  placement spot (the normal green ghost/arrow), Shift+E deploys the first bot with an undeployed
+  tool there instead, reusing that same aim - your own plain-E placement is untouched. Picking a
+  bot-placed deployable back up is just the normal vanilla E-interact. There's no vanilla order
+  for "deploy now" to route through, so this calls the bot AI's own placement method directly;
+  only confirmed to compile, not confirmed safe by decompiling alone - set it to false under
+  Experimental to disable, or report back if it needs reverting.
 
 ### v11
 
