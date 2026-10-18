@@ -2,7 +2,7 @@
   "name": "GtfoEZ",
   "version_number": "13.0.0",
   "website_url": "https://github.com/mindattic/GTFO.EZ",
-  "description": "2x HP & regen cap, no combat stamina penalty, -90% fall dmg, +50% ammo, fast revives, short detection, no fog, junk loot becomes overheal Stim Packs, instant sentries, bot sentry hotkeys, Shift+WASD dash. 530+ more stats tunable.",
+  "description": "2x HP & regen cap, no combat stamina penalty, -90% fall dmg, +50% ammo, fast revives, short detection, no fog, junk loot becomes syringes, instant sentries, bot sentry hotkeys, Shift+WASD dash. 530+ more stats tunable.",
   "dependencies": [
     "BepInEx-BepInExPack_GTFO-3.2.3"
   ]

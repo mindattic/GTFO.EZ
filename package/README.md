@@ -20,8 +20,6 @@ config is applied; `-` means left at vanilla:
 | Max health | 25 | 50 (+100%) |
 | Health regen rate | 0.2/s | 0.1/s (-50%) |
 | Max regenerated health (no med kit) | 20% | 40% (+100%) |
-| I2-LP (health) syringe heal | 5-15% of max health, permanent | +50% of max health (can overheal past 100%), drains back to pre-syringe health at 1%/s |
-| I2-LP (health) syringe name | I2-LP | Stim Pack (terminal key STIM_PACK) |
 | Stamina regen rate while resting in combat | 0.15/s (vs 0.25/s out of combat) | 0.25/s, equalized |
 | Stamina cap while in combat | 90% | 100%, cap removed |
 | Fall damage amount | 2-15 | 0.2-1.5 (-90%) |
@@ -469,6 +467,10 @@ others' prior work:
 
 ### v13
 
+- **Moved out:** the Stim Pack - the I2-LP's overheal (+50% health past max, draining back down)
+  and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
+  I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
+  drain, display name) are gone; loot slots freed by disabled items still become syringes.
 - **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
   matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
   Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead

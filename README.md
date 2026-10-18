@@ -31,12 +31,8 @@ vanilla-vs-default table):
 
 - Health, regen rate and regen cap, stamina (removes the in-combat penalty), fall damage amount
   and max-damage height, weapon/tool ammo, and enemy movement-detection range.
-- I2-LP (health) syringes are a temporary overheal buff instead of a flat heal: inject for +50% of
-  max health, which can push you past 100%, then drains back to your pre-syringe health at 1% of
-  max health per second. The item is renamed "Stim Pack" in-game (pickup, inventory, and terminal
-  key `STIM_PACK`).
 - Glow Stick, Lock Melter, C-Foam Grenade, C-Foam Tripmine, Explosive Trip Mine, and Fog Repeller
-  spawns are disabled by default; their freed loot slots become Stim Pack / melee-buff syringes
+  spawns are disabled by default; their freed loot slots become health / melee-buff syringes
   instead of nothing, so disabling an item doesn't just empty the loot pool.
 - Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
   fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
@@ -117,7 +113,7 @@ GameDataInit.Initialize (game boot)
 
 No datablock JSON is shipped or copied. Everything is a multiplier (or toggle) applied in memory
 once, at load time, read from the BepInEx config. Additional Harmony patches cover behaviour that
-isn't a simple datablock field: the Stim Pack overheal/drain (`SyringeHealPatch`), one-time control
+isn't a simple datablock field: one-time control
 defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant sentry placement
 (`SentryInstantPlacementPatch`), the dash (`DashPatch`), the experimental bot tool controls
 (`DeployPickupHotkeys`), and Ping Anywhere (`TerminalPingPatch`).
