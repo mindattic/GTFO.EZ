@@ -35,7 +35,7 @@ config is applied; `-` means left at vanilla:
 | C-Foam Tripmine spawn odds | varies by zone | disabled (-100%) |
 | Fog Repeller spawn odds | varies by zone | disabled (-100%) |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
-| Fog density (visibility-limiting fog) | varies by zone | -90% |
+| Fog (visibility-limiting fog) | enabled | disabled |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
 (fast regen with no delay makes you nearly unkillable in a slow fight), the no-damage fall height
@@ -482,6 +482,10 @@ others' prior work:
   once per install and never again.
 - Fog Repeller spawn odds now default to disabled (0), joining the other disabled consumables -
   with fog already cut 90%, they mostly took up loot slots.
+- **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
+  matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
+  Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead
+  of scaling a density value that didn't render differently.
 - I2-LP (health) syringes are now a temporary life buff: they add 50% of max health (vanilla: a
   random 5-15%) and can overheal past 100% - inject at 65% and you're at 115%. Everything above
   the health you had when injecting then drains away at 1% of max health per second. Drop below

@@ -165,14 +165,20 @@ internal static class GameDataInit_Initialize_Patch
         }
     }
 
-    // FogSettingsDataBlock entries are shared across rundowns/dimensions, so one multiplier
-    // retunes visibility fog everywhere it's used.
+    // FogSettingsDataBlock entries are shared across rundowns/dimensions, so this reaches
+    // visibility fog everywhere it's used. A density multiplier used to live here, but scaling
+    // FogDensity down (even to 0.1) produced no visible change in-game - whatever drives the
+    // actual look of fog isn't gated purely on that field - so this now turns the fog off outright
+    // via its Enabled flag, which every other code path has to respect, and zeroes density too as
+    // a second line of defense.
     private static void ApplyFogTweaks()
     {
-        var densityMult = Plugin.FogDensityMultiplier.Value;
+        if (!Plugin.DisableFog.Value) return;
+
         foreach (var block in GameDataBlockBase<FogSettingsDataBlock>.GetAllBlocks())
         {
-            block.FogDensity *= densityMult;
+            block.Enabled = false;
+            block.FogDensity = 0f;
         }
     }
 

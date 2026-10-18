@@ -51,3 +51,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T28 | 2026-10-16 | chore | open | Clean up code and docs: remove dead code, stale comments and outdated or duplicated docs, and simplify where behaviour doesn't change (/simplify); tests stay green | user request 2026-10-16: approved repo sweep |
 | G.EZ-T29 | 2026-10-16 | docs | open | Bring README.md up to date with the code as it is now (what it is, setup, usage, commands, current state), following codex-standard/README-STYLE.md; README.htm regenerated if the repo has one | user request 2026-10-16: approved repo sweep |
 | G.EZ-T30 | 2026-10-16 | docs | closed | Update USER_STORIES.md | — |
+| G.EZ-T31 | 2026-10-17 | fix | closed | 90% Fog Density Multiplier had no visible effect in-game; replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead of scaling density | src/GTFO.EZ/Plugin.cs DisableFog, src/GTFO.EZ/Patches/GameDataTweaks.cs ApplyFogTweaks |

@@ -24,6 +24,10 @@
   once per install and never again.
 - Fog Repeller spawn odds now default to disabled (0), joining the other disabled consumables -
   with fog already cut 90%, they mostly took up loot slots.
+- **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
+  matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
+  Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead
+  of scaling a density value that didn't render differently.
 - I2-LP (health) syringes are now a temporary life buff: they add 50% of max health (vanilla: a
   random 5-15%) and can overheal past 100% - inject at 65% and you're at 115%. Everything above
   the health you had when injecting then drains away at 1% of max health per second. Drop below

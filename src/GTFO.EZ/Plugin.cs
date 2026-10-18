@@ -51,7 +51,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> LargeBatteryDrainMultiplier = null!;
     internal static ConfigEntry<float> NoAirDamageMultiplier = null!;
     internal static ConfigEntry<float> NoAirDepletionTimeMultiplier = null!;
-    internal static ConfigEntry<float> FogDensityMultiplier = null!;
+    internal static ConfigEntry<bool> DisableFog = null!;
     internal static ConfigEntry<float> EnemyHealthMultiplier = null!;
     internal static ConfigEntry<float> EnemyMeleeDamageMultiplier = null!;
     internal static ConfigEntry<float> EnemyTentacleDamageMultiplier = null!;
@@ -321,8 +321,8 @@ public class Plugin : BasePlugin
         NoAirDepletionTimeMultiplier = Config.Bind("Environment", "No-Air Depletion Time Multiplier", 1.0f,
             "Multiplies how long your air meter lasts in no-air zones before it empties. Left at vanilla (1.0) by default.");
 
-        FogDensityMultiplier = Config.Bind("Environment", "Fog Density Multiplier", 0.1f,
-            "Multiplies the density of the visual fog that limits visibility. Default 0.1 (90% reduction) - vanilla fog was judged more annoying than fun.");
+        DisableFog = Config.Bind("Environment", "Disable Fog", true,
+            "Turns off the visual fog that limits visibility. Default on - vanilla fog was judged more annoying than fun, and scaling its density down (what this setting used to do) turned out to have no visible effect in-game. Set to false to restore vanilla fog.");
 
         EnemyHealthMultiplier = Config.Bind("Enemy Balance", "Enemy Health Multiplier", 1.0f,
             "Multiplies max health for every enemy type. Left at vanilla (1.0) by default.");
@@ -356,7 +356,7 @@ public class Plugin : BasePlugin
             "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");
 
         FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 0.0f,
-            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Defaults to 0 (disabled) - fog is already cut 90%, so a health or melee syringe takes its slot.");
+            "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Defaults to 0 (disabled) - fog is already disabled entirely, so a health or melee syringe takes its slot.");
 
         LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - a health or melee syringe takes its slot.");

@@ -2,7 +2,7 @@
   "name": "GtfoEZ",
   "version_number": "11.0.0",
   "website_url": "https://github.com/mindattic/GTFO.EZ",
-  "description": "Health x2, faster regen, no stamina penalty, 90% less fall damage & fog, more ammo, faster revives, shorter detection, no glow sticks/lock melters/c-foam grenades/trip mines/fog repellers. 530+ more stats also exposed, left at vanilla by default.",
+  "description": "Health x2, faster regen, no stamina penalty, 90% less fall damage, no fog, more ammo, faster revives, shorter detection, no glow sticks/lock melters/c-foam grenades/trip mines/fog repellers. 530+ more stats also exposed, left at vanilla by default.",
   "dependencies": [
     "BepInEx-BepInExPack_GTFO-3.2.3"
   ]
