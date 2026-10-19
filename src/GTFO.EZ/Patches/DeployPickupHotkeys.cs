@@ -65,7 +65,10 @@ internal static class SentryGunFirstPerson_PlaceOnGround_ModifierGuard
     private static bool Prefix(SentryGunFirstPerson __instance)
     {
         if (OwnSentryAutoPlace.Placing || !Plugin.BotsDeployOnShiftE.Value) return true;
-        if (!Hotkeys.ShiftHeld || Time.time - Hotkeys.ShiftEPressedAt > Hotkeys.ShiftEPressWindow) return true;
+        // The press itself counts too: the sentry's own update can place it this frame before the
+        // hotkey postfix has stamped ShiftEPressedAt (Unity doesn't order the two components).
+        var pressedNow = Input.GetKeyDown(KeyCode.E);
+        if (!Hotkeys.ShiftHeld || (!pressedNow && Time.time - Hotkeys.ShiftEPressedAt > Hotkeys.ShiftEPressWindow)) return true;
         var own = BotDeployAtAim.LocalSentry();
         return own == null || own.Pointer != __instance.Pointer;
     }
