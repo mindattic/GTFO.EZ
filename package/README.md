@@ -530,6 +530,9 @@ others' prior work:
   off in its config counts as not installed.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
+- **Bug fix:** pressing Insert or Delete twice while the first message was still waiting behind one of
+  the game's own warden messages cut the game's message off. A new toggle message now only replaces
+  one of ours that's actually on screen, and never drops a game message queued behind it.
 - **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.AbsurdWeapons'
   gear swap) replace each other without cutting the game's own objective messages short, even after
   a level change; Insert/Delete keep working next to a mod build from before the shared toggles; and
