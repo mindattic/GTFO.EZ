@@ -11,6 +11,13 @@
 - **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
   every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
   on, this mod now leaves consumable loot entirely to it.
+- **Moved out:** artifact buffs (the Artifacts section) and *Consumables Are Kits* (with *Kit Loot
+  (%)*, *Kit Charges Min/Max* and the health/tool/ammo kit weights) now live in
+  [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems), with the same settings and
+  defaults; install it to keep them. Without it, consumable loot here is the vanilla items with this
+  mod's spawn odds (glow sticks, lock melters, C-foam, trip mines and fog repellers off). With its
+  *Consumables Are Kits* on, the spawn odds here are skipped, as they are for GTFO.AbsurdWeapons'
+  Loot Mix. The old settings stay in an existing `.cfg` as leftover lines that do nothing.
 - **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
   **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
   install GTFO.AbsurdMoves to keep dashing.

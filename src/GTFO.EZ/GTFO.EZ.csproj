@@ -43,6 +43,14 @@
     <Reference Remove="$(BepInEx)\interop\netstandard.dll" />
   </ItemGroup>
 
+  <!-- Shared/KitLoot.cs is published to GTFO.AbsurdItems and GTFO.AbsurdWeapons (tools/publish-shared.ps1)
+       but isn't used here since Consumables Are Kits moved to GTFO.AbsurdItems, so it's left out of this
+       build rather than shipping its unused Harmony patch. The copies in those mods compile it. -->
+  <ItemGroup>
+    <Compile Remove="Shared\KitLoot.cs" />
+    <None Include="Shared\KitLoot.cs" />
+  </ItemGroup>
+
   <!-- Pure balance data/math, shared with tests/GTFO.EZ.Core.Tests - see the root README's Project layout section. -->
   <ItemGroup>
     <ProjectReference Include="..\GTFO.EZ.Core\GTFO.EZ.Core.csproj" />

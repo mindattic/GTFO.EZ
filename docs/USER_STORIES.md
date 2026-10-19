@@ -89,3 +89,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T66 | 2026-10-18 | fix | closed | Fog Clearing cached the fallback density for the whole launch when no Fog Repeller was loaded yet | — |
 | G.EZ-T67 | 2026-10-18 | fix | closed | Shared code: warden messages from different GTFO.* mods (and a dropped message) no longer cut off the game's own messages; an older mod with no shared code never owns Insert/Delete | — |
 | G.EZ-T68 | 2026-10-18 | fix | closed | Shared kit loot: all kit weights 0 spawns no kits instead of vanilla consumables; extras' odds count only the kits actually found | — |
+| G.EZ-T69 | 2026-10-18 | feature | open | Moved out to GTFO.AbsurdItems: artifact buffs and Consumables Are Kits; KitLoot no longer published from EZ's shared set except where still used | — |

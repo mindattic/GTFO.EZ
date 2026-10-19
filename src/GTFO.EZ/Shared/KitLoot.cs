@@ -15,7 +15,9 @@ namespace MindAttic.GTFO.Shared;
 // are only as many as add up to LootPercent of the zone's resource budget, split between the three
 // kinds the way that budget is. A mod can add Extras (GTFO.AbsurdWeapons: Hand Grenades, Stim
 // Packs) to the same lottery: they come on top, at their weights' odds against the kits' own
-// weights (1 each by default), and the kits stay at LootPercent. GTFO.EZ owns this; GTFO.AbsurdWeapons runs the same code with its own settings.
+// weights (1 each by default), and the kits stay at LootPercent. GTFO.EZ holds the source (it
+// doesn't run it itself); GTFO.AbsurdItems (Consumables Are Kits) and GTFO.AbsurdWeapons (Loot Mix)
+// each run the same code with their own settings.
 internal sealed class KitLootSettings
 {
     internal string LogName = "Kits";

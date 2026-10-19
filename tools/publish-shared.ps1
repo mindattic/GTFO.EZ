@@ -6,15 +6,20 @@
 .DESCRIPTION
     GTFO.EZ owns the code every GTFO.* mod carries a copy of: the Insert/Delete infinite ammo and
     health toggles (SharedOwner + InfiniteToggles + WardenMessage, in every mod) and kits as consumables (KitLoot,
-    GTFO.AbsurdWeapons only). This writes each file into <repo>/src/<repo>/Shared/ with a header
-    saying where it came from, in the order GTFO.AbsurdWeapons, GTFO.AbsurdMoves,
-    GTFO.CrashTestDummies. The copies are never edited by hand - change GTFO.EZ's and publish again.
+    GTFO.AbsurdWeapons and GTFO.AbsurdItems only - GTFO.EZ keeps the source but doesn't compile it). This
+    writes each file into <repo>/src/<repo>/Shared/ with a header saying where it came from, in the order
+    GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.AbsurdItems, GTFO.CrashTestDummies. The copies are never
+    edited by hand - change GTFO.EZ's and publish again.
 
 .PARAMETER Check
     Change nothing; list every copy that's missing or differs from GTFO.EZ's, and exit 1 if any do.
+
+.PARAMETER Repo
+    Only these target repos (e.g. -Repo GTFO.AbsurdItems,GTFO.AbsurdMoves) - for when another repo is
+    mid-change and mustn't be written to yet. Every target by default.
 #>
 [CmdletBinding()]
-param([switch]$Check)
+param([switch]$Check, [string[]]$Repo)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -25,13 +30,19 @@ $everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs', 'WardenMessage.cs')
 $targets = [ordered]@{
     'GTFO.AbsurdWeapons'    = $everyMod + @('KitLoot.cs')
     'GTFO.AbsurdMoves'      = $everyMod
+    'GTFO.AbsurdItems'      = $everyMod + @('KitLoot.cs')
     'GTFO.CrashTestDummies' = $everyMod
+}
+if ($Repo) {
+    $unknown = @($Repo | Where-Object { -not $targets.Contains($_) })
+    if ($unknown.Count -gt 0) { throw "Not a publish target: $($unknown -join ', ')" }
 }
 
 $commit = (git -C $repoRoot rev-parse --short HEAD).Trim()
 $stale = @()
 
 foreach ($repo in $targets.Keys) {
+    if ($Repo -and $Repo -notcontains $repo) { continue }
     $dest = Join-Path $workspace "$repo\src\$repo\Shared"
     if (-not (Test-Path (Join-Path $workspace $repo))) { Write-Warning "$repo isn't in the workspace - skipped."; continue }
 

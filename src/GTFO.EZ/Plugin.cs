@@ -66,13 +66,6 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> LockMelterSpawnWeightMultiplier = null!;
     internal static ConfigEntry<float> ExplosiveTripMineSpawnWeightMultiplier = null!;
     internal static ConfigEntry<float> CFoamTripmineSpawnWeightMultiplier = null!;
-    internal static ConfigEntry<bool> ConsumablesAreKits = null!;
-    internal static ConfigEntry<float> HealthKitWeight = null!;
-    internal static ConfigEntry<float> ToolKitWeight = null!;
-    internal static ConfigEntry<float> AmmoKitWeight = null!;
-    internal static ConfigEntry<float> KitLootPercent = null!;
-    internal static ConfigEntry<int> KitChargesMin = null!;
-    internal static ConfigEntry<int> KitChargesMax = null!;
     internal static ConfigEntry<bool> BotsAlwaysEquipSentryGun = null!;
     internal static ConfigEntry<bool> ControlDefaultsApplied = null!;
 
@@ -90,12 +83,6 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> FogClearMaxRange = null!;
     internal static ConfigEntry<float> FogClearRampSeconds = null!;
     internal static ConfigEntry<float> FogClearDensityOverride = null!;
-
-    // G.EZ-T48 - see Patches/ArtifactBuffs.cs.
-    internal static ConfigEntry<bool> ArtifactBuffsEnabled = null!;
-    internal static ConfigEntry<float> ArtifactBoldMaxHealthPercent = null!;
-    internal static ConfigEntry<float> ArtifactAggressiveDamagePercent = null!;
-    internal static ConfigEntry<float> ArtifactMutedQuieterPercent = null!;
 
     // ExpeditionBalanceDataBlock - the per-difficulty-tier resource/enemy/door budget table.
     internal static ConfigEntry<float> HealthPackResourceMultiplier = null!;
@@ -356,7 +343,7 @@ public class Plugin : BasePlugin
             "Multiplies tentacle attack damage (Striker/Tank grabs, Scout tentacles, etc.) for every enemy type. Left at vanilla (1.0) by default.");
 
         ConsumableSpawnMultiplier = BindNonNegative("Loot", "Consumable Spawn Multiplier", 1.0f,
-            "Multiplies how many consumables (flashlights, glow sticks, etc.) spawn per zone. With Consumables Are Kits on, Kit Loot sets how many kits instead. Left at vanilla (1.0) by default.");
+            "Multiplies how many consumables (flashlights, glow sticks, etc.) spawn per zone. With GTFO.AbsurdItems' Consumables Are Kits on, its Kit Loot sets how many kits instead. Left at vanilla (1.0) by default.");
 
         BigPickupSpawnMultiplier = BindNonNegative("Loot", "Big Pickup Spawn Multiplier", 1.0f,
             "Multiplies how many big pickups (fog turbines, artifacts, etc.) spawn per zone. Left at vanilla (1.0) by default.");
@@ -364,35 +351,11 @@ public class Plugin : BasePlugin
         ReviveDurationMultiplier = BindNonNegative("Interactions", "Revive Duration Multiplier", 0.33f,
             "Multiplies how long it takes to revive a downed teammate. Lower is faster. Default 0.33 (33% of vanilla).");
 
-        ConsumablesAreKits = Config.Bind("Loot", "Consumables Are Kits", true,
-            "Consumables found in lockers, boxes or lying around are small health, tool and ammo kits, and only a few of " +
-            "them (see Kit Loot) - on top of the zone's normal resource packs, which are left as they are. Off: vanilla " +
-            "consumables, retuned by the per-item weights further down. Takes effect on restart.");
-
-        KitLootPercent = BindNonNegative("Loot", "Kit Loot (%)", 20f,
-            "With Consumables Are Kits on: how much the kits found as loot add, in percent of a zone's normal health, ammo " +
-            "and tool pack budget (averaged over the difficulty tiers). Default 20 - about a fifth more kits than the resource " +
-            "packs alone. Takes effect on restart.");
-
-        HealthKitWeight = BindNonNegative("Loot", "Health Kit Weight", 1f,
-            "With Consumables Are Kits on: multiplies the odds a kit is a health kit. The odds already follow the zone's own health pack budget; 1 keeps that split. Takes effect on restart.");
-
-        ToolKitWeight = BindNonNegative("Loot", "Tool Kit Weight", 1f,
-            "With Consumables Are Kits on: multiplies the odds a kit is a tool kit. The odds already follow the zone's own tool pack budget; 1 keeps that split. Takes effect on restart.");
-
-        AmmoKitWeight = BindNonNegative("Loot", "Ammo Kit Weight", 1f,
-            "With Consumables Are Kits on: multiplies the odds a kit is an ammo kit. The odds already follow the zone's own ammo pack budget; 1 keeps that split. Takes effect on restart.");
-
-        KitChargesMin = Config.Bind("Loot", "Kit Charges Min", 1,
-            "Fewest charges a kit found as loot holds. One charge is one use, 20% of a full pack. Takes effect on restart.");
-
-        KitChargesMax = Config.Bind("Loot", "Kit Charges Max", 2,
-            "Most charges a kit found as loot holds. Takes effect on restart.");
-
-        // With Consumables Are Kits off: each consumable is picked from a shared weighted lottery,
-        // so these retune the odds between them rather than the total amount of loot (that's
-        // ConsumableSpawnMultiplier above). Glow Stick, C-Foam Grenade, Fog Repeller, Lock Melter
-        // and both tripmines default to 0 (disabled); the flashlight is left at vanilla.
+        // Each consumable is picked from a shared weighted lottery, so these retune the odds
+        // between them rather than the total amount of loot (that's ConsumableSpawnMultiplier
+        // above). Skipped while another GTFO.* mod decides the consumable loot (see GameDataTweaks).
+        // Glow Stick, C-Foam Grenade, Fog Repeller, Lock Melter and both tripmines default to 0
+        // (disabled); the flashlight is left at vanilla.
         FlashlightItemSpawnWeightMultiplier = BindNonNegative("Loot", "Long Range Flashlight Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a Long Range Flashlight is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
@@ -747,20 +710,6 @@ public class Plugin : BasePlugin
         FogClearDensityOverride = Config.Bind("Fog Clearing", "Density Override", 0f,
             "0 (default) copies the vanilla Fog Repeller's own density. Set a value only if fog doesn't clear - " +
             "LogOutput.log shows the density in use.");
-
-        ArtifactBuffsEnabled = Config.Bind("Artifacts", "Artifact Buffs Enabled", true,
-            "Picking up an artifact buffs whoever picked it up until the level ends (a checkpoint restart that puts " +
-            "the artifact back takes the buff back off). Bold, Aggressive and Muted are the game's Uncommon, Rare " +
-            "and Common artifacts.");
-
-        ArtifactBoldMaxHealthPercent = BindNonNegative("Artifacts", "Bold: Max Health (%)", 5f,
-            "Max health added per Bold artifact picked up, in percent of your starting max health (the gain is healed too). Default 5.");
-
-        ArtifactAggressiveDamagePercent = BindNonNegative("Artifacts", "Aggressive: Damage (%)", 5f,
-            "Damage dealt to enemies (guns and melee) added per Aggressive artifact picked up. Default 5.");
-
-        ArtifactMutedQuieterPercent = BindNonNegative("Artifacts", "Muted: Quieter (%)", 5f,
-            "How much harder enemies find it to detect you, per Muted artifact picked up (capped at 75%). Default 5.");
     }
 
     // Every float setting here is a multiplier, range, duration or percentage, none of which mean

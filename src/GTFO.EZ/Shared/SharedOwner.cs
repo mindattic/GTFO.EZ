@@ -18,6 +18,7 @@ internal static class SharedOwner
         "MindAttic.GTFO.EZ",
         "MindAttic.GTFO.AbsurdWeapons",
         "MindAttic.GTFO.AbsurdMoves",
+        "MindAttic.GTFO.AbsurdItems",
         "MindAttic.GTFO.CrashTestDummies",
     };
 

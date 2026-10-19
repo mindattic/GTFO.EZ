@@ -31,22 +31,17 @@ vanilla-vs-default table):
 
 - Health, regen rate and regen cap, stamina (removes the in-combat penalty), fall damage amount
   and max-damage height, weapon/tool ammo, and enemy movement-detection range.
-- Consumables found in lockers, boxes or lying around are small health, tool and ammo kits of 1-2
-  charges (one use each), and only a few: together they add about 20% to the zone's normal resource
-  packs, which spawn as usual. Turn off `Consumables
-  Are Kits` (Loot) for vanilla consumables, where glow sticks, lock melters, C-foam, trip mines
-  and fog repellers are disabled by default. With GTFO.AbsurdWeapons installed and its Loot Mix
-  on, its mix is the consumable loot (kits at its odds and size, plus Hand Grenades and, when on,
-  Stim Packs) and this mod's own loot item settings are skipped.
+- Consumable loot: glow sticks, lock melters, C-foam, trip mines and fog repellers are disabled by
+  default, so their share goes to the rest. Consumables as kits moved to
+  [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems): with its *Consumables Are
+  Kits* on (or GTFO.AbsurdWeapons' Loot Mix), that mod decides the consumable loot and this mod's
+  per-item spawn odds are skipped.
 - Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
   fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
   widening from 4 m to 25 m over 90 s each level. Tunable under `Fog Clearing`.
 - Revive duration is cut roughly two-thirds.
 - Sentry guns place and pick back up instantly - the vanilla hold-to-confirm charge is removed by
   default. Placing your own switches you straight back to the weapon you had out before.
-- **Artifact buffs**: each artifact you pick up buffs you for the rest of the level - Bold +5% max
-  health (healed too), Aggressive +5% damage to enemies, Muted 5% harder to detect (capped at 75%).
-  A checkpoint restart that puts the artifact back removes its buff. Tunable under `Artifacts`.
 - **Bots Always Equip Sentry Gun** (`Bots`, off by default): forces every bot's tool slot to the
   basic Sentry Gun.
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
@@ -130,7 +125,7 @@ once, at load time, read from the BepInEx config. Additional Harmony patches cov
 isn't a simple datablock field: one-time control
 defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant sentry placement
 (`SentryInstantPlacementPatch`), the experimental bot tool controls
-(`DeployPickupHotkeys`), Ping Anywhere (`TerminalPingPatch`), and artifact buffs (`ArtifactBuffs`).
+(`DeployPickupHotkeys`), Ping Anywhere (`TerminalPingPatch`), and fog clearing (`FogClearPulse`).
 
 ## Configuration
 
@@ -139,7 +134,9 @@ All tweaks are multipliers or toggles, tunable after first launch in
 mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
 Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
-type/archetype, Sentries, Fog Clearing, Artifacts, and Experimental.
+type/archetype, Sentries, Fog Clearing, and Experimental. (The Artifacts section and the kit
+settings under Loot moved to GTFO.AbsurdItems; an older `.cfg` keeps them as leftover lines that
+do nothing here.)
 
 BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a *default*
 between versions, an existing install won't pick up the new number on its own -
@@ -184,15 +181,19 @@ tools/
 `src/GTFO.EZ/Shared/` is the one place the code shared by every GTFO.* mod is written:
 
 - `SharedOwner.cs` - with several of the mods installed, picks the one that answers shared keys
-  (the first installed of GTFO.EZ, GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.CrashTestDummies)
+  (the first installed of GTFO.EZ, GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.AbsurdItems,
+  GTFO.CrashTestDummies)
   and holds state every copy must agree on once for the whole game process.
-- `InfiniteToggles.cs` - Insert / Delete, infinite ammo and health. Published to all three.
-- `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdWeapons, which runs it with its own
-  settings and adds its Hand Grenades and Stim Packs to the mix.
+- `InfiniteToggles.cs` / `WardenMessage.cs` - Insert / Delete, infinite ammo and health, and the
+  warden message they're announced with. Published to every other GTFO.* mod.
+- `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdItems (its *Consumables Are Kits*)
+  and GTFO.AbsurdWeapons (its Loot Mix, which adds Hand Grenades and Stim Packs to the mix), each
+  running it with its own settings. GTFO.EZ no longer uses it, so `GTFO.EZ.csproj` leaves it out of
+  this mod's build; it compiles in those two mods.
 
-After changing any of them, run `.	ools\publish-shared.ps1` and commit the copies in each repo;
-`.	ools\publish-shared.ps1 -Check` lists any copy that's out of date. The copies are never edited
-in place.
+After changing any of them, run `.\tools\publish-shared.ps1` and commit the copies in each repo
+(`-Repo <name>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy
+that's out of date. The copies are never edited in place.
 
 ## Versioning
 
@@ -217,9 +218,6 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
   "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow, behind a
   wall or door, or while you're downed) and Z are confirmed working in play; the weapon
   switch-back after placing your own is not yet.
-- Artifact buffs are compiled but not yet confirmed in play. Muted scales the game's per-player
-  detection modifier (`PlayerAgent.GetDetectionMod`); whether enemies consult it for ordinary
-  movement noise is the part to check.
 - Fog clearing is compiled but not yet confirmed in play; its density is read from the vanilla
   Fog Repeller prefab at runtime (logged), with a Density Override if that doesn't clear fog.
 - Datablock patches can only be verified by launching the game; they have no automated test
@@ -248,5 +246,7 @@ Part of [MindAttic](https://mindattic.com) - see more projects at
 [github.com/mindattic](https://github.com/mindattic). Other GTFO mods from the same team:
 [GTFO.AbsurdWeapons](https://github.com/mindattic/GTFO.AbsurdWeapons),
 [GTFO.AbsurdMoves](https://github.com/mindattic/GTFO.AbsurdMoves) (which now has the dash, as its Dodge),
+[GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems) (which now has artifact buffs and
+consumables as kits),
 [GTFO.CrashTestDummies](https://github.com/mindattic/GTFO.CrashTestDummies), and
 [GTFO.SkipDrop](https://github.com/mindattic/GTFO.SkipDrop).

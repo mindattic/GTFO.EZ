@@ -4,7 +4,6 @@ using BepInEx.Unity.IL2CPP;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
-using MindAttic.GTFO.Shared;
 using UnityEngine;
 
 namespace GTFO.EZ.Patches;
@@ -31,7 +30,6 @@ internal static class GameDataInit_Initialize_Patch
         RunTweakCategory("enemy balance", ApplyEnemyBalanceTweaks);
         RunTweakCategory("fog", ApplyFogTweaks);
         RunTweakCategory("expedition balance", ApplyExpeditionBalanceTweaks);
-        // After expedition balance: the kit count follows the zone resource budget it just set.
         RunTweakCategory("loot", ApplyLootTweaks);
         RunTweakCategory("melee", ApplyMeleeTweaks);
         RunTweakCategory("weapon", ApplyWeaponTweaks);
@@ -186,30 +184,19 @@ internal static class GameDataInit_Initialize_Patch
     // Consumables (what boxes and lockers hold, and what lies around a zone) and big pickups (fog
     // turbines, artifacts) are separate distribution datablocks, each with its own spawns-per-zone
     // count. Med/ammo/tool kits from the zone's resource budget are a separate system again and are
-    // never touched here.
+    // never touched here. Kits as consumable loot live in GTFO.AbsurdItems now; it runs after this.
     private static void ApplyLootTweaks()
     {
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
-        var absurdLoot = AbsurdWeaponsLootMixOn();
-        if (absurdLoot) Plugin.Logger.LogInfo("Loot: GTFO.AbsurdWeapons' Loot Mix is on, so it decides which consumables spawn - Consumables Are Kits and the spawn odds here are skipped.");
-
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
 
-        var kitsFilled = !absurdLoot && Plugin.ConsumablesAreKits.Value && KitLoot.Fill(new KitLootSettings
-            {
-                LogName = "Consumables Are Kits",
-                LootPercent = Plugin.KitLootPercent.Value,
-                MinCharges = Plugin.KitChargesMin.Value,
-                MaxCharges = Plugin.KitChargesMax.Value,
-                HealthWeight = Plugin.HealthKitWeight.Value,
-                ToolWeight = Plugin.ToolKitWeight.Value,
-                AmmoWeight = Plugin.AmmoKitWeight.Value,
-            }) > 0;
+        var otherLoot = OtherModDecidesConsumables();
+        if (otherLoot != null) Plugin.Logger.LogInfo($"Loot: {otherLoot} decides which consumables spawn - the spawn odds here are skipped.");
 
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
-            if (absurdLoot || kitsFilled || block.SpawnData == null || block.SpawnData.Count == 0) continue;
+            if (otherLoot != null || block.SpawnData == null || block.SpawnData.Count == 0) continue;
 
             // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
             // an item's weight retunes the odds between items rather than the total amount of
@@ -232,27 +219,38 @@ internal static class GameDataInit_Initialize_Patch
         }
     }
 
-    // With GTFO.AbsurdWeapons' Loot Mix on, its mix (kits, Hand Grenades, Stim Packs) replaces every
-    // consumable table after this runs, so the item lists are left alone here. Zeroing an all-disabled
-    // table's count would otherwise leave it empty under that mix too, and Consumables Are Kits giving
-    // the kits contents first would stop its Kit Size from applying. Its setting is read off its own
-    // config; if that can't be found, a loaded AbsurdWeapons counts as on (its default).
-    private const string AbsurdWeaponsGuid = "MindAttic.GTFO.AbsurdWeapons";
-
-    private static bool AbsurdWeaponsLootMixOn()
+    // GTFO.AbsurdWeapons' Loot Mix (kits, Hand Grenades, Stim Packs) and GTFO.AbsurdItems'
+    // Consumables Are Kits each replace every consumable table's items after this runs, so the item
+    // lists are left alone here while either is on: zeroing an all-disabled table's count would
+    // otherwise leave that table empty under their kits too. Each setting is read off its own mod's
+    // config; if it can't be found, a loaded mod counts as on (both default to on). Returns the
+    // deciding mod's setting, or null when this mod's spawn odds apply.
+    private static readonly (string Guid, string Section, string Key, string Name)[] ConsumableLootOwners =
     {
-        try
+        ("MindAttic.GTFO.AbsurdWeapons", "Loot", "Loot Mix Enabled", "GTFO.AbsurdWeapons' Loot Mix"),
+        ("MindAttic.GTFO.AbsurdItems", "Loot", "Consumables Are Kits", "GTFO.AbsurdItems' Consumables Are Kits"),
+    };
+
+    private static string? OtherModDecidesConsumables()
+    {
+        foreach (var (guid, section, key, name) in ConsumableLootOwners)
         {
-            if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(AbsurdWeaponsGuid, out var info)) return false;
-            if (info.Instance is BasePlugin plugin && plugin.Config.TryGetEntry<bool>("Loot", "Loot Mix Enabled", out var enabled))
-                return enabled.Value;
-            return true;
+            try
+            {
+                if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(guid, out var info)) continue;
+                if (info.Instance is BasePlugin plugin && plugin.Config.TryGetEntry<bool>(section, key, out var enabled))
+                {
+                    if (enabled.Value) return name;
+                    continue;
+                }
+                return name;
+            }
+            catch (Exception e)
+            {
+                Plugin.Logger.LogWarning($"Loot: couldn't check {name}, applying this mod's spawn odds. {e.Message}");
+            }
         }
-        catch (Exception e)
-        {
-            Plugin.Logger.LogWarning($"Loot: couldn't check for GTFO.AbsurdWeapons, applying this mod's loot settings. {e.Message}");
-            return false;
-        }
+        return null;
     }
 
     // ItemIDs confirmed by logging GameDataBlockBase<ItemDataBlock> entries referenced from

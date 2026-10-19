@@ -26,11 +26,9 @@ config is applied; `-` means left at vanilla:
 | Fall height where damage maxes out | 20m | 30m (+50%) |
 | Weapon/tool ammo (reserve, starting, refill packs) | x1 | x1.5 (+50%) |
 | Enemy movement-noise detection distance | 8m (sleepers: 20m) | 6m (sleepers: 15m) (-25%) |
-| Consumables (lockers, boxes, lying around) | mixed items | a few small health, tool and ammo kits, 1-2 charges each, adding about 20% to the zone's resource packs |
 | Revive duration (time to revive a downed teammate) | 4s | 1.32s (-67%) |
 | Fog (visibility-limiting fog) | enabled | disabled |
 | Sentry gun deploy/pickup interaction time | vanilla hold time | instant (-100%) |
-| Artifact pickups (Bold / Aggressive / Muted) | count toward boosters only | +5% max health / +5% damage / 5% harder to detect, each, for the level |
 | Fog clearing around you | none (Fog Repeller item only, 70 s) | always on, 4 m widening to 25 m over 90 s |
 
 A few deliberate non-changes among the tuned stats: regen delay after damage is left at vanilla
@@ -47,17 +45,8 @@ ordinary game settings you can change back in Settings → Gameplay.
 **Gameplay additions** — beyond the stat changes in the table, the mod adds a few behaviours of
 its own, each with its own config section and on/off switch:
 
-- **Artifact buffs** (`Artifacts`): whoever picks up an artifact keeps a buff for the rest of the
-  level - each **Bold** (Uncommon) +5% max health, healed too; each **Aggressive** (Rare) +5%
-  damage to enemies, guns and melee; each **Muted** (Common) 5% harder for enemies to detect you,
-  capped at 75%. A checkpoint restart that puts an artifact back takes its buff off again.
 - **Fog clearing** (`Fog Clearing`): a silent, invisible version of the Fog Repeller's sphere
   follows you, clearing 4 m around you at the start of a level and widening to 25 m over 90 s.
-- **Kit loot** (`Loot` → *Consumables Are Kits*): consumables in lockers, boxes or lying around
-  are small health, tool and ammo kits of 1 or 2 charges (one charge is one use, 20% of a pack),
-  and sparse: together they add about 20% (*Kit Loot*) to the zone's normal resource packs, which
-  are left as they are. The split between health, ammo and tool kits follows the zone's own
-  resource budget. Turn it off for vanilla consumables.
 - **Instant sentries** (`Sentries`): sentry guns place and pick back up with no hold-to-confirm,
   and placing your own switches you straight back to the weapon you had out.
 - **Bots Always Equip Sentry Gun** (`Bots`, *off* by default): forces every bot's tool slot to the
@@ -166,7 +155,7 @@ itself:
 
 | Stat | Vanilla | Default |
 |---|---|---|
-| Consumable spawns per zone (vanilla items, with Consumables Are Kits off; with it on, Kit Loot sets how many kits) | varies by zone | - |
+| Consumable spawns per zone (with GTFO.AbsurdItems' Consumables Are Kits on, its Kit Loot sets how many kits) | varies by zone | - |
 | Big pickup spawns per zone (fog turbines, artifacts, etc.) | varies by zone | - |
 
 ## Miscellaneous (exposed, but not part of the core tuning)
@@ -176,12 +165,11 @@ detection/glow sticks, above) was already settled. It's real, functional, and fu
 but less curated and less load-bearing for the mod's "easy mode" identity than the stats above —
 expect it to matter more for players who want to go deeper than the defaults, not for a first install.
 
-**Consumable spawn odds** — only used with `Consumables Are Kits` turned off (it's on by default,
-and makes the consumables a few small kits instead). They retune the weighted lottery that decides *which*
-consumable fills a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier`
-above, which only counts with `Consumables Are Kits` off; with it on, `Kit Loot (%)` sets how many
-kits spawn). Setting one to 0 removes that item, and its share goes to the rest; a loot table with
-every item disabled spawns nothing.
+**Consumable spawn odds** — they retune the weighted lottery that decides *which* consumable fills
+a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier` above). Setting one to
+0 removes that item, and its share goes to the rest; a loot table with every item disabled spawns
+nothing. They're skipped while another mod decides the consumable loot: GTFO.AbsurdItems'
+*Consumables Are Kits* (a few small health, tool and ammo kits instead) or GTFO.AbsurdWeapons' Loot Mix.
 
 | Stat | Vanilla | Default |
 |---|---|---|
@@ -191,6 +179,11 @@ every item disabled spawns nothing.
 | Explosive Trip Mine spawn odds | varies by zone | disabled (-100%) |
 | C-Foam Tripmine spawn odds | varies by zone | disabled (-100%) |
 | Fog Repeller spawn odds | varies by zone | disabled (-100%) |
+
+Left at vanilla by default:
+
+| Stat | Vanilla | Default |
+|---|---|---|
 | Long Range Flashlight spawn odds | varies by zone | - |
 
 **Expedition balance** — `ExpeditionBalanceDataBlock` is the game's own per-difficulty-tier budget
@@ -470,11 +463,12 @@ either not multiplier-friendly or purely cosmetic/technical.
 ## Compatibility
 
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
-  mod's, so where the two clash it wins - notably loot: with its Loot Mix on, it runs this mod's kit loot with its own settings and adds
-  Hand Grenades and Stim Packs to the mix, and this mod's *Consumables Are Kits* and consumable
-  spawn odds are skipped. Its
-  keys (Home/PgUp/PgDn) don't overlap with this mod's (E, Shift+E, X, Z). It leaves artifacts
-  in place, so artifact buffs work with it installed.
+  mod's, so where the two clash it wins - notably loot: with its Loot Mix on, its mix of kits, Hand
+  Grenades and Stim Packs is the consumable loot, and this mod's consumable spawn odds are skipped.
+  Its keys (Home/PgUp/PgDn) don't overlap with this mod's (E, Shift+E, X, Z).
+- **GTFO.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
+  Kits*) that used to be in this mod live there now, with the same settings. Its kit loot is applied
+  after this mod's data changes, and while it's on this mod's consumable spawn odds are skipped.
 - **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
   Dodge (hold Shift, double-tap W/A/S/D). Install it if you want the dash back.
 - **GTFO.CrashTestDummies** and **GTFO.SkipDrop:** compatible - they patch level building and the
@@ -532,6 +526,13 @@ others' prior work:
 - **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
   every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
   on, this mod now leaves consumable loot entirely to it.
+- **Moved out:** artifact buffs (the Artifacts section) and *Consumables Are Kits* (with *Kit Loot
+  (%)*, *Kit Charges Min/Max* and the health/tool/ammo kit weights) now live in
+  [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems), with the same settings and
+  defaults; install it to keep them. Without it, consumable loot here is the vanilla items with this
+  mod's spawn odds (glow sticks, lock melters, C-foam, trip mines and fog repellers off). With its
+  *Consumables Are Kits* on, the spawn odds here are skipped, as they are for GTFO.AbsurdWeapons'
+  Loot Mix. The old settings stay in an existing `.cfg` as leftover lines that do nothing.
 - **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
   **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
   install GTFO.AbsurdMoves to keep dashing.
