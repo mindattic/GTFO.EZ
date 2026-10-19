@@ -1,0 +1,152 @@
+<title>GTFO Model Catalog</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Barlow:wght@400;600&display=swap">
+<style>
+/* Layout: one terminal-style console column - header readout, filter rail, one scrolling ledger. */
+:root {
+  --bg: #0b0f0d;        /* powered-down terminal glass */
+  --panel: #111814;
+  --line: #1f2b24;
+  --fg: #cfe3d4;
+  --dim: #7e978a;
+  --accent: #e0b44a;    /* warden-terminal amber */
+  --hit: #3a2f12;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --display: "Chakra Petch", "Bahnschrift", "Segoe UI", sans-serif;
+  --body: "Barlow", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 28px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px; }
+header { display: grid; gap: 6px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 4vw, 38px); margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.lede { color: var(--dim); margin: 0; max-width: 72ch; line-height: 1.5; }
+.lede code { font-family: var(--mono); font-size: 13px; color: var(--fg); }
+.readout { display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--mono); font-size: 13px; color: var(--dim); }
+.readout b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.rail { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); padding: 12px; }
+.prompt { flex: 1 1 260px; display: flex; align-items: center; gap: 8px; font-family: var(--mono); min-width: 0; }
+.prompt span { color: var(--accent); }
+#q { flex: 1; min-width: 0; background: transparent; border: 0; border-bottom: 1px solid var(--line); color: var(--fg); font: 15px var(--mono); padding: 6px 2px; }
+#q:focus { outline: none; border-bottom-color: var(--accent); }
+.seg { display: flex; border: 1px solid var(--line); }
+.seg button, .chip { font: 600 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; background: transparent; color: var(--dim); border: 0; padding: 7px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chips small { font: 12px var(--mono); color: var(--dim); margin-right: 2px; }
+.chip { border: 1px solid var(--line); text-transform: none; letter-spacing: 0; }
+.chip:hover, .seg button:hover { color: var(--fg); }
+button:focus-visible, #q:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ledger { border: 1px solid var(--line); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+th { position: sticky; top: 0; background: var(--panel); text-align: left; font-weight: 600; color: var(--dim); padding: 8px 10px; border-bottom: 1px solid var(--line); cursor: pointer; white-space: nowrap; user-select: none; }
+th[aria-sort] { color: var(--accent); }
+th.num, td.num { text-align: right; }
+td { padding: 6px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td.name { white-space: normal; word-break: break-all; color: var(--fg); min-width: 220px; }
+td.file { color: var(--dim); }
+mark { background: var(--hit); color: var(--accent); }
+tr:hover td { background: var(--panel); }
+.more { display: flex; justify-content: center; padding: 12px; }
+.more button { font: 600 12px var(--mono); background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 16px; cursor: pointer; }
+.empty { padding: 24px; color: var(--dim); font-family: var(--mono); }
+footer { color: var(--dim); font-size: 13px; line-height: 1.5; max-width: 80ch; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">GTFO_Data · offline scan</div>
+    <h1>GTFO Model Catalog</h1>
+    <p class="lede">Every mesh and every top-level object (a prefab or scene root) in the game's data files, read offline.
+      Sizes are the mesh's bounding box in metres. To borrow a model in a mod you still need its load path
+      (like <code>Assets/AssetPrefabs/Items/Consumables/LockMelter/...prefab</code>), which only the running game lists.</p>
+    <div class="readout" id="readout"></div>
+  </header>
+
+  <div class="rail" role="search">
+    <label class="prompt" for="q"><span>&gt;</span><input id="q" type="search" placeholder="search names or files" autocomplete="off" spellcheck="false"></label>
+    <div class="seg" role="group" aria-label="What to list">
+      <button id="kind-mesh" aria-pressed="true">Meshes</button>
+      <button id="kind-root" aria-pressed="false">Prefab roots</button>
+    </div>
+    <div class="chips"><small>rocket candidates:</small>
+      <button class="chip" data-q="flare">flare</button>
+      <button class="chip" data-q="tube">tube</button>
+      <button class="chip" data-q="canister">canister</button>
+      <button class="chip" data-q="shell">shell</button>
+      <button class="chip" data-q="consumable">consumable</button>
+    </div>
+  </div>
+
+  <div class="ledger"><table id="t"><thead id="head"></thead><tbody id="body"></tbody></table>
+    <div class="more" id="more" hidden><button id="more-btn">Show 500 more</button></div>
+    <div class="empty" id="empty" hidden>No match. Try part of a name, like "flare" or "Canister".</div>
+  </div>
+
+  <footer>Regenerate after a game update with <code>tools/model-catalog</code> in GTFO.EZ; the same data is committed as
+    <code>reference/gtfo-models.csv</code>. Names with a <code>g_</code> prefix are usually the visible mesh, <code>c_</code> its collision and <code>d_</code> a decal or damage variant.</footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const COLS = {
+  mesh: [["name","Name"],["file","File"],["vertices","Vertices",1],["x","X (m)",1],["y","Y (m)",1],["z","Z (m)",1]],
+  root: [["name","Name"],["file","File"],["children","Children",1]],
+};
+const rows = {
+  mesh: DATA.meshes.map(m => ({name:m[0], file:m[1], vertices:m[2], x:m[3], y:m[4], z:m[5]})),
+  root: DATA.roots.map(r => ({name:r[0], file:r[1], children:r[2]})),
+};
+let kind = "mesh", sortKey = "name", sortDir = 1, shown = 500;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function highlight(text, q) {
+  if (!q) return esc(text);
+  const i = text.toLowerCase().indexOf(q);
+  return i < 0 ? esc(text) : esc(text.slice(0, i)) + "<mark>" + esc(text.slice(i, i + q.length)) + "</mark>" + esc(text.slice(i + q.length));
+}
+function render() {
+  const q = $("q").value.trim().toLowerCase();
+  const cols = COLS[kind];
+  $("head").innerHTML = "<tr>" + cols.map(([k, label, num]) =>
+    `<th class="${num ? "num" : ""}" data-k="${k}" ${k === sortKey ? `aria-sort="${sortDir > 0 ? "ascending" : "descending"}"` : ""}>${label}${k === sortKey ? (sortDir > 0 ? " ▲" : " ▼") : ""}</th>`).join("") + "</tr>";
+  let list = rows[kind];
+  if (q) list = list.filter(r => r.name.toLowerCase().includes(q) || r.file.toLowerCase().includes(q));
+  const num = cols.find(c => c[0] === sortKey)?.[2];
+  list = [...list].sort((a, b) => num ? (a[sortKey] - b[sortKey]) * sortDir : String(a[sortKey]).localeCompare(String(b[sortKey])) * sortDir);
+  $("body").innerHTML = list.slice(0, shown).map(r => "<tr>" + cols.map(([k, , n]) =>
+    k === "name" ? `<td class="name">${highlight(r.name, q)}</td>` :
+    k === "file" ? `<td class="file">${highlight(r.file, q)}</td>` :
+    `<td class="num">${n && typeof r[k] === "number" && !Number.isInteger(r[k]) ? r[k].toFixed(3) : esc(r[k])}</td>`).join("") + "</tr>").join("");
+  $("more").hidden = list.length <= shown;
+  $("empty").hidden = list.length > 0;
+  $("readout").innerHTML = `<span><b>${rows.mesh.length.toLocaleString()}</b> meshes</span><span><b>${rows.root.length.toLocaleString()}</b> prefab roots</span><span><b>${DATA.files.toLocaleString()}</b> data files scanned</span><span>showing <b>${Math.min(shown, list.length).toLocaleString()}</b> of <b>${list.length.toLocaleString()}</b></span>`;
+}
+function setKind(k) {
+  kind = k; sortKey = "name"; sortDir = 1; shown = 500;
+  $("kind-mesh").setAttribute("aria-pressed", k === "mesh");
+  $("kind-root").setAttribute("aria-pressed", k === "root");
+  render();
+}
+$("kind-mesh").onclick = () => setKind("mesh");
+$("kind-root").onclick = () => setKind("root");
+$("q").addEventListener("input", () => { shown = 500; render(); });
+$("more-btn").onclick = () => { shown += 500; render(); };
+$("head").addEventListener("click", e => {
+  const th = e.target.closest("th"); if (!th) return;
+  if (th.dataset.k === sortKey) sortDir = -sortDir; else { sortKey = th.dataset.k; sortDir = th.classList.contains("num") ? -1 : 1; }
+  render();
+});
+document.querySelectorAll(".chip").forEach(b => b.onclick = () => { $("q").value = b.dataset.q; shown = 500; render(); });
+render();
+</script>
