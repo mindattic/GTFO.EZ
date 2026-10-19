@@ -48,7 +48,7 @@ vanilla-vs-default table):
 - On first launch only, switches on four of the game's own control options (toggle comms menu,
   toggle sprint, toggle aim, stand on jump) - a one-time nudge, not an enforced setting.
 - **Insert** toggles infinite ammo and **Delete** infinite health (your own player only), each
-  announced as a warden message; both start off. Every GTFO.* mod has these two keys, from one
+  announced in the event log; both start off. Every GTFO.* mod has these two keys, from one
   shared copy of the code (see Shared code below), and with several installed only one of them
   answers the keys, so a press never toggles twice.
 - A load confirmation: a "GTFO.EZ vN Active" line under the rundown title on the rundown-select
