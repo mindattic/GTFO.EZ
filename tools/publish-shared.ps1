@@ -6,16 +6,16 @@
 .DESCRIPTION
     GTFO.EZ owns the code every GTFO.* mod carries a copy of: the Insert/Delete infinite ammo and
     health toggles (SharedOwner + InfiniteToggles + WardenMessage, in every mod) and kits as consumables (KitLoot,
-    GTFO.AbsurdItems only - GTFO.EZ keeps the source but doesn't compile it). This
+    GTFO.EZ.AbsurdItems only - GTFO.EZ keeps the source but doesn't compile it). This
     writes each file into <repo>/src/<repo>/Shared/ with a header saying where it came from, in the order
-    GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.AbsurdItems, GTFO.CrashTestDummies. The copies are never
+    GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves, GTFO.EZ.AbsurdItems, GTFO.CrashTestDummies. The copies are never
     edited by hand - change GTFO.EZ's and publish again.
 
 .PARAMETER Check
     Change nothing; list every copy that's missing or differs from GTFO.EZ's, and exit 1 if any do.
 
 .PARAMETER Only
-    Only these target repos (e.g. -Only GTFO.AbsurdItems,GTFO.AbsurdMoves) - for when another repo is
+    Only these target repos (e.g. -Only GTFO.EZ.AbsurdItems,GTFO.EZ.AbsurdMoves) - for when another repo is
     mid-change and mustn't be written to yet. Every target by default.
 #>
 [CmdletBinding()]
@@ -28,10 +28,21 @@ $source = Join-Path $repoRoot 'src\GTFO.EZ\Shared'
 
 $everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs', 'WardenMessage.cs')
 $targets = [ordered]@{
-    'GTFO.AbsurdWeapons'    = $everyMod
-    'GTFO.AbsurdMoves'      = $everyMod
-    'GTFO.AbsurdItems'      = $everyMod + @('KitLoot.cs')
+    'GTFO.EZ.AbsurdWeapons' = $everyMod
+    'GTFO.EZ.AbsurdMoves'   = $everyMod
+    'GTFO.EZ.AbsurdItems'   = $everyMod + @('KitLoot.cs')
     'GTFO.CrashTestDummies' = $everyMod
+}
+
+# The Absurd mods were renamed GTFO.EZ.AbsurdX, but their local folders may still be the legacy
+# GTFO.AbsurdX. A target's folder is its new name, falling back to the legacy one only while the
+# new folder doesn't exist. This fallback can go once the folders are renamed.
+function Resolve-RepoFolder([string]$repo) {
+    $folder = Join-Path $workspace $repo
+    if (Test-Path $folder) { return $folder }
+    $legacy = Join-Path $workspace ($repo -replace '^GTFO\.EZ\.Absurd', 'GTFO.Absurd')
+    if ($legacy -ne $folder -and (Test-Path $legacy)) { return $legacy }
+    return $folder
 }
 if ($Only) {
     $unknown = @($Only | Where-Object { -not $targets.Contains($_) })
@@ -43,8 +54,9 @@ $stale = @()
 
 foreach ($repo in $targets.Keys) {
     if ($Only -and $Only -notcontains $repo) { continue }
-    $dest = Join-Path $workspace "$repo\src\$repo\Shared"
-    if (-not (Test-Path (Join-Path $workspace $repo))) { Write-Warning "$repo isn't in the workspace - skipped."; continue }
+    $folder = Resolve-RepoFolder $repo
+    $dest = Join-Path $folder "src\$repo\Shared"
+    if (-not (Test-Path $folder)) { Write-Warning "$repo isn't in the workspace - skipped."; continue }
 
     foreach ($file in $targets[$repo]) {
         $body = [IO.File]::ReadAllText((Join-Path $source $file))

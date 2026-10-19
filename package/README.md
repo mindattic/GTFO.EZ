@@ -155,7 +155,7 @@ itself:
 
 | Stat | Vanilla | Default |
 |---|---|---|
-| Consumable spawns per zone (with GTFO.AbsurdItems' Consumables Are Kits on, its Kit Loot sets how many kits) | varies by zone | - |
+| Consumable spawns per zone (with GTFO.EZ.AbsurdItems' Consumables Are Kits on, its Kit Loot sets how many kits) | varies by zone | - |
 | Big pickup spawns per zone (fog turbines, artifacts, etc.) | varies by zone | - |
 
 ## Miscellaneous (exposed, but not part of the core tuning)
@@ -168,7 +168,7 @@ expect it to matter more for players who want to go deeper than the defaults, no
 **Consumable spawn odds** — they retune the weighted lottery that decides *which* consumable fills
 a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier` above). Setting one to
 0 removes that item, and its share goes to the rest; a loot table with every item disabled spawns
-nothing. GTFO.AbsurdItems' *Consumables Are Kits* replaces the items with a few small health, tool
+nothing. GTFO.EZ.AbsurdItems' *Consumables Are Kits* replaces the items with a few small health, tool
 and ammo kits (plus Hand Grenades and Stim Packs with its Loot Mix on), and these odds with them;
 whenever its kits don't fill the tables, these odds still apply.
 
@@ -463,16 +463,20 @@ either not multiplier-friendly or purely cosmetic/technical.
 
 ## Compatibility
 
-- **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
+GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and GTFO.EZ.AbsurdItems are GTFO.EZ companion mods,
+built on this mod's core (they share its Insert/Delete toggles and warden messages). Each one works
+without GTFO.EZ installed, too.
+
+- **GTFO.EZ.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
   mod's, so where the two clash it wins. Its keys (Home/PgUp/PgDn) don't overlap with this mod's
   (E, Shift+E, X, Z).
-- **GTFO.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
+- **GTFO.EZ.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
   Kits*) that used to be in this mod live there now, with the same settings, along with the Hand
-  Grenade, Stim Pack and Loot Mix from GTFO.AbsurdWeapons. Its kit loot is applied after this mod's
+  Grenade, Stim Pack and Loot Mix from GTFO.EZ.AbsurdWeapons. Its kit loot is applied after this mod's
   data changes and replaces this mod's consumable spawn odds along with the items.
 - **Turning a mod off:** every GTFO.* mod's `.cfg` starts with `[0. Mod] Enabled`; set it to
   `false` and that mod loads nothing, and the others treat it as not installed.
-- **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
+- **GTFO.EZ.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
   Dodge (hold Shift, double-tap W/A/S/D). Install it if you want the dash back.
 - **GTFO.CrashTestDummies** and **GTFO.SkipDrop:** compatible - they patch level building and the
   elevator drop, nothing this mod touches.
@@ -524,41 +528,41 @@ others' prior work:
   it to `false` and the whole mod is off - nothing is patched, no tuning, no hotkeys. The other
   GTFO.* mods treat a GTFO.EZ switched off this way as not installed (Insert/Delete pass to the next
   installed mod), and this mod does the same for them.
-- Loot: GTFO.AbsurdWeapons' Loot Mix, Hand Grenade and Stim Pack moved to GTFO.AbsurdItems, so the
-  consumable spawn odds here are now skipped only while GTFO.AbsurdItems' *Consumables Are Kits* is
-  on (its Loot Mix adds the Hand Grenades and Stim Packs to those kits). A GTFO.AbsurdItems switched
+- Loot: GTFO.EZ.AbsurdWeapons' Loot Mix, Hand Grenade and Stim Pack moved to GTFO.EZ.AbsurdItems, so the
+  consumable spawn odds here are now skipped only while GTFO.EZ.AbsurdItems' *Consumables Are Kits* is
+  on (its Loot Mix adds the Hand Grenades and Stim Packs to those kits). A GTFO.EZ.AbsurdItems switched
   off in its config counts as not installed.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
-- **Bug fix:** with GTFO.AbsurdItems' *Consumables Are Kits* on, this mod's consumable spawn odds were
+- **Bug fix:** with GTFO.EZ.AbsurdItems' *Consumables Are Kits* on, this mod's consumable spawn odds were
   skipped even when its kits didn't fill the loot tables (no kit items found, or an error), leaving
   the vanilla consumables. The odds now always apply, and its kits replace them when they do fill.
 - **Bug fix:** pressing Insert or Delete twice while the first message was still waiting behind one of
   the game's own warden messages cut the game's message off. A new toggle message now only replaces
   one of ours that's actually on screen, and never drops a game message queued behind it.
-- **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.AbsurdWeapons'
+- **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.EZ.AbsurdWeapons'
   gear swap) replace each other without cutting the game's own objective messages short, even after
   a level change; Insert/Delete keep working next to a mod build from before the shared toggles; and
   with every kit weight at 0, *Consumables Are Kits* spawns no kits instead of the vanilla consumables.
-- **Bug fix:** with GTFO.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
+- **Bug fix:** with GTFO.EZ.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
   every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
   on, this mod now leaves consumable loot entirely to it.
 - **Moved out:** artifact buffs (the Artifacts section) and *Consumables Are Kits* (with *Kit Loot
   (%)*, *Kit Charges Min/Max* and the health/tool/ammo kit weights) now live in
-  [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems), with the same settings and
+  [GTFO.EZ.AbsurdItems](https://github.com/mindattic/GTFO.EZ.AbsurdItems), with the same settings and
   defaults; install it to keep them. Without it, consumable loot here is the vanilla items with this
   mod's spawn odds (glow sticks, lock melters, C-foam, trip mines and fog repellers off). With its
-  *Consumables Are Kits* on, the spawn odds here are skipped, as they are for GTFO.AbsurdWeapons'
+  *Consumables Are Kits* on, the spawn odds here are skipped, as they are for GTFO.EZ.AbsurdWeapons'
   Loot Mix. The old settings stay in an existing `.cfg` as leftover lines that do nothing.
-- **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.AbsurdMoves as its
+- **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.EZ.AbsurdMoves as its
   **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
-  install GTFO.AbsurdMoves to keep dashing.
+  install GTFO.EZ.AbsurdMoves to keep dashing.
 - New **artifact buffs**: picking up an artifact buffs whoever picked it up for the rest of the
   level - each **Bold** +5% max health (healed too), each **Aggressive** +5% damage to enemies, each
   **Muted** 5% harder for enemies to detect you (capped at 75%). A checkpoint restart that puts an
   artifact back takes its buff off again. Tunable under the new Artifacts section.
 - **Moved out:** the Stim Pack - the I2-LP's overheal (+50% health past max, draining back down)
-  and its "Stim Pack" rename - now lives in GTFO.AbsurdWeapons, as a consumable of its own. The
+  and its "Stim Pack" rename - now lives in GTFO.EZ.AbsurdWeapons, as a consumable of its own. The
   I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
   drain, display name) are gone.
 - New **Consumables Are Kits** (Loot, on by default): consumables found in lockers, boxes or lying
@@ -566,7 +570,7 @@ others' prior work:
   zone's normal resource packs (which spawn as usual), split the way the zone's resource budget
   is. *Kit Loot (%)*, *Kit Charges Min/Max* and the per-kind weights are configurable. GTFO.EZ no longer turns
   disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
-  GTFO.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
+  GTFO.EZ.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
   Hand Grenades.
 - New **Ping Anywhere** (Experimental, on by default): `PING <KEY>` from any terminal reaches an
   item anywhere in the level, not just the terminal's own zone; the marker shows for 10 s.
@@ -589,8 +593,10 @@ others' prior work:
   unchanged.
 - **Bug fix:** if no Fog Repeller was loaded the first time fog clearing looked for one, it used
   the fallback density for the rest of the session; it now looks again in the next level.
-- With GTFO.AbsurdWeapons installed, everything it changes in the game's data applies after this
+- With GTFO.EZ.AbsurdWeapons installed, everything it changes in the game's data applies after this
   mod's and wins where they clash - loot follows its own settings. See Compatibility.
+- The companion mods are now GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and GTFO.EZ.AbsurdItems
+  (renamed before release), built on this mod's core.
 
 ### v13
 

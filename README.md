@@ -33,7 +33,7 @@ vanilla-vs-default table):
   and max-damage height, weapon/tool ammo, and enemy movement-detection range.
 - Consumable loot: glow sticks, lock melters, C-foam, trip mines and fog repellers are disabled by
   default, so their share goes to the rest. Consumables as kits moved to
-  [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems): with its *Consumables Are
+  [GTFO.EZ.AbsurdItems](https://github.com/mindattic/GTFO.EZ.AbsurdItems): with its *Consumables Are
   Kits* on (its Loot Mix adds Hand Grenades and Stim Packs to the kits), that mod decides the
   consumable loot, replacing this mod's per-item spawn odds; if its kits don't fill the tables,
   those odds still apply.
@@ -138,7 +138,7 @@ mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, E
 Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
 type/archetype, Sentries, Fog Clearing, and Experimental. (The Artifacts section and the kit
-settings under Loot moved to GTFO.AbsurdItems; an older `.cfg` keeps them as leftover lines that
+settings under Loot moved to GTFO.EZ.AbsurdItems; an older `.cfg` keeps them as leftover lines that
 do nothing here.)
 
 BepInEx keeps whatever value is already in a player's `.cfg`, so when this mod changes a *default*
@@ -181,10 +181,14 @@ tools/
 
 ## Shared code
 
+GTFO.EZ is the core of the GTFO.EZ family: GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and
+GTFO.EZ.AbsurdItems are companion mods built on it (each carries a published copy of the code
+below; each works on its own too), and GTFO.CrashTestDummies carries the same shared code.
+
 `src/GTFO.EZ/Shared/` is the one place the code shared by every GTFO.* mod is written:
 
 - `SharedOwner.cs` - with several of the mods installed, picks the one that answers shared keys
-  (the first installed of GTFO.EZ, GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.AbsurdItems,
+  (the first installed of GTFO.EZ, GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves, GTFO.EZ.AbsurdItems,
   GTFO.CrashTestDummies)
   and holds state every copy must agree on once for the whole game process. A mod whose master
   switch (`[0. Mod] Enabled`) is off counts as not installed. `SharedOwner.IsActive(guid)` and
@@ -192,9 +196,9 @@ tools/
   (installed, loaded and switched on) and reads its settings.
 - `InfiniteToggles.cs` / `WardenMessage.cs` - Insert / Delete, infinite ammo and health, and the
   warden message they're announced with. Published to every other GTFO.* mod.
-- `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdItems only (its *Consumables Are
+- `KitLoot.cs` - kits as consumables. Published to GTFO.EZ.AbsurdItems only (its *Consumables Are
   Kits*, with Loot Mix's Hand Grenades and Stim Packs as extras). GTFO.EZ doesn't use it, so
-  `GTFO.EZ.csproj` leaves it out of this mod's build; it compiles in GTFO.AbsurdItems.
+  `GTFO.EZ.csproj` leaves it out of this mod's build; it compiles in GTFO.EZ.AbsurdItems.
 
 After changing any of them, run `.\tools\publish-shared.ps1` and commit the copies in each repo
 (`-Only <repo>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy
@@ -249,9 +253,9 @@ project's design and defaults are built on.
 
 Part of [MindAttic](https://mindattic.com) - see more projects at
 [github.com/mindattic](https://github.com/mindattic). Other GTFO mods from the same team:
-[GTFO.AbsurdWeapons](https://github.com/mindattic/GTFO.AbsurdWeapons),
-[GTFO.AbsurdMoves](https://github.com/mindattic/GTFO.AbsurdMoves) (which now has the dash, as its Dodge),
-[GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems) (which now has artifact buffs and
+[GTFO.EZ.AbsurdWeapons](https://github.com/mindattic/GTFO.EZ.AbsurdWeapons),
+[GTFO.EZ.AbsurdMoves](https://github.com/mindattic/GTFO.EZ.AbsurdMoves) (which now has the dash, as its Dodge),
+[GTFO.EZ.AbsurdItems](https://github.com/mindattic/GTFO.EZ.AbsurdItems) (which now has artifact buffs and
 consumables as kits),
 [GTFO.CrashTestDummies](https://github.com/mindattic/GTFO.CrashTestDummies), and
 [GTFO.SkipDrop](https://github.com/mindattic/GTFO.SkipDrop).

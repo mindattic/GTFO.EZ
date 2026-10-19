@@ -43,9 +43,9 @@
     <Reference Remove="$(BepInEx)\interop\netstandard.dll" />
   </ItemGroup>
 
-  <!-- Shared/KitLoot.cs is published to GTFO.AbsurdItems only (tools/publish-shared.ps1)
-       but isn't used here since Consumables Are Kits moved to GTFO.AbsurdItems, so it's left out of this
-       build rather than shipping its unused Harmony patch. GTFO.AbsurdItems' copy compiles it. -->
+  <!-- Shared/KitLoot.cs is published to GTFO.EZ.AbsurdItems only (tools/publish-shared.ps1)
+       but isn't used here since Consumables Are Kits moved to GTFO.EZ.AbsurdItems, so it's left out of this
+       build rather than shipping its unused Harmony patch. GTFO.EZ.AbsurdItems' copy compiles it. -->
   <ItemGroup>
     <Compile Remove="Shared\KitLoot.cs" />
     <None Include="Shared\KitLoot.cs" />

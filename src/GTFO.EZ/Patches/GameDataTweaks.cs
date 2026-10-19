@@ -183,7 +183,7 @@ internal static class GameDataInit_Initialize_Patch
     // Consumables (what boxes and lockers hold, and what lies around a zone) and big pickups (fog
     // turbines, artifacts) are separate distribution datablocks, each with its own spawns-per-zone
     // count. Med/ammo/tool kits from the zone's resource budget are a separate system again and are
-    // never touched here. Kits as consumable loot live in GTFO.AbsurdItems now; it runs after this.
+    // never touched here. Kits as consumable loot live in GTFO.EZ.AbsurdItems now; it runs after this.
     private static void ApplyLootTweaks()
     {
         var consumableMult = Plugin.ConsumableSpawnMultiplier.Value;
@@ -193,7 +193,7 @@ internal static class GameDataInit_Initialize_Patch
         // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling an
         // item's weight retunes the odds between items rather than the total amount of loot (that's
         // the SpawnsPerZone scale above). Both glow stick colors share one entry. Always applied: a
-        // GTFO.AbsurdItems kit run replaces the items (and these weights with them) after this, and
+        // GTFO.EZ.AbsurdItems kit run replaces the items (and these weights with them) after this, and
         // when it doesn't fill the tables (switched off, no kit items found, an error) these stand.
         // A table left with every item disabled is emptied later, once that run is done (see
         // GameDataInit_EmptyDisabledLoot_Patch) - emptying it here would leave it empty under kits too.
@@ -448,14 +448,14 @@ internal static class GameDataInit_Initialize_Patch
 }
 
 // A consumable table where this mod's spawn odds disabled every item spawns nothing rather than run
-// an all-zero lottery. Runs after every other GTFO.* mod's GameDataInit work (GTFO.AbsurdItems' kit
+// an all-zero lottery. Runs after every other GTFO.* mod's GameDataInit work (GTFO.EZ.AbsurdItems' kit
 // loot replaces the items, and with them these weights): only a table that still has nothing left
 // to pick is emptied, so it's right whether or not that run filled the tables.
 [HarmonyPatch(typeof(GameDataInit), nameof(GameDataInit.Initialize))]
 internal static class GameDataInit_EmptyDisabledLoot_Patch
 {
     [HarmonyPostfix]
-    [HarmonyAfter("MindAttic.GTFO.AbsurdItems")]
+    [HarmonyAfter("MindAttic.GTFO.EZ.AbsurdItems")]
     [HarmonyPriority(Priority.Last)]
     private static void Postfix()
     {

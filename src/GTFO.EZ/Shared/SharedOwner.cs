@@ -23,9 +23,9 @@ internal static class SharedOwner
     private static readonly string[] Order =
     {
         "MindAttic.GTFO.EZ",
-        "MindAttic.GTFO.AbsurdWeapons",
-        "MindAttic.GTFO.AbsurdMoves",
-        "MindAttic.GTFO.AbsurdItems",
+        "MindAttic.GTFO.EZ.AbsurdWeapons",
+        "MindAttic.GTFO.EZ.AbsurdMoves",
+        "MindAttic.GTFO.EZ.AbsurdItems",
         "MindAttic.GTFO.CrashTestDummies",
     };
 

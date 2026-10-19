@@ -356,7 +356,7 @@ public class Plugin : BasePlugin
             "Multiplies tentacle attack damage (Striker/Tank grabs, Scout tentacles, etc.) for every enemy type. Left at vanilla (1.0) by default.");
 
         ConsumableSpawnMultiplier = BindNonNegative("Loot", "Consumable Spawn Multiplier", 1.0f,
-            "Multiplies how many consumables (flashlights, glow sticks, etc.) spawn per zone. With GTFO.AbsurdItems' Consumables Are Kits on, its Kit Loot sets how many kits instead. Left at vanilla (1.0) by default.");
+            "Multiplies how many consumables (flashlights, glow sticks, etc.) spawn per zone. With GTFO.EZ.AbsurdItems' Consumables Are Kits on, its Kit Loot sets how many kits instead. Left at vanilla (1.0) by default.");
 
         BigPickupSpawnMultiplier = BindNonNegative("Loot", "Big Pickup Spawn Multiplier", 1.0f,
             "Multiplies how many big pickups (fog turbines, artifacts, etc.) spawn per zone. Left at vanilla (1.0) by default.");
@@ -366,7 +366,7 @@ public class Plugin : BasePlugin
 
         // Each consumable is picked from a shared weighted lottery, so these retune the odds
         // between them rather than the total amount of loot (that's ConsumableSpawnMultiplier
-        // above). A GTFO.AbsurdItems kit run replaces them along with the items (see GameDataTweaks).
+        // above). A GTFO.EZ.AbsurdItems kit run replaces them along with the items (see GameDataTweaks).
         // Glow Stick, C-Foam Grenade, Fog Repeller, Lock Melter and both tripmines default to 0
         // (disabled); the flashlight is left at vanilla.
         FlashlightItemSpawnWeightMultiplier = BindNonNegative("Loot", "Long Range Flashlight Spawn Weight Multiplier", 1.0f,
