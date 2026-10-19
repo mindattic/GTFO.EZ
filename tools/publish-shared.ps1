@@ -34,16 +34,6 @@ $targets = [ordered]@{
     'GTFO.CrashTestDummies' = $everyMod
 }
 
-# The Absurd mods were renamed GTFO.EZ.AbsurdX, but their local folders may still be the legacy
-# GTFO.AbsurdX. A target's folder is its new name, falling back to the legacy one only while the
-# new folder doesn't exist. This fallback can go once the folders are renamed.
-function Resolve-RepoFolder([string]$repo) {
-    $folder = Join-Path $workspace $repo
-    if (Test-Path $folder) { return $folder }
-    $legacy = Join-Path $workspace ($repo -replace '^GTFO\.EZ\.Absurd', 'GTFO.Absurd')
-    if ($legacy -ne $folder -and (Test-Path $legacy)) { return $legacy }
-    return $folder
-}
 if ($Only) {
     $unknown = @($Only | Where-Object { -not $targets.Contains($_) })
     if ($unknown.Count -gt 0) { throw "Not a publish target: $($unknown -join ', ')" }
@@ -54,7 +44,7 @@ $stale = @()
 
 foreach ($repo in $targets.Keys) {
     if ($Only -and $Only -notcontains $repo) { continue }
-    $folder = Resolve-RepoFolder $repo
+    $folder = Join-Path $workspace $repo
     $dest = Join-Path $folder "src\$repo\Shared"
     if (-not (Test-Path $folder)) { Write-Warning "$repo isn't in the workspace - skipped."; continue }
 
