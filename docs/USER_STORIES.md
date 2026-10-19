@@ -97,3 +97,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T74 | 2026-10-18 | docs | closed | README config-section list still named a Consumables section the code no longer binds | — |
 | G.EZ-T75 | 2026-10-18 | fix | closed | Shared infinite-health damage check can't throw inside the game's damage calls | — |
 | G.EZ-T76 | 2026-10-18 | chore | closed | Absurd mods renamed to GTFO.EZ.AbsurdWeapons/Moves/Items: SharedOwner order, HarmonyAfter GUID, publish-shared targets and docs use the new names | 948c927 |
+| G.EZ-T77 | 2026-10-18 | chore | open | Finish the GTFO.EZ.Absurd* rename after the user renames the Windows folders (GTFO.AbsurdWeapons/Moves/Items -> GTFO.EZ.AbsurdWeapons/Moves/Items, CLIs closed first): run 'workflow repos rename' for each once M.FLOW-T98 lands, re-render USER_STORIES, drop publish-shared.ps1's legacy-folder fallback, run publish-shared -Check, rebuild and redeploy to DEV | — |
