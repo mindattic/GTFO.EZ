@@ -23,7 +23,9 @@ internal static class SharedOwner
 
     private static bool? _isOwner;
 
-    // True in exactly one loaded copy: the first mod in Order that's installed.
+    // True in exactly one loaded copy: the first mod in Order that's installed and carries this
+    // code - a mod version from before the shared code (an older GTFO.EZ) is passed over rather
+    // than left owning keys it never reads.
     internal static bool IsOwner => _isOwner ??= FindOwner();
 
     private static bool FindOwner()
@@ -34,7 +36,9 @@ internal static class SharedOwner
             foreach (var guid in Order)
             {
                 if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(guid, out var info) || info.Instance == null) continue;
-                return info.Instance.GetType().Assembly == mine;
+                var assembly = info.Instance.GetType().Assembly;
+                if (assembly.GetType(typeof(SharedOwner).FullName!) == null) continue;
+                return assembly == mine;
             }
         }
         catch (Exception e)

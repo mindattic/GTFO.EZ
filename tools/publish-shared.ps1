@@ -5,7 +5,7 @@
 
 .DESCRIPTION
     GTFO.EZ owns the code every GTFO.* mod carries a copy of: the Insert/Delete infinite ammo and
-    health toggles (SharedOwner + InfiniteToggles, in every mod) and kits as consumables (KitLoot,
+    health toggles (SharedOwner + InfiniteToggles + WardenMessage, in every mod) and kits as consumables (KitLoot,
     GTFO.AbsurdWeapons only). This writes each file into <repo>/src/<repo>/Shared/ with a header
     saying where it came from, in the order GTFO.AbsurdWeapons, GTFO.AbsurdMoves,
     GTFO.CrashTestDummies. The copies are never edited by hand - change GTFO.EZ's and publish again.
@@ -21,7 +21,7 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $workspace = Split-Path -Parent $repoRoot
 $source = Join-Path $repoRoot 'src\GTFO.EZ\Shared'
 
-$everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs')
+$everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs', 'WardenMessage.cs')
 $targets = [ordered]@{
     'GTFO.AbsurdWeapons'    = $everyMod + @('KitLoot.cs')
     'GTFO.AbsurdMoves'      = $everyMod
