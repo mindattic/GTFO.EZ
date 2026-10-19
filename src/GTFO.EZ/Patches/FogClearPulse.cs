@@ -95,9 +95,10 @@ internal static class FogClearPulse
         var sphere = new FogSphereAllocator();
         if (!sphere.TryAllocate()) return false;
 
-        sphere.SetDensity(Density());
+        var density = Density();
+        sphere.SetDensity(density);
         _sphere = sphere;
-        Plugin.Logger.LogInfo($"Fog Clearing: sphere allocated (density {Density():0.###}).");
+        Plugin.Logger.LogInfo($"Fog Clearing: sphere allocated (density {density:0.###}).");
         return true;
     }
 
@@ -107,10 +108,16 @@ internal static class FogClearPulse
     {
         var overrideDensity = Plugin.FogClearDensityOverride.Value;
         if (overrideDensity != 0f) return overrideDensity;
-        return _vanillaDensity ??= ReadVanillaDensity();
+        if (_vanillaDensity is { } density) return density;
+
+        // Only a density actually read is cached - the fallback is retried at the next lookup, since
+        // the Fog Repeller prefab may simply not be loaded yet on the first one.
+        var read = ReadVanillaDensity();
+        if (read.HasValue) _vanillaDensity = read;
+        return read ?? FallbackDensity;
     }
 
-    private static float ReadVanillaDensity()
+    private static float? ReadVanillaDensity()
     {
         foreach (var obj in Resources.FindObjectsOfTypeAll(Il2CppInterop.Runtime.Il2CppType.Of<FogRepeller_Sphere>()))
         {
@@ -119,7 +126,7 @@ internal static class FogClearPulse
             Plugin.Logger.LogInfo($"Fog Clearing: vanilla Fog Repeller is range {repeller.Range:0.##}, density {repeller.Density:0.###}, grow {repeller.GrowDuration:0.##} s.");
             return repeller.Density;
         }
-        Plugin.Logger.LogWarning($"Fog Clearing: no loaded Fog Repeller to copy density from, using {FallbackDensity}. Set Density Override if fog doesn't clear.");
-        return FallbackDensity;
+        Plugin.Logger.LogWarning($"Fog Clearing: no loaded Fog Repeller to copy density from, using {FallbackDensity} for now. Set Density Override if fog doesn't clear.");
+        return null;
     }
 }

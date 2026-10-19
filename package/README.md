@@ -565,6 +565,8 @@ others' prior work:
 - **Bug fix:** a negative multiplier, range or percentage in the config applied as-is (negative
   health, damage or spawn counts); every such setting is now held at 0 or more. Defaults are
   unchanged.
+- **Bug fix:** if no Fog Repeller was loaded the first time fog clearing looked for one, it used
+  the fallback density for the rest of the session; it now looks again in the next level.
 - With GTFO.AbsurdWeapons installed, everything it changes in the game's data applies after this
   mod's and wins where they clash - loot follows its own settings. See Compatibility.
 
