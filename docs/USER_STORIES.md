@@ -95,3 +95,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T72 | 2026-10-18 | fix | closed | Shared warden message: a second toggle while the first is queued behind a game message stops the game's running message and drops its queued ones | — |
 | G.EZ-T73 | 2026-10-18 | fix | closed | Consumable spawn odds skipped whenever GTFO.AbsurdItems' Consumables Are Kits is on, even when its kit run doesn't fill the tables (no kit items, error): vanilla odds instead | — |
 | G.EZ-T74 | 2026-10-18 | docs | closed | README config-section list still named a Consumables section the code no longer binds | — |
+| G.EZ-T75 | 2026-10-18 | fix | closed | Shared infinite-health damage check can't throw inside the game's damage calls | — |
