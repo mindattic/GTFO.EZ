@@ -7,7 +7,8 @@ using UnityEngine;
 namespace MindAttic.GTFO.Shared;
 
 // Insert toggles infinite ammo, Delete infinite health, in every GTFO.* mod, each announced in the
-// event log (MessageHelper), where it can't cut off a warden objective. Only the owning copy (SharedOwner) reads the keys and refills ammo; the on/off
+// event log (MessageHelper), where it can't cut off a warden objective. Only the owning copy
+// (SharedOwner) reads the keys and refills ammo; the on/off
 // state is shared, so every copy's damage block and any mod's own guns (InfiniteAmmoOn) agree.
 // Off at every game launch, and they stay as set across expeditions until toggled again.
 internal static class InfiniteToggles
