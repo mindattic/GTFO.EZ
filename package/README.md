@@ -562,6 +562,9 @@ others' prior work:
 - **Bug fix:** X with your sentry put away could place it on floor behind a wall or closed door,
   on a steep edge, or while you were downed. The spot ahead of you now has to be flat ground you
   can see, and X does nothing while you're downed.
+- **Bug fix:** a negative multiplier, range or percentage in the config applied as-is (negative
+  health, damage or spawn counts); every such setting is now held at 0 or more. Defaults are
+  unchanged.
 - With GTFO.AbsurdWeapons installed, everything it changes in the game's data applies after this
   mod's and wins where they clash - loot follows its own settings. See Compatibility.
 

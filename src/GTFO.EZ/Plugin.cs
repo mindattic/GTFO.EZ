@@ -268,100 +268,100 @@ public class Plugin : BasePlugin
         ConfigMigrationVersion = Config.Bind("Internal", "Config Migration Version", 0,
             "Internal bookkeeping - do not edit. Tracks which one-time default migrations have already run.");
 
-        HealthMultiplier = Config.Bind("Health", "Max Health Multiplier", 2.0f,
+        HealthMultiplier = BindNonNegative("Health", "Max Health Multiplier", 2.0f,
             "Multiplies player max health. Vanilla 25 -> 50 at the default 2.0.");
 
-        HealthRegenRateMultiplier = Config.Bind("Health", "Health Regen Rate Multiplier", 0.5f,
+        HealthRegenRateMultiplier = BindNonNegative("Health", "Health Regen Rate Multiplier", 0.5f,
             "Multiplies health regen per second. Vanilla 0.2/s -> 0.1/s at the default 0.5.");
 
-        HealthRegenCapMultiplier = Config.Bind("Health", "Health Regen Cap Multiplier", 2.0f,
+        HealthRegenCapMultiplier = BindNonNegative("Health", "Health Regen Cap Multiplier", 2.0f,
             "Multiplies how much of max health can regenerate without a med kit. Vanilla 20% -> 40% at the default 2.0. Regen delay is left at vanilla on purpose - fast regen with no delay is overpowered.");
 
         RemoveCombatStaminaPenalty = Config.Bind("Stamina", "Remove Combat Stamina Penalty", true,
             "Makes stamina regen while in combat as fast as out of combat, and removes the 90% stamina cap while in combat.");
 
-        FallDamageMultiplier = Config.Bind("Fall Damage", "Fall Damage Multiplier", 0.1f,
+        FallDamageMultiplier = BindNonNegative("Fall Damage", "Fall Damage Multiplier", 0.1f,
             "Multiplies fall damage dealt once you're past the no-damage height. Default 0.1 (10% of normal) on top of the height change below.");
 
-        FallDamageMinHeightMultiplier = Config.Bind("Fall Damage", "Fall Damage Min Height Multiplier", 1.0f,
+        FallDamageMinHeightMultiplier = BindNonNegative("Fall Damage", "Fall Damage Min Height Multiplier", 1.0f,
             "Multiplies the minimum fall height before any damage is taken. Left at vanilla (1.0) - the 10% damage multiplier above already does the work.");
 
-        FallDamageMaxHeightMultiplier = Config.Bind("Fall Damage", "Fall Damage Max Height Multiplier", 1.5f,
+        FallDamageMaxHeightMultiplier = BindNonNegative("Fall Damage", "Fall Damage Max Height Multiplier", 1.5f,
             "Multiplies the fall height at which damage maxes out. Vanilla 20m -> 30m at the default 1.5.");
 
-        AmmoMultiplier = Config.Bind("Ammo", "Weapon Ammo Multiplier", 1.5f,
+        AmmoMultiplier = BindNonNegative("Ammo", "Weapon Ammo Multiplier", 1.5f,
             "Multiplies max reserve ammo, starting ammo, and refill amounts for standard/special/consumable ammo. Deliberately not paired with a damage buff - that combination was reported as overtuned.");
 
-        FlashlightAngleMultiplier = Config.Bind("Lighting", "Flashlight Angle Multiplier", 1.0f,
+        FlashlightAngleMultiplier = BindNonNegative("Lighting", "Flashlight Angle Multiplier", 1.0f,
             "Multiplies the cone angle of headlamps and weapon-mounted lights. Left at vanilla (1.0) by default.");
 
-        FlashlightIntensityMultiplier = Config.Bind("Lighting", "Flashlight Intensity Multiplier", 1.0f,
+        FlashlightIntensityMultiplier = BindNonNegative("Lighting", "Flashlight Intensity Multiplier", 1.0f,
             "Multiplies the brightness of headlamps and weapon-mounted lights. Left at vanilla (1.0) by default - brighter lights make you more visible to enemies too.");
 
-        DetectionDistanceMultiplier = Config.Bind("Enemy Detection", "Movement Detection Distance Multiplier", 0.75f,
+        DetectionDistanceMultiplier = BindNonNegative("Enemy Detection", "Movement Detection Distance Multiplier", 0.75f,
             "Multiplies how far enemies can detect player movement noise. 0.75 on an 8m base gives 6m.");
 
         // Exposed for players who want to retune feel/difficulty further, but every one of these
         // defaults to 1.0 (vanilla, no change) - unlike the stats above, there's no community
         // consensus that these need adjusting for an easier game, so we're not guessing.
-        WalkSpeedMultiplier = Config.Bind("Movement", "Walk Speed Multiplier", 1.0f,
+        WalkSpeedMultiplier = BindNonNegative("Movement", "Walk Speed Multiplier", 1.0f,
             "Multiplies walking move speed. Left at vanilla (1.0) by default.");
 
-        RunSpeedMultiplier = Config.Bind("Movement", "Run Speed Multiplier", 1.0f,
+        RunSpeedMultiplier = BindNonNegative("Movement", "Run Speed Multiplier", 1.0f,
             "Multiplies sprinting move speed. Left at vanilla (1.0) by default.");
 
-        AirSpeedMultiplier = Config.Bind("Movement", "Air Speed Multiplier", 1.0f,
+        AirSpeedMultiplier = BindNonNegative("Movement", "Air Speed Multiplier", 1.0f,
             "Multiplies mid-air move speed (control while jumping/falling). Left at vanilla (1.0) by default.");
 
-        CrouchSpeedMultiplier = Config.Bind("Movement", "Crouch Speed Multiplier", 1.0f,
+        CrouchSpeedMultiplier = BindNonNegative("Movement", "Crouch Speed Multiplier", 1.0f,
             "Multiplies crouched move speed. Left at vanilla (1.0) by default.");
 
-        LadderSpeedMultiplier = Config.Bind("Movement", "Ladder Speed Multiplier", 1.0f,
+        LadderSpeedMultiplier = BindNonNegative("Movement", "Ladder Speed Multiplier", 1.0f,
             "Multiplies ladder climb speed. Left at vanilla (1.0) by default.");
 
-        JumpHeightMultiplier = Config.Bind("Movement", "Jump Height Multiplier", 1.0f,
+        JumpHeightMultiplier = BindNonNegative("Movement", "Jump Height Multiplier", 1.0f,
             "Multiplies jump height (initial jump velocity). Left at vanilla (1.0) by default.");
 
-        FriendlyFireMultiplier = Config.Bind("Combat", "Friendly Fire Multiplier", 1.0f,
+        FriendlyFireMultiplier = BindNonNegative("Combat", "Friendly Fire Multiplier", 1.0f,
             "Multiplies damage taken from teammates' weapons. Left at vanilla (1.0) by default.");
 
-        BatteryCapacityMultiplier = Config.Bind("Utility", "Battery Capacity Multiplier", 1.0f,
+        BatteryCapacityMultiplier = BindNonNegative("Utility", "Battery Capacity Multiplier", 1.0f,
             "Multiplies max battery charge for flashlights and powered tools. Left at vanilla (1.0) by default.");
 
-        SmallBatteryDrainMultiplier = Config.Bind("Utility", "Small Battery Drain Multiplier", 1.0f,
+        SmallBatteryDrainMultiplier = BindNonNegative("Utility", "Small Battery Drain Multiplier", 1.0f,
             "Multiplies battery drain per second for small powered tools. Left at vanilla (1.0) by default.");
 
-        MediumBatteryDrainMultiplier = Config.Bind("Utility", "Medium Battery Drain Multiplier", 1.0f,
+        MediumBatteryDrainMultiplier = BindNonNegative("Utility", "Medium Battery Drain Multiplier", 1.0f,
             "Multiplies battery drain per second for medium powered tools. Left at vanilla (1.0) by default.");
 
-        LargeBatteryDrainMultiplier = Config.Bind("Utility", "Large Battery Drain Multiplier", 1.0f,
+        LargeBatteryDrainMultiplier = BindNonNegative("Utility", "Large Battery Drain Multiplier", 1.0f,
             "Multiplies battery drain per second for large powered tools. Left at vanilla (1.0) by default.");
 
-        NoAirDamageMultiplier = Config.Bind("Environment", "No-Air Damage Multiplier", 1.0f,
+        NoAirDamageMultiplier = BindNonNegative("Environment", "No-Air Damage Multiplier", 1.0f,
             "Multiplies the damage rate from suffocating in no-air zones once your air runs out. Left at vanilla (1.0) by default.");
 
-        NoAirDepletionTimeMultiplier = Config.Bind("Environment", "No-Air Depletion Time Multiplier", 1.0f,
+        NoAirDepletionTimeMultiplier = BindNonNegative("Environment", "No-Air Depletion Time Multiplier", 1.0f,
             "Multiplies how long your air meter lasts in no-air zones before it empties. Left at vanilla (1.0) by default.");
 
         DisableFog = Config.Bind("Environment", "Disable Fog", true,
             "Turns off the visual fog that limits visibility. Default on - vanilla fog was judged more annoying than fun, and scaling its density down (what this setting used to do) turned out to have no visible effect in-game. Set to false to restore vanilla fog.");
 
-        EnemyHealthMultiplier = Config.Bind("Enemy Balance", "Enemy Health Multiplier", 1.0f,
+        EnemyHealthMultiplier = BindNonNegative("Enemy Balance", "Enemy Health Multiplier", 1.0f,
             "Multiplies max health for every enemy type. Left at vanilla (1.0) by default.");
 
-        EnemyMeleeDamageMultiplier = Config.Bind("Enemy Balance", "Enemy Melee Damage Multiplier", 1.0f,
+        EnemyMeleeDamageMultiplier = BindNonNegative("Enemy Balance", "Enemy Melee Damage Multiplier", 1.0f,
             "Multiplies melee attack damage for every enemy type. Left at vanilla (1.0) by default.");
 
-        EnemyTentacleDamageMultiplier = Config.Bind("Enemy Balance", "Enemy Tentacle Damage Multiplier", 1.0f,
+        EnemyTentacleDamageMultiplier = BindNonNegative("Enemy Balance", "Enemy Tentacle Damage Multiplier", 1.0f,
             "Multiplies tentacle attack damage (Striker/Tank grabs, Scout tentacles, etc.) for every enemy type. Left at vanilla (1.0) by default.");
 
-        ConsumableSpawnMultiplier = Config.Bind("Loot", "Consumable Spawn Multiplier", 1.0f,
+        ConsumableSpawnMultiplier = BindNonNegative("Loot", "Consumable Spawn Multiplier", 1.0f,
             "Multiplies how many consumables (flashlights, glow sticks, etc.) spawn per zone. With Consumables Are Kits on, Kit Loot sets how many kits instead. Left at vanilla (1.0) by default.");
 
-        BigPickupSpawnMultiplier = Config.Bind("Loot", "Big Pickup Spawn Multiplier", 1.0f,
+        BigPickupSpawnMultiplier = BindNonNegative("Loot", "Big Pickup Spawn Multiplier", 1.0f,
             "Multiplies how many big pickups (fog turbines, artifacts, etc.) spawn per zone. Left at vanilla (1.0) by default.");
 
-        ReviveDurationMultiplier = Config.Bind("Interactions", "Revive Duration Multiplier", 0.33f,
+        ReviveDurationMultiplier = BindNonNegative("Interactions", "Revive Duration Multiplier", 0.33f,
             "Multiplies how long it takes to revive a downed teammate. Lower is faster. Default 0.33 (33% of vanilla).");
 
         ConsumablesAreKits = Config.Bind("Loot", "Consumables Are Kits", true,
@@ -369,18 +369,18 @@ public class Plugin : BasePlugin
             "them (see Kit Loot) - on top of the zone's normal resource packs, which are left as they are. Off: vanilla " +
             "consumables, retuned by the per-item weights further down. Takes effect on restart.");
 
-        KitLootPercent = Config.Bind("Loot", "Kit Loot (%)", 20f,
+        KitLootPercent = BindNonNegative("Loot", "Kit Loot (%)", 20f,
             "With Consumables Are Kits on: how much the kits found as loot add, in percent of a zone's normal health, ammo " +
             "and tool pack budget (averaged over the difficulty tiers). Default 20 - about a fifth more kits than the resource " +
             "packs alone. Takes effect on restart.");
 
-        HealthKitWeight = Config.Bind("Loot", "Health Kit Weight", 1f,
+        HealthKitWeight = BindNonNegative("Loot", "Health Kit Weight", 1f,
             "With Consumables Are Kits on: multiplies the odds a kit is a health kit. The odds already follow the zone's own health pack budget; 1 keeps that split. Takes effect on restart.");
 
-        ToolKitWeight = Config.Bind("Loot", "Tool Kit Weight", 1f,
+        ToolKitWeight = BindNonNegative("Loot", "Tool Kit Weight", 1f,
             "With Consumables Are Kits on: multiplies the odds a kit is a tool kit. The odds already follow the zone's own tool pack budget; 1 keeps that split. Takes effect on restart.");
 
-        AmmoKitWeight = Config.Bind("Loot", "Ammo Kit Weight", 1f,
+        AmmoKitWeight = BindNonNegative("Loot", "Ammo Kit Weight", 1f,
             "With Consumables Are Kits on: multiplies the odds a kit is an ammo kit. The odds already follow the zone's own ammo pack budget; 1 keeps that split. Takes effect on restart.");
 
         KitChargesMin = Config.Bind("Loot", "Kit Charges Min", 1,
@@ -393,25 +393,25 @@ public class Plugin : BasePlugin
         // so these retune the odds between them rather than the total amount of loot (that's
         // ConsumableSpawnMultiplier above). Glow Stick, C-Foam Grenade, Fog Repeller, Lock Melter
         // and both tripmines default to 0 (disabled); the flashlight is left at vanilla.
-        FlashlightItemSpawnWeightMultiplier = Config.Bind("Loot", "Long Range Flashlight Spawn Weight Multiplier", 1.0f,
+        FlashlightItemSpawnWeightMultiplier = BindNonNegative("Loot", "Long Range Flashlight Spawn Weight Multiplier", 1.0f,
             "Multiplies how likely a Long Range Flashlight is picked when a consumable spawns. Left at vanilla (1.0) by default.");
 
-        GlowstickSpawnWeightMultiplier = Config.Bind("Loot", "Glow Stick Spawn Weight Multiplier", 0.0f,
+        GlowstickSpawnWeightMultiplier = BindNonNegative("Loot", "Glow Stick Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a glow stick (either color) is picked when a consumable spawns. Defaults to 0 (disabled) - its share goes to the other consumables.");
 
-        CFoamGrenadeSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Grenade Spawn Weight Multiplier", 0.0f,
+        CFoamGrenadeSpawnWeightMultiplier = BindNonNegative("Loot", "C-Foam Grenade Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a C-Foam Grenade is picked when a consumable spawns. Defaults to 0 (disabled) - its share goes to the other consumables.");
 
-        FogRepellerSpawnWeightMultiplier = Config.Bind("Loot", "Fog Repeller Spawn Weight Multiplier", 0.0f,
+        FogRepellerSpawnWeightMultiplier = BindNonNegative("Loot", "Fog Repeller Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a Fog Repeller is picked when a consumable spawns. Defaults to 0 (disabled) - fog clearing already handles fog.");
 
-        LockMelterSpawnWeightMultiplier = Config.Bind("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
+        LockMelterSpawnWeightMultiplier = BindNonNegative("Loot", "Lock Melter Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a Lock Melter is picked when a consumable spawns. Defaults to 0 (disabled) - its share goes to the other consumables.");
 
-        ExplosiveTripMineSpawnWeightMultiplier = Config.Bind("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 0.0f,
+        ExplosiveTripMineSpawnWeightMultiplier = BindNonNegative("Loot", "Explosive Trip Mine Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely an Explosive Trip Mine is picked when a consumable spawns. Defaults to 0 (disabled) - its share goes to the other consumables.");
 
-        CFoamTripmineSpawnWeightMultiplier = Config.Bind("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 0.0f,
+        CFoamTripmineSpawnWeightMultiplier = BindNonNegative("Loot", "C-Foam Tripmine Spawn Weight Multiplier", 0.0f,
             "Multiplies how likely a C-Foam Tripmine is picked when a consumable spawns. Defaults to 0 (disabled) - its share goes to the other consumables.");
 
         ControlDefaultsApplied = Config.Bind("Controls", "Control Defaults Applied", false,
@@ -425,168 +425,168 @@ public class Plugin : BasePlugin
         // ExpeditionBalanceDataBlock: the per-difficulty-tier resource/enemy/door budget table.
         // Every entry here is left at vanilla (1.0) by default - this is a much bigger tuning
         // surface than the rest of the mod, exposed for players who want to go further themselves.
-        HealthPackResourceMultiplier = Config.Bind("Expedition Resources", "Health Pack Resource Multiplier", 1.0f,
+        HealthPackResourceMultiplier = BindNonNegative("Expedition Resources", "Health Pack Resource Multiplier", 1.0f,
             "Multiplies the health-pack resource budget distributed per zone. Left at vanilla (1.0) by default.");
 
-        DisinfectionResourceMultiplier = Config.Bind("Expedition Resources", "Disinfection Resource Multiplier", 1.0f,
+        DisinfectionResourceMultiplier = BindNonNegative("Expedition Resources", "Disinfection Resource Multiplier", 1.0f,
             "Multiplies the infection-cure resource budget distributed per zone. Left at vanilla (1.0) by default.");
 
-        WeaponAmmoResourceMultiplier = Config.Bind("Expedition Resources", "Weapon Ammo Resource Multiplier", 1.0f,
+        WeaponAmmoResourceMultiplier = BindNonNegative("Expedition Resources", "Weapon Ammo Resource Multiplier", 1.0f,
             "Multiplies the weapon ammo-pack resource budget distributed per zone. Left at vanilla (1.0) by default.");
 
-        ToolAmmoResourceMultiplier = Config.Bind("Expedition Resources", "Tool Ammo Resource Multiplier", 1.0f,
+        ToolAmmoResourceMultiplier = BindNonNegative("Expedition Resources", "Tool Ammo Resource Multiplier", 1.0f,
             "Multiplies the tool ammo (sentries, C-foam launcher, etc.) resource budget per zone. Left at vanilla (1.0) by default.");
 
-        CommodityValueMultiplier = Config.Bind("Expedition Resources", "Commodity Value Multiplier", 1.0f,
+        CommodityValueMultiplier = BindNonNegative("Expedition Resources", "Commodity Value Multiplier", 1.0f,
             "Multiplies the total commodity (crafting material) value distributed per zone. Left at vanilla (1.0) by default.");
 
-        CommodityInContainerChanceMultiplier = Config.Bind("Expedition Resources", "Commodity In Container Chance Multiplier", 1.0f,
+        CommodityInContainerChanceMultiplier = BindNonNegative("Expedition Resources", "Commodity In Container Chance Multiplier", 1.0f,
             "Multiplies the chance a resource container holds a commodity. Left at vanilla (1.0) by default.");
 
-        ArtifactInContainerChanceMultiplier = Config.Bind("Expedition Resources", "Artifact In Container Chance Multiplier", 1.0f,
+        ArtifactInContainerChanceMultiplier = BindNonNegative("Expedition Resources", "Artifact In Container Chance Multiplier", 1.0f,
             "Multiplies the chance a resource container holds an artifact. Left at vanilla (1.0) by default.");
 
-        LargeCommodityPackChanceMultiplier = Config.Bind("Expedition Resources", "Large Commodity Pack Chance Multiplier", 1.0f,
+        LargeCommodityPackChanceMultiplier = BindNonNegative("Expedition Resources", "Large Commodity Pack Chance Multiplier", 1.0f,
             "Multiplies the chance a commodity spawn is a large pack instead of small. Left at vanilla (1.0) by default.");
 
-        MediumCommodityPackChanceMultiplier = Config.Bind("Expedition Resources", "Medium Commodity Pack Chance Multiplier", 1.0f,
+        MediumCommodityPackChanceMultiplier = BindNonNegative("Expedition Resources", "Medium Commodity Pack Chance Multiplier", 1.0f,
             "Multiplies the chance a commodity spawn is a medium pack instead of small. Left at vanilla (1.0) by default.");
 
-        ResourceContainerReuseChanceMultiplier = Config.Bind("Expedition Resources", "Resource Container Reuse Chance Multiplier", 1.0f,
+        ResourceContainerReuseChanceMultiplier = BindNonNegative("Expedition Resources", "Resource Container Reuse Chance Multiplier", 1.0f,
             "Multiplies the chance a resource container gets reused for a second pack. Left at vanilla (1.0) by default.");
 
-        MaxPacksPerContainerMultiplier = Config.Bind("Expedition Resources", "Max Packs Per Container Multiplier", 1.0f,
+        MaxPacksPerContainerMultiplier = BindNonNegative("Expedition Resources", "Max Packs Per Container Multiplier", 1.0f,
             "Multiplies the max number of packs a single resource container can hold. Left at vanilla (1.0) by default.");
 
-        EmptyWeakContainersPerZoneMultiplier = Config.Bind("Expedition Resources", "Empty Weak Containers Per Zone Multiplier", 1.0f,
+        EmptyWeakContainersPerZoneMultiplier = BindNonNegative("Expedition Resources", "Empty Weak Containers Per Zone Multiplier", 1.0f,
             "Multiplies how many empty weak (cardboard box) containers spawn per zone. Left at vanilla (1.0) by default.");
 
-        EmptySecureContainersPerZoneMultiplier = Config.Bind("Expedition Resources", "Empty Secure Containers Per Zone Multiplier", 1.0f,
+        EmptySecureContainersPerZoneMultiplier = BindNonNegative("Expedition Resources", "Empty Secure Containers Per Zone Multiplier", 1.0f,
             "Multiplies how many empty secure (locker) containers spawn per zone. Left at vanilla (1.0) by default.");
 
-        LootPerZoneMultiplier = Config.Bind("Expedition Resources", "Loot Per Zone Multiplier", 1.0f,
+        LootPerZoneMultiplier = BindNonNegative("Expedition Resources", "Loot Per Zone Multiplier", 1.0f,
             "Multiplies the general loot budget distributed per zone. Left at vanilla (1.0) by default.");
 
-        AirPerZoneMultiplier = Config.Bind("Expedition Resources", "Air Per Zone Multiplier", 1.0f,
+        AirPerZoneMultiplier = BindNonNegative("Expedition Resources", "Air Per Zone Multiplier", 1.0f,
             "Multiplies the breathable-air resource budget per zone. Left at vanilla (1.0) by default.");
 
-        AirPerZoneInNoAirZoneMultiplier = Config.Bind("Expedition Resources", "Air Per Zone In No-Air Zone Multiplier", 1.0f,
+        AirPerZoneInNoAirZoneMultiplier = BindNonNegative("Expedition Resources", "Air Per Zone In No-Air Zone Multiplier", 1.0f,
             "Multiplies the air resource budget per zone specifically inside no-air areas. Left at vanilla (1.0) by default.");
 
-        TerminalsPerZoneMultiplier = Config.Bind("Expedition Resources", "Terminals Per Zone Multiplier", 1.0f,
+        TerminalsPerZoneMultiplier = BindNonNegative("Expedition Resources", "Terminals Per Zone Multiplier", 1.0f,
             "Multiplies how many terminals spawn per zone. Left at vanilla (1.0) by default.");
 
-        LockedWeakContainerWithPackChanceMultiplier = Config.Bind("Expedition Resources", "Locked Weak Container With Pack Chance Multiplier", 1.0f,
+        LockedWeakContainerWithPackChanceMultiplier = BindNonNegative("Expedition Resources", "Locked Weak Container With Pack Chance Multiplier", 1.0f,
             "Multiplies the chance a weak container holding a pack is locked. Left at vanilla (1.0) by default.");
 
-        ResourcePackSizeMultiplier = Config.Bind("Expedition Resources", "Resource Pack Size Multiplier", 1.0f,
+        ResourcePackSizeMultiplier = BindNonNegative("Expedition Resources", "Resource Pack Size Multiplier", 1.0f,
             "Multiplies the size of every resource pack tier (small/medium/large). Left at vanilla (1.0) by default.");
 
-        EnemyPatrolGroupsPerZoneMultiplier = Config.Bind("Expedition Enemies", "Enemy Patrol Groups Per Zone Multiplier", 1.0f,
+        EnemyPatrolGroupsPerZoneMultiplier = BindNonNegative("Expedition Enemies", "Enemy Patrol Groups Per Zone Multiplier", 1.0f,
             "Multiplies how many roaming enemy patrol groups spawn per zone. Left at vanilla (1.0) by default.");
 
-        StaticEnemiesMaxPerZoneMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Per Zone Multiplier", 1.0f,
+        StaticEnemiesMaxPerZoneMultiplier = BindNonNegative("Expedition Enemies", "Static Enemies Max Per Zone Multiplier", 1.0f,
             "Multiplies the max number of stationary (sleeper) enemies per zone. Left at vanilla (1.0) by default.");
 
-        StaticEnemiesMaxSmallAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Small Area Multiplier", 1.0f,
+        StaticEnemiesMaxSmallAreaMultiplier = BindNonNegative("Expedition Enemies", "Static Enemies Max Small Area Multiplier", 1.0f,
             "Multiplies the max stationary enemies allowed in a small area. Left at vanilla (1.0) by default.");
 
-        StaticEnemiesMaxMediumAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Medium Area Multiplier", 1.0f,
+        StaticEnemiesMaxMediumAreaMultiplier = BindNonNegative("Expedition Enemies", "Static Enemies Max Medium Area Multiplier", 1.0f,
             "Multiplies the max stationary enemies allowed in a medium area. Left at vanilla (1.0) by default.");
 
-        StaticEnemiesMaxLargeAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Large Area Multiplier", 1.0f,
+        StaticEnemiesMaxLargeAreaMultiplier = BindNonNegative("Expedition Enemies", "Static Enemies Max Large Area Multiplier", 1.0f,
             "Multiplies the max stationary enemies allowed in a large area. Left at vanilla (1.0) by default.");
 
-        StaticEnemiesMaxHugeAreaMultiplier = Config.Bind("Expedition Enemies", "Static Enemies Max Huge Area Multiplier", 1.0f,
+        StaticEnemiesMaxHugeAreaMultiplier = BindNonNegative("Expedition Enemies", "Static Enemies Max Huge Area Multiplier", 1.0f,
             "Multiplies the max stationary enemies allowed in a huge area. Left at vanilla (1.0) by default.");
 
-        EnemyPopulationPerZoneMultiplier = Config.Bind("Expedition Enemies", "Enemy Population Per Zone Multiplier", 1.0f,
+        EnemyPopulationPerZoneMultiplier = BindNonNegative("Expedition Enemies", "Enemy Population Per Zone Multiplier", 1.0f,
             "Multiplies the overall enemy population budget per zone. Left at vanilla (1.0) by default.");
 
-        TentacleTrapHealthMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Health Multiplier", 1.0f,
+        TentacleTrapHealthMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Health Multiplier", 1.0f,
             "Multiplies max health for tentacle traps. Left at vanilla (1.0) by default.");
 
-        TentacleTrapAttackDamageMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Attack Damage Multiplier", 1.0f,
+        TentacleTrapAttackDamageMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Attack Damage Multiplier", 1.0f,
             "Multiplies attack damage dealt by tentacle traps. Left at vanilla (1.0) by default.");
 
-        TentacleTrapMaxPerZoneMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Per Zone Multiplier", 1.0f,
+        TentacleTrapMaxPerZoneMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Max Per Zone Multiplier", 1.0f,
             "Multiplies the max number of tentacle traps per zone. Left at vanilla (1.0) by default.");
 
-        TentacleTrapMaxSmallAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Small Area Multiplier", 1.0f,
+        TentacleTrapMaxSmallAreaMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Max Small Area Multiplier", 1.0f,
             "Multiplies the max tentacle traps allowed in a small area. Left at vanilla (1.0) by default.");
 
-        TentacleTrapMaxMediumAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Medium Area Multiplier", 1.0f,
+        TentacleTrapMaxMediumAreaMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Max Medium Area Multiplier", 1.0f,
             "Multiplies the max tentacle traps allowed in a medium area. Left at vanilla (1.0) by default.");
 
-        TentacleTrapMaxLargeAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Large Area Multiplier", 1.0f,
+        TentacleTrapMaxLargeAreaMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Max Large Area Multiplier", 1.0f,
             "Multiplies the max tentacle traps allowed in a large area. Left at vanilla (1.0) by default.");
 
-        TentacleTrapMaxHugeAreaMultiplier = Config.Bind("Expedition Enemies", "Tentacle Trap Max Huge Area Multiplier", 1.0f,
+        TentacleTrapMaxHugeAreaMultiplier = BindNonNegative("Expedition Enemies", "Tentacle Trap Max Huge Area Multiplier", 1.0f,
             "Multiplies the max tentacle traps allowed in a huge area. Left at vanilla (1.0) by default.");
 
-        ParasiteNestHealthMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Health Multiplier", 1.0f,
+        ParasiteNestHealthMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Health Multiplier", 1.0f,
             "Multiplies max health for parasite nests. Left at vanilla (1.0) by default.");
 
-        ParasiteNestAttackDamageMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Attack Damage Multiplier", 1.0f,
+        ParasiteNestAttackDamageMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Attack Damage Multiplier", 1.0f,
             "Multiplies attack damage dealt by parasite nests. Left at vanilla (1.0) by default.");
 
-        ParasiteNestMaxPerZoneMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Per Zone Multiplier", 1.0f,
+        ParasiteNestMaxPerZoneMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Max Per Zone Multiplier", 1.0f,
             "Multiplies the max number of parasite nests per zone. Left at vanilla (1.0) by default.");
 
-        ParasiteNestMaxSmallAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Small Area Multiplier", 1.0f,
+        ParasiteNestMaxSmallAreaMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Max Small Area Multiplier", 1.0f,
             "Multiplies the max parasite nests allowed in a small area. Left at vanilla (1.0) by default.");
 
-        ParasiteNestMaxMediumAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Medium Area Multiplier", 1.0f,
+        ParasiteNestMaxMediumAreaMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Max Medium Area Multiplier", 1.0f,
             "Multiplies the max parasite nests allowed in a medium area. Left at vanilla (1.0) by default.");
 
-        ParasiteNestMaxLargeAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Large Area Multiplier", 1.0f,
+        ParasiteNestMaxLargeAreaMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Max Large Area Multiplier", 1.0f,
             "Multiplies the max parasite nests allowed in a large area. Left at vanilla (1.0) by default.");
 
-        ParasiteNestMaxHugeAreaMultiplier = Config.Bind("Expedition Enemies", "Parasite Nest Max Huge Area Multiplier", 1.0f,
+        ParasiteNestMaxHugeAreaMultiplier = BindNonNegative("Expedition Enemies", "Parasite Nest Max Huge Area Multiplier", 1.0f,
             "Multiplies the max parasite nests allowed in a huge area. Left at vanilla (1.0) by default.");
 
         // Internal level-generation tuning, not a gameplay-difficulty stat - exposed for
         // completeness, but retuning it changes how levels get built, not just how hard they are.
-        LevelGenVoxelCoverageMultiplier = Config.Bind("Expedition Level Gen", "Voxel Coverage Area Multiplier", 1.0f,
+        LevelGenVoxelCoverageMultiplier = BindNonNegative("Expedition Level Gen", "Voxel Coverage Area Multiplier", 1.0f,
             "Multiplies an internal level-generation area-coverage factor. Left at vanilla (1.0) by default.");
 
-        LevelGenVoxelCoverageRandomnessMultiplier = Config.Bind("Expedition Level Gen", "Voxel Coverage Area Randomness Multiplier", 1.0f,
+        LevelGenVoxelCoverageRandomnessMultiplier = BindNonNegative("Expedition Level Gen", "Voxel Coverage Area Randomness Multiplier", 1.0f,
             "Multiplies the randomness factor in that same level-generation coverage scoring. Left at vanilla (1.0) by default.");
 
-        ArtifactsPerSegmentMultiplier = Config.Bind("Expedition Level Gen", "Artifacts Per Segment Multiplier", 1.0f,
+        ArtifactsPerSegmentMultiplier = BindNonNegative("Expedition Level Gen", "Artifacts Per Segment Multiplier", 1.0f,
             "Multiplies how many artifacts can spawn per level segment. Left at vanilla (1.0) by default.");
 
-        ArtifactsPerLayerMultiplier = Config.Bind("Expedition Level Gen", "Artifacts Per Layer Multiplier", 1.0f,
+        ArtifactsPerLayerMultiplier = BindNonNegative("Expedition Level Gen", "Artifacts Per Layer Multiplier", 1.0f,
             "Multiplies how many artifacts can spawn per level layer. Left at vanilla (1.0) by default.");
 
-        WeakDoor4x4HealthMultiplier = Config.Bind("Expedition Doors", "Weak Door 4x4 Health Multiplier", 1.0f,
+        WeakDoor4x4HealthMultiplier = BindNonNegative("Expedition Doors", "Weak Door 4x4 Health Multiplier", 1.0f,
             "Multiplies the health of small (4x4) weak doors. Left at vanilla (1.0) by default.");
 
-        WeakDoor8x4HealthMultiplier = Config.Bind("Expedition Doors", "Weak Door 8x4 Health Multiplier", 1.0f,
+        WeakDoor8x4HealthMultiplier = BindNonNegative("Expedition Doors", "Weak Door 8x4 Health Multiplier", 1.0f,
             "Multiplies the health of large (8x4) weak doors. Left at vanilla (1.0) by default.");
 
-        WeakDoorNoLockWeightMultiplier = Config.Bind("Expedition Doors", "Weak Door No-Lock Weight Multiplier", 1.0f,
+        WeakDoorNoLockWeightMultiplier = BindNonNegative("Expedition Doors", "Weak Door No-Lock Weight Multiplier", 1.0f,
             "Multiplies the odds a weak door spawns with no lock at all. Left at vanilla (1.0) by default.");
 
-        WeakDoorMeleeLockWeightMultiplier = Config.Bind("Expedition Doors", "Weak Door Melee Lock Weight Multiplier", 1.0f,
+        WeakDoorMeleeLockWeightMultiplier = BindNonNegative("Expedition Doors", "Weak Door Melee Lock Weight Multiplier", 1.0f,
             "Multiplies the odds a weak door spawns with a melee-breakable lock. Left at vanilla (1.0) by default.");
 
-        WeakDoorHackableLockWeightMultiplier = Config.Bind("Expedition Doors", "Weak Door Hackable Lock Weight Multiplier", 1.0f,
+        WeakDoorHackableLockWeightMultiplier = BindNonNegative("Expedition Doors", "Weak Door Hackable Lock Weight Multiplier", 1.0f,
             "Multiplies the odds a weak door spawns with a hackable lock. Left at vanilla (1.0) by default.");
 
-        WeakDoorUnlockedOpenChanceMultiplier = Config.Bind("Expedition Doors", "Weak Door Unlocked Open Chance Multiplier", 1.0f,
+        WeakDoorUnlockedOpenChanceMultiplier = BindNonNegative("Expedition Doors", "Weak Door Unlocked Open Chance Multiplier", 1.0f,
             "Multiplies the chance an unlocked weak door starts already open. Left at vanilla (1.0) by default.");
 
-        WeakDoorWallRemoverOpenChanceMultiplier = Config.Bind("Expedition Doors", "Weak Door Wall Remover Open Chance Multiplier", 1.0f,
+        WeakDoorWallRemoverOpenChanceMultiplier = BindNonNegative("Expedition Doors", "Weak Door Wall Remover Open Chance Multiplier", 1.0f,
             "Multiplies the chance a door starts open where a wall-remover charge was used. Left at vanilla (1.0) by default.");
 
-        WeakDoorLockHealthMultiplier = Config.Bind("Expedition Doors", "Weak Door Lock Health Multiplier", 1.0f,
+        WeakDoorLockHealthMultiplier = BindNonNegative("Expedition Doors", "Weak Door Lock Health Multiplier", 1.0f,
             "Multiplies the health of a weak door's lock itself (separate from the door). Left at vanilla (1.0) by default.");
 
-        GlueVolumeToDoorHealthConversionMultiplier = Config.Bind("Expedition Doors", "Glue Volume To Door Health Conversion Multiplier", 1.0f,
+        GlueVolumeToDoorHealthConversionMultiplier = BindNonNegative("Expedition Doors", "Glue Volume To Door Health Conversion Multiplier", 1.0f,
             "Multiplies how effectively C-Foam volume converts into door damage. Left at vanilla (1.0) by default.");
 
-        GlueVolumeForDoorMaxStateMultiplier = Config.Bind("Expedition Doors", "Glue Volume For Door Max State Multiplier", 1.0f,
+        GlueVolumeForDoorMaxStateMultiplier = BindNonNegative("Expedition Doors", "Glue Volume For Door Max State Multiplier", 1.0f,
             "Multiplies how much C-Foam volume is needed to fully seal a door. Left at vanilla (1.0) by default.");
 
         // MeleeArchetypeDataBlock: one weapon type per archetype (Bat, Hammer, Knife, Spear),
@@ -596,7 +596,7 @@ public class Plugin : BasePlugin
             foreach (var stat in BalanceTables.MeleeStatDefs)
             {
                 var section = $"Melee - {archetype} - {stat.ActionType}";
-                var entry = Config.Bind(section, stat.DisplayName, 1.0f,
+                var entry = BindNonNegative(section, stat.DisplayName, 1.0f,
                     $"{stat.Description} Left at vanilla (1.0) by default.");
                 MeleeMultipliers[$"{archetype}.{stat.FieldKey}"] = entry;
             }
@@ -609,7 +609,7 @@ public class Plugin : BasePlugin
             foreach (var stat in BalanceTables.WeaponCoreStatDefs)
             {
                 var section = $"Weapon Type - {category.Replace('_', ' ')}";
-                var entry = Config.Bind(section, stat.DisplayName, 1.0f,
+                var entry = BindNonNegative(section, stat.DisplayName, 1.0f,
                     $"{stat.Description} Applies to every fire-mode variant of this weapon type. Left at vanilla (1.0) by default.");
                 WeaponTypeMultipliers[$"{category}.{stat.FieldKey}"] = entry;
             }
@@ -623,97 +623,97 @@ public class Plugin : BasePlugin
                 var namePrefix = BalanceTables.WeaponNames.TryGetValue(weapon.ArchetypeId, out var realName)
                     ? $"{realName}. "
                     : "No player weapon uses this fire mode. ";
-                var entry = Config.Bind(section, stat.DisplayName, 1.0f,
+                var entry = BindNonNegative(section, stat.DisplayName, 1.0f,
                     $"{namePrefix}{stat.Description} Stacks multiplicatively with this weapon's type-level multiplier. Left at vanilla (1.0) by default.");
                 WeaponIndividualMultipliers[$"{weapon.ArchetypeId}.{stat.FieldKey}"] = entry;
             }
         }
 
-        WeaponCostOfBulletMultiplier = Config.Bind("Weapon - Other", "Ammo Cost Per Shot Multiplier", 1.0f,
+        WeaponCostOfBulletMultiplier = BindNonNegative("Weapon - Other", "Ammo Cost Per Shot Multiplier", 1.0f,
             "Multiplies how much reserve ammo each shot consumes, for every weapon and sentry. Left at vanilla (1.0) by default.");
 
-        WeaponShotDelayMultiplier = Config.Bind("Weapon - Other", "Shot Delay Multiplier", 1.0f,
+        WeaponShotDelayMultiplier = BindNonNegative("Weapon - Other", "Shot Delay Multiplier", 1.0f,
             "Multiplies the delay between shots (fire rate) for every weapon and sentry. Left at vanilla (1.0) by default.");
 
-        WeaponHipFireSpreadMultiplier = Config.Bind("Weapon - Other", "Hip-Fire Spread Multiplier", 1.0f,
+        WeaponHipFireSpreadMultiplier = BindNonNegative("Weapon - Other", "Hip-Fire Spread Multiplier", 1.0f,
             "Multiplies bullet spread while firing from the hip, for every weapon. Left at vanilla (1.0) by default.");
 
-        WeaponAimSpreadMultiplier = Config.Bind("Weapon - Other", "Aim Spread Multiplier", 1.0f,
+        WeaponAimSpreadMultiplier = BindNonNegative("Weapon - Other", "Aim Spread Multiplier", 1.0f,
             "Multiplies bullet spread while aiming down sights, for every weapon. Left at vanilla (1.0) by default.");
 
-        WeaponPiercingDamageCountLimitMultiplier = Config.Bind("Weapon - Other", "Piercing Target Count Multiplier", 1.0f,
+        WeaponPiercingDamageCountLimitMultiplier = BindNonNegative("Weapon - Other", "Piercing Target Count Multiplier", 1.0f,
             "Multiplies how many enemies a piercing bullet can hit in one shot, for every weapon that pierces. Left at vanilla (1.0) by default.");
 
-        WeaponBurstDelayMultiplier = Config.Bind("Weapon - Other", "Burst Delay Multiplier", 1.0f,
+        WeaponBurstDelayMultiplier = BindNonNegative("Weapon - Other", "Burst Delay Multiplier", 1.0f,
             "Multiplies the delay between shots within a burst, for every burst-fire weapon. Left at vanilla (1.0) by default.");
 
-        WeaponBurstShotCountMultiplier = Config.Bind("Weapon - Other", "Burst Shot Count Multiplier", 1.0f,
+        WeaponBurstShotCountMultiplier = BindNonNegative("Weapon - Other", "Burst Shot Count Multiplier", 1.0f,
             "Multiplies how many rounds fire per burst, for every burst-fire weapon. Left at vanilla (1.0) by default.");
 
-        WeaponShotgunBulletCountMultiplier = Config.Bind("Weapon - Other", "Shotgun Pellet Count Multiplier", 1.0f,
+        WeaponShotgunBulletCountMultiplier = BindNonNegative("Weapon - Other", "Shotgun Pellet Count Multiplier", 1.0f,
             "Multiplies how many pellets a shotgun blast fires, for every shotgun. Left at vanilla (1.0) by default.");
 
-        WeaponShotgunConeSizeMultiplier = Config.Bind("Weapon - Other", "Shotgun Cone Size Multiplier", 1.0f,
+        WeaponShotgunConeSizeMultiplier = BindNonNegative("Weapon - Other", "Shotgun Cone Size Multiplier", 1.0f,
             "Multiplies the spread cone size of a shotgun blast, for every shotgun. Left at vanilla (1.0) by default.");
 
-        WeaponShotgunBulletSpreadMultiplier = Config.Bind("Weapon - Other", "Shotgun Pellet Spread Multiplier", 1.0f,
+        WeaponShotgunBulletSpreadMultiplier = BindNonNegative("Weapon - Other", "Shotgun Pellet Spread Multiplier", 1.0f,
             "Multiplies how spread out individual pellets are within a shotgun blast. Left at vanilla (1.0) by default.");
 
-        WeaponSpecialChargetupTimeMultiplier = Config.Bind("Weapon - Other", "Special Charge-Up Time Multiplier", 1.0f,
+        WeaponSpecialChargetupTimeMultiplier = BindNonNegative("Weapon - Other", "Special Charge-Up Time Multiplier", 1.0f,
             "Multiplies charge-up time for weapons with a special charged shot. Left at vanilla (1.0) by default.");
 
-        WeaponSpecialCooldownTimeMultiplier = Config.Bind("Weapon - Other", "Special Cooldown Time Multiplier", 1.0f,
+        WeaponSpecialCooldownTimeMultiplier = BindNonNegative("Weapon - Other", "Special Cooldown Time Multiplier", 1.0f,
             "Multiplies cooldown time for weapons with a special charged shot. Left at vanilla (1.0) by default.");
 
-        WeaponSpecialSemiBurstCountTimeoutMultiplier = Config.Bind("Weapon - Other", "Semi-Burst Timeout Multiplier", 1.0f,
+        WeaponSpecialSemiBurstCountTimeoutMultiplier = BindNonNegative("Weapon - Other", "Semi-Burst Timeout Multiplier", 1.0f,
             "Multiplies the window to chain shots into a semi-burst, for weapons with that firing mode. Left at vanilla (1.0) by default.");
 
-        WeaponEquipTransitionTimeMultiplier = Config.Bind("Weapon - Other", "Equip Transition Time Multiplier", 1.0f,
+        WeaponEquipTransitionTimeMultiplier = BindNonNegative("Weapon - Other", "Equip Transition Time Multiplier", 1.0f,
             "Multiplies how long it takes to raise a weapon after switching to it. Left at vanilla (1.0) by default.");
 
-        WeaponAimTransitionTimeMultiplier = Config.Bind("Weapon - Other", "Aim Transition Time Multiplier", 1.0f,
+        WeaponAimTransitionTimeMultiplier = BindNonNegative("Weapon - Other", "Aim Transition Time Multiplier", 1.0f,
             "Multiplies how long it takes to raise sights when aiming down sights. Left at vanilla (1.0) by default.");
 
-        WeaponShellCasingSizeMultiplier = Config.Bind("Weapon - Other", "Shell Casing Size Multiplier", 1.0f,
+        WeaponShellCasingSizeMultiplier = BindNonNegative("Weapon - Other", "Shell Casing Size Multiplier", 1.0f,
             "Multiplies the visual size of ejected shell casings. Purely cosmetic. Left at vanilla (1.0) by default.");
 
-        SentryStartFireDelayMultiplier = Config.Bind("Sentries", "Start Fire Delay Multiplier", 1.0f,
+        SentryStartFireDelayMultiplier = BindNonNegative("Sentries", "Start Fire Delay Multiplier", 1.0f,
             "Multiplies how long a sentry waits after detecting a target before it opens fire. Left at vanilla (1.0) by default.");
 
-        SentryRotationSpeedMultiplier = Config.Bind("Sentries", "Rotation Speed Multiplier", 1.0f,
+        SentryRotationSpeedMultiplier = BindNonNegative("Sentries", "Rotation Speed Multiplier", 1.0f,
             "Multiplies how fast a sentry turns to track targets. Left at vanilla (1.0) by default.");
 
-        SentryDetectionMaxRangeMultiplier = Config.Bind("Sentries", "Detection Max Range Multiplier", 1.0f,
+        SentryDetectionMaxRangeMultiplier = BindNonNegative("Sentries", "Detection Max Range Multiplier", 1.0f,
             "Multiplies the maximum range at which a sentry can detect targets. Left at vanilla (1.0) by default.");
 
-        SentryDetectionMaxAngleMultiplier = Config.Bind("Sentries", "Detection Max Angle Multiplier", 1.0f,
+        SentryDetectionMaxAngleMultiplier = BindNonNegative("Sentries", "Detection Max Angle Multiplier", 1.0f,
             "Multiplies the detection cone angle a sentry scans. Left at vanilla (1.0) by default.");
 
-        SentryLongRangeThresholdMultiplier = Config.Bind("Sentries", "Long Range Threshold Multiplier", 1.0f,
+        SentryLongRangeThresholdMultiplier = BindNonNegative("Sentries", "Long Range Threshold Multiplier", 1.0f,
             "Multiplies the distance beyond which a sentry treats a target as long-range. Left at vanilla (1.0) by default.");
 
-        SentryShortRangeThresholdMultiplier = Config.Bind("Sentries", "Short Range Threshold Multiplier", 1.0f,
+        SentryShortRangeThresholdMultiplier = BindNonNegative("Sentries", "Short Range Threshold Multiplier", 1.0f,
             "Multiplies the distance within which a sentry treats a target as short-range. Left at vanilla (1.0) by default.");
 
-        SentryStartFireDelayTagMultiplier = Config.Bind("Sentries", "Tagged-Target Start Fire Delay Multiplier", 1.0f,
+        SentryStartFireDelayTagMultiplier = BindNonNegative("Sentries", "Tagged-Target Start Fire Delay Multiplier", 1.0f,
             "Multiplies the start-fire-delay multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
 
-        SentryRotationSpeedTagMultiplier = Config.Bind("Sentries", "Tagged-Target Rotation Speed Multiplier", 1.0f,
+        SentryRotationSpeedTagMultiplier = BindNonNegative("Sentries", "Tagged-Target Rotation Speed Multiplier", 1.0f,
             "Multiplies the rotation-speed multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
 
-        SentryDamageTagMultiplier = Config.Bind("Sentries", "Tagged-Target Damage Multiplier", 1.0f,
+        SentryDamageTagMultiplier = BindNonNegative("Sentries", "Tagged-Target Damage Multiplier", 1.0f,
             "Multiplies the damage multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
 
-        SentryStaggerDamageTagMultiplier = Config.Bind("Sentries", "Tagged-Target Stagger Multiplier", 1.0f,
+        SentryStaggerDamageTagMultiplier = BindNonNegative("Sentries", "Tagged-Target Stagger Multiplier", 1.0f,
             "Multiplies the stagger multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
 
-        SentryCostOfBulletTagMultiplier = Config.Bind("Sentries", "Tagged-Target Ammo Cost Multiplier", 1.0f,
+        SentryCostOfBulletTagMultiplier = BindNonNegative("Sentries", "Tagged-Target Ammo Cost Multiplier", 1.0f,
             "Multiplies the ammo-cost multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
 
-        SentryShotDelayTagMultiplier = Config.Bind("Sentries", "Tagged-Target Shot Delay Multiplier", 1.0f,
+        SentryShotDelayTagMultiplier = BindNonNegative("Sentries", "Tagged-Target Shot Delay Multiplier", 1.0f,
             "Multiplies the shot-delay multiplier applied against a tagged (scanned) target. Left at vanilla (1.0) by default.");
 
-        SentryDeployPickupInteractionDurationMultiplier = Config.Bind("Sentries", "Deploy/Pickup Interaction Duration Multiplier", 0.0f,
+        SentryDeployPickupInteractionDurationMultiplier = BindNonNegative("Sentries", "Deploy/Pickup Interaction Duration Multiplier", 0.0f,
             "Multiplies how long you have to hold the interact key to place or retrieve a sentry gun. Default 0 " +
             "(instant) - no charge-up to place, no wait to pick back up. Set to 1.0 to keep vanilla timing.");
 
@@ -735,13 +735,13 @@ public class Plugin : BasePlugin
             "Keeps a silent, invisible fog-clearing sphere around you - the same fog-system sphere the Fog Repeller " +
             "item uses, without its light, sound or time limit. It widens the longer you're in a level.");
 
-        FogClearStartRange = Config.Bind("Fog Clearing", "Start Range (meters)", 4f,
+        FogClearStartRange = BindNonNegative("Fog Clearing", "Start Range (meters)", 4f,
             "Radius of clear air around you when a level starts. Default 4.");
 
-        FogClearMaxRange = Config.Bind("Fog Clearing", "Max Range (meters)", 25f,
+        FogClearMaxRange = BindNonNegative("Fog Clearing", "Max Range (meters)", 25f,
             "Radius it grows to. Default 25 (the vanilla Fog Repeller's own range is logged on first use, for comparison).");
 
-        FogClearRampSeconds = Config.Bind("Fog Clearing", "Ramp Seconds", 90f,
+        FogClearRampSeconds = BindNonNegative("Fog Clearing", "Ramp Seconds", 90f,
             "Seconds from Start Range to Max Range. Default 90. 0 = full range straight away.");
 
         FogClearDensityOverride = Config.Bind("Fog Clearing", "Density Override", 0f,
@@ -753,13 +753,32 @@ public class Plugin : BasePlugin
             "the artifact back takes the buff back off). Bold, Aggressive and Muted are the game's Uncommon, Rare " +
             "and Common artifacts.");
 
-        ArtifactBoldMaxHealthPercent = Config.Bind("Artifacts", "Bold: Max Health (%)", 5f,
+        ArtifactBoldMaxHealthPercent = BindNonNegative("Artifacts", "Bold: Max Health (%)", 5f,
             "Max health added per Bold artifact picked up, in percent of your starting max health (the gain is healed too). Default 5.");
 
-        ArtifactAggressiveDamagePercent = Config.Bind("Artifacts", "Aggressive: Damage (%)", 5f,
+        ArtifactAggressiveDamagePercent = BindNonNegative("Artifacts", "Aggressive: Damage (%)", 5f,
             "Damage dealt to enemies (guns and melee) added per Aggressive artifact picked up. Default 5.");
 
-        ArtifactMutedQuieterPercent = Config.Bind("Artifacts", "Muted: Quieter (%)", 5f,
+        ArtifactMutedQuieterPercent = BindNonNegative("Artifacts", "Muted: Quieter (%)", 5f,
             "How much harder enemies find it to detect you, per Muted artifact picked up (capped at 75%). Default 5.");
+    }
+
+    // Every float setting here is a multiplier, range, duration or percentage, none of which mean
+    // anything below 0 - a negative one turned into negative health, damage or spawn counts. BepInEx
+    // clamps a value it reads from the .cfg to this, so a typo'd minus sign lands on 0 instead.
+    // Density Override is the one exception (a fog-repeller density is negative), bound directly.
+    private ConfigEntry<float> BindNonNegative(string section, string key, float defaultValue, string description) =>
+        Config.Bind(section, key, defaultValue, new ConfigDescription(description, NonNegative.Instance));
+
+    private sealed class NonNegative : AcceptableValueBase
+    {
+        internal static readonly NonNegative Instance = new();
+
+        private NonNegative() : base(typeof(float)) { }
+
+        // !(f >= 0) also catches NaN.
+        public override object Clamp(object value) => value is float f && !(f >= 0f) ? 0f : value;
+        public override bool IsValid(object value) => value is float f && f >= 0f;
+        public override string ToDescriptionString() => "# Acceptable value range: 0 or more";
     }
 }
