@@ -51,6 +51,13 @@
     <None Include="Shared\KitLoot.cs" />
   </ItemGroup>
 
+  <!-- Shared/RemoteEvents.cs needs GTFO-API, which this mod doesn't use: it's published to the mods
+       that do (GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves) and left out of this build. -->
+  <ItemGroup>
+    <Compile Remove="Shared\RemoteEvents.cs" />
+    <None Include="Shared\RemoteEvents.cs" />
+  </ItemGroup>
+
   <!-- Pure balance data/math, shared with tests/GTFO.EZ.Core.Tests - see the root README's Project layout section. -->
   <ItemGroup>
     <ProjectReference Include="..\GTFO.EZ.Core\GTFO.EZ.Core.csproj" />

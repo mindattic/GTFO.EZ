@@ -6,8 +6,10 @@
 .DESCRIPTION
     GTFO.EZ owns the code every GTFO.* mod carries a copy of: the Insert/Delete infinite ammo and
     health toggles (SharedOwner + InfiniteToggles, in every mod), on-screen messages (MessageHelper, in
-    every mod) and kits as consumables (KitLoot,
-    GTFO.EZ.AbsurdItems only - GTFO.EZ keeps the source but doesn't compile it). This
+    every mod), kits as consumables (KitLoot,
+    GTFO.EZ.AbsurdItems only - GTFO.EZ keeps the source but doesn't compile it) and throw-safe
+    GTFO-API network events (RemoteEvents, only the mods that use GTFO-API - likewise not compiled
+    by GTFO.EZ). This
     writes each file into <repo>/src/<repo>/Shared/ with a header saying where it came from, in the order
     GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves, GTFO.EZ.AbsurdItems, GTFO.CrashTestDummies. The copies are never
     edited by hand - change GTFO.EZ's and publish again. A generated copy that's no longer published
@@ -31,8 +33,8 @@ $source = Join-Path $repoRoot 'src\GTFO.EZ\Shared'
 
 $everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs', 'MessageHelper.cs')
 $targets = [ordered]@{
-    'GTFO.EZ.AbsurdWeapons' = $everyMod
-    'GTFO.EZ.AbsurdMoves'   = $everyMod
+    'GTFO.EZ.AbsurdWeapons' = $everyMod + @('RemoteEvents.cs')
+    'GTFO.EZ.AbsurdMoves'   = $everyMod + @('RemoteEvents.cs')
     'GTFO.EZ.AbsurdItems'   = $everyMod + @('KitLoot.cs')
     'GTFO.CrashTestDummies' = $everyMod
 }
