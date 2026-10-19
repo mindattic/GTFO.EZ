@@ -2,6 +2,10 @@
 
 ## v14
 
+- New **master switch**: `[0. Mod] Enabled` (default `true`) is the config file's first entry; set
+  it to `false` and the whole mod is off - nothing is patched, no tuning, no hotkeys. The other
+  GTFO.* mods treat a GTFO.EZ switched off this way as not installed (Insert/Delete pass to the next
+  installed mod), and this mod does the same for them.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
 - **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.AbsurdWeapons'

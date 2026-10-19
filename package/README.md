@@ -469,6 +469,8 @@ either not multiplier-friendly or purely cosmetic/technical.
 - **GTFO.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
   Kits*) that used to be in this mod live there now, with the same settings. Its kit loot is applied
   after this mod's data changes, and while it's on this mod's consumable spawn odds are skipped.
+- **Turning a mod off:** every GTFO.* mod's `.cfg` starts with `[0. Mod] Enabled`; set it to
+  `false` and that mod loads nothing, and the others treat it as not installed.
 - **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
   Dodge (hold Shift, double-tap W/A/S/D). Install it if you want the dash back.
 - **GTFO.CrashTestDummies** and **GTFO.SkipDrop:** compatible - they patch level building and the
@@ -517,6 +519,10 @@ others' prior work:
 
 ### v14
 
+- New **master switch**: `[0. Mod] Enabled` (default `true`) is the config file's first entry; set
+  it to `false` and the whole mod is off - nothing is patched, no tuning, no hotkeys. The other
+  GTFO.* mods treat a GTFO.EZ switched off this way as not installed (Insert/Delete pass to the next
+  installed mod), and this mod does the same for them.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
 - **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.AbsurdWeapons'

@@ -130,7 +130,9 @@ defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant s
 ## Configuration
 
 All tweaks are multipliers or toggles, tunable after first launch in
-`BepInEx/config/MindAttic.GTFO.EZ.cfg` - no rebuild needed to retune a value. Config sections
+`BepInEx/config/MindAttic.GTFO.EZ.cfg` - no rebuild needed to retune a value. The first entry,
+`[0. Mod] Enabled`, is the master switch: `false` and the mod returns from `Load` before binding or
+patching anything else (the other GTFO.* mods then treat it as not installed). Config sections
 mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
 Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
