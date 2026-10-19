@@ -81,3 +81,9 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T58 | 2026-10-18 | feature | closed | Consumables Are Kits made sparse: kits hold 1-2 whole charges and only add Kit Loot (20%) of the zone's health+ammo+tool pack budget on top of the normal resource packs, split by that budget; zone resource packs unchanged - user request 2026-10-18 | 5bda315 |
 | G.EZ-T59 | 2026-10-18 | feature | closed | Shared code hosted in GTFO.EZ (src/GTFO.EZ/Shared, tools/publish-shared.ps1): Insert infinite ammo / Delete infinite health toggles with warden messages, one owner among installed GTFO.* mods and process-wide state so they never clash; kits-as-consumables moved there too so GTFO.AbsurdWeapons runs the same code plus its grenades/stims - user request 2026-10-18 | 1e00a17 |
 | G.EZ-T60 | 2026-10-18 | fix | closed | Shared KitLoot: kit weights add up to their settings (budget only splits them) so a mod's extra items read as plain odds; Consumable Spawn Multiplier documented as not counting kits | 0bb61b1 |
+| G.EZ-T61 | 2026-10-18 | fix | closed | Placing your own sentry held back by Shift+E still switched you off the sentry slot | — |
+| G.EZ-T62 | 2026-10-18 | fix | closed | Shift+E on a client placed your own sentry: the guard only armed on the host | — |
+| G.EZ-T63 | 2026-10-18 | fix | closed | X's ground fallback could place a sentry through a wall or door, or while downed | — |
+| G.EZ-T64 | 2026-10-18 | fix | closed | README: Consumable Spawn Multiplier doesn't set the kit count with Consumables Are Kits on | — |
+| G.EZ-T65 | 2026-10-18 | fix | closed | Negative config values applied as negative health, damage and spawn counts | — |
+| G.EZ-T66 | 2026-10-18 | fix | closed | Fog Clearing cached the fallback density for the whole launch when no Fog Repeller was loaded yet | — |
