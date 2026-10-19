@@ -87,3 +87,5 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T64 | 2026-10-18 | fix | closed | README: Consumable Spawn Multiplier doesn't set the kit count with Consumables Are Kits on | — |
 | G.EZ-T65 | 2026-10-18 | fix | closed | Negative config values applied as negative health, damage and spawn counts | — |
 | G.EZ-T66 | 2026-10-18 | fix | closed | Fog Clearing cached the fallback density for the whole launch when no Fog Repeller was loaded yet | — |
+| G.EZ-T67 | 2026-10-18 | fix | closed | Shared code: warden messages from different GTFO.* mods (and a dropped message) no longer cut off the game's own messages; an older mod with no shared code never owns Insert/Delete | — |
+| G.EZ-T68 | 2026-10-18 | fix | closed | Shared kit loot: all kit weights 0 spawns no kits instead of vanilla consumables; extras' odds count only the kits actually found | — |
