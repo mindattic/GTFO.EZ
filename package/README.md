@@ -464,7 +464,7 @@ either not multiplier-friendly or purely cosmetic/technical.
 ## Compatibility
 
 GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and GTFO.EZ.AbsurdItems are GTFO.EZ companion mods,
-built on this mod's core (they share its Insert/Delete toggles and warden messages). Each one works
+built on this mod's core (they share its Insert/Delete toggles and on-screen messages). Each one works
 without GTFO.EZ installed, too.
 
 - **GTFO.EZ.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this

@@ -194,8 +194,9 @@ below; each works on its own too), and GTFO.CrashTestDummies carries the same sh
   switch (`[0. Mod] Enabled`) is off counts as not installed. `SharedOwner.IsActive(guid)` and
   `SharedOwner.TryGetSetting<T>(guid, section, key, out entry)` are how one mod checks another
   (installed, loaded and switched on) and reads its settings.
-- `InfiniteToggles.cs` / `WardenMessage.cs` - Insert / Delete, infinite ammo and health, and the
-  warden message they're announced with. Published to every other GTFO.* mod.
+- `InfiniteToggles.cs` - Insert / Delete, infinite ammo and health, announced in the event log.
+- `MessageHelper.cs` - on-screen messages for the local player, wherever they fit:
+  `MessageHelper.Show(text, MessageType.Warden | EventLog | Center | Subtitle, seconds)`. Published to every other GTFO.* mod.
 - `KitLoot.cs` - kits as consumables. Published to GTFO.EZ.AbsurdItems only (its *Consumables Are
   Kits*, with Loot Mix's Hand Grenades and Stim Packs as extras). GTFO.EZ doesn't use it, so
   `GTFO.EZ.csproj` leaves it out of this mod's build; it compiles in GTFO.EZ.AbsurdItems.

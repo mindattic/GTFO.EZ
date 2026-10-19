@@ -5,14 +5,17 @@
 
 .DESCRIPTION
     GTFO.EZ owns the code every GTFO.* mod carries a copy of: the Insert/Delete infinite ammo and
-    health toggles (SharedOwner + InfiniteToggles + WardenMessage, in every mod) and kits as consumables (KitLoot,
+    health toggles (SharedOwner + InfiniteToggles, in every mod), on-screen messages (MessageHelper, in
+    every mod) and kits as consumables (KitLoot,
     GTFO.EZ.AbsurdItems only - GTFO.EZ keeps the source but doesn't compile it). This
     writes each file into <repo>/src/<repo>/Shared/ with a header saying where it came from, in the order
     GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves, GTFO.EZ.AbsurdItems, GTFO.CrashTestDummies. The copies are never
-    edited by hand - change GTFO.EZ's and publish again.
+    edited by hand - change GTFO.EZ's and publish again. A generated copy that's no longer published
+    to a repo (a file renamed or retired here) is deleted from it.
 
 .PARAMETER Check
-    Change nothing; list every copy that's missing or differs from GTFO.EZ's, and exit 1 if any do.
+    Change nothing; list every copy that's missing, differs from GTFO.EZ's or is no longer published,
+    and exit 1 if any are.
 
 .PARAMETER Only
     Only these target repos (e.g. -Only GTFO.EZ.AbsurdItems,GTFO.EZ.AbsurdMoves) - for when another repo is
@@ -26,7 +29,7 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $workspace = Split-Path -Parent $repoRoot
 $source = Join-Path $repoRoot 'src\GTFO.EZ\Shared'
 
-$everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs', 'WardenMessage.cs')
+$everyMod = @('SharedOwner.cs', 'InfiniteToggles.cs', 'MessageHelper.cs')
 $targets = [ordered]@{
     'GTFO.EZ.AbsurdWeapons' = $everyMod
     'GTFO.EZ.AbsurdMoves'   = $everyMod
@@ -63,6 +66,20 @@ foreach ($repo in $targets.Keys) {
         New-Item -ItemType Directory -Force $dest | Out-Null
         [IO.File]::WriteAllText($target, $header + $body, (New-Object Text.UTF8Encoding $false))
         Write-Host "Published $file -> $repo"
+    }
+
+    # Generated copies this repo no longer gets (renamed or retired here). Only files carrying the
+    # generated header are touched, never a repo's own code.
+    if (Test-Path $dest) {
+        foreach ($old in Get-ChildItem $dest -Filter *.cs) {
+            if ($targets[$repo] -contains $old.Name) { continue }
+            $reader = New-Object IO.StreamReader $old.FullName
+            try { $first = $reader.ReadLine() } finally { $reader.Dispose() }
+            if ($first -notlike '// Generated from GTFO.EZ src/GTFO.EZ/Shared/*') { continue }
+            if ($Check) { $stale += "$repo/$($old.Name) (no longer published)"; continue }
+            Remove-Item $old.FullName
+            Write-Host "Removed $($old.Name) from $repo (no longer published)"
+        }
     }
 }
 

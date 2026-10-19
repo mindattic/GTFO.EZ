@@ -48,7 +48,7 @@ internal static class InfiniteToggles
     {
         try
         {
-            if (!WardenMessage.Show(message)) SharedOwner.Log.LogInfo(message);
+            if (!MessageHelper.Show(message, MessageType.Warden)) SharedOwner.Log.LogInfo(message);
         }
         catch (Exception e)
         {
