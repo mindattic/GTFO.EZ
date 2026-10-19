@@ -135,7 +135,7 @@ All tweaks are multipliers or toggles, tunable after first launch in
 `[0. Mod] Enabled`, is the master switch: `false` and the mod returns from `Load` before binding or
 patching anything else (the other GTFO.* mods then treat it as not installed). Config sections
 mirror the feature groups above: Health, Stamina, Fall Damage, Ammo, Lighting, Enemy Detection,
-Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Consumables, Controls,
+Movement, Combat, Utility, Environment, Enemy Balance, Loot, Interactions, Controls,
 Bots, Expedition Resources/Enemies/Level Gen/Doors, one section per melee weapon and per weapon
 type/archetype, Sentries, Fog Clearing, and Experimental. (The Artifacts section and the kit
 settings under Loot moved to GTFO.AbsurdItems; an older `.cfg` keeps them as leftover lines that
