@@ -166,7 +166,7 @@ itself:
 
 | Stat | Vanilla | Default |
 |---|---|---|
-| Consumable spawns per zone (kits, or vanilla items with Consumables Are Kits off) | varies by zone | - |
+| Consumable spawns per zone (vanilla items, with Consumables Are Kits off; with it on, Kit Loot sets how many kits) | varies by zone | - |
 | Big pickup spawns per zone (fog turbines, artifacts, etc.) | varies by zone | - |
 
 ## Miscellaneous (exposed, but not part of the core tuning)
@@ -179,7 +179,8 @@ expect it to matter more for players who want to go deeper than the defaults, no
 **Consumable spawn odds** — only used with `Consumables Are Kits` turned off (it's on by default,
 and makes the consumables a few small kits instead). They retune the weighted lottery that decides *which*
 consumable fills a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier`
-above). Setting one to 0 removes that item, and its share goes to the rest; a loot table with
+above, which only counts with `Consumables Are Kits` off; with it on, `Kit Loot (%)` sets how many
+kits spawn). Setting one to 0 removes that item, and its share goes to the rest; a loot table with
 every item disabled spawns nothing.
 
 | Stat | Vanilla | Default |
