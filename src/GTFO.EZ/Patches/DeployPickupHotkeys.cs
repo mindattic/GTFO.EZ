@@ -217,6 +217,10 @@ internal static class OwnSentryAutoPlace
     private const float StepAhead = 1.5f;
     private const float GroundProbeHeight = 1.5f;
     private const float GroundProbeDepth = 4f;
+    // Steeper than this (stairs edges, railings, crate corners) isn't ground a sentry stands on.
+    private const float MaxGroundSlope = 30f;
+    // Aims the sight check just above the ground so it isn't blocked by the floor it's checking.
+    private const float SightLift = 0.2f;
 
     // Lets X's own PlaceOnGround call past the Shift modifier guard.
     internal static bool Placing;
@@ -238,9 +242,18 @@ internal static class OwnSentryAutoPlace
                 return;
             }
 
-            if (!BotDeployAtAim.TryGetAimPose(out var pose) && !TryGroundAhead(out pose))
+            // Downed (or dead), you can't place a tool the normal way either.
+            if (!PlayerManager.TryGetLocalPlayerAgent(out var agent) || agent == null || !agent.Alive)
             {
-                Plugin.Logger.LogInfo("X: no ground in front of you to place on.");
+                Plugin.Logger.LogInfo("X: you can't place your sentry while downed.");
+                return;
+            }
+
+            // The aim pose is the game's own validated spot (m_lastCanPlace is already true there);
+            // the fallback only counts once its probe has proved a flat spot you can see.
+            if (!BotDeployAtAim.TryGetAimPose(out var pose) && !TryGroundAhead(agent, out pose))
+            {
+                Plugin.Logger.LogInfo("X: no clear ground in front of you to place on.");
                 return;
             }
 
@@ -264,14 +277,23 @@ internal static class OwnSentryAutoPlace
         }
     }
 
-    private static bool TryGroundAhead(out Pose pose)
+    private static bool TryGroundAhead(PlayerAgent agent, out Pose pose)
     {
         pose = default;
-        if (!PlayerManager.TryGetLocalPlayerAgent(out var agent) || agent == null) return false;
+        if (agent.FPSCamera == null) return false;
 
-        var forward = agent.FPSCamera != null ? agent.FPSCamera.FlatForward : agent.transform.forward;
+        var forward = agent.FPSCamera.FlatForward;
         var origin = agent.transform.position + forward * StepAhead + Vector3.up * GroundProbeHeight;
         if (!Physics.Raycast(origin, Vector3.down, out var hit, GroundProbeDepth, LayerManager.MASK_WORLD)) return false;
+        if (Vector3.Angle(hit.normal, Vector3.up) > MaxGroundSlope) return false;
+
+        // The probe starts a step ahead, so on its own it finds floor on the far side of a wall or
+        // closed door. The spot only counts if your camera can see it, blocked by the same mask the
+        // game's own sentry placement aim uses, plus world geometry.
+        var eye = agent.FPSCamera.Position;
+        var sightMask = LayerManager.MASK_WORLD | LayerManager.MASK_SENTRYGUN_CAMERARAY;
+        if (Physics.Linecast(eye, origin, sightMask)) return false;
+        if (Physics.Linecast(eye, hit.point + Vector3.up * SightLift, sightMask)) return false;
 
         pose = new Pose(hit.point, Quaternion.LookRotation(forward, Vector3.up));
         return true;

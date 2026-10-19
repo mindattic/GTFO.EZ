@@ -214,8 +214,9 @@ form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release
   by letting the game also evaluate the PING it had already handled; this version owns the
   command fully (BetterTerminal's approach) and falls back to the game's PING on any error.
 - The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
-  "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow) and Z
-  are confirmed working in play; the weapon switch-back after placing your own is not yet.
+  "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow, behind a
+  wall or door, or while you're downed) and Z are confirmed working in play; the weapon
+  switch-back after placing your own is not yet.
 - Artifact buffs are compiled but not yet confirmed in play. Muted scales the game's per-player
   detection modifier (`PlayerAgent.GetDetectionMod`); whether enemies consult it for ordinary
   movement noise is the part to check.
