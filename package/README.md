@@ -553,6 +553,8 @@ others' prior work:
 - **Bug fix:** recalling bot sentries found nothing - a sentry placed with Shift+E isn't linked
   back to its bot the way the recall looked it up. It now finds the placed sentries in the level
   and matches each to its bot. Z is the recall key; Alt+E is gone.
+- **Bug fix:** Shift+E switched you off your sentry to your previous weapon even though your own
+  placement was held back for the bot's; you now keep aiming it.
 - With GTFO.AbsurdWeapons installed, everything it changes in the game's data applies after this
   mod's and wins where they clash - loot follows its own settings. See Compatibility.
 

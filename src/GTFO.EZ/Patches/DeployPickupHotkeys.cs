@@ -76,8 +76,11 @@ internal static class SentryGunFirstPerson_PlaceOnGround_ModifierGuard
 internal static class SentryGunFirstPerson_PlaceOnGround_Patch
 {
     [HarmonyPostfix]
-    private static void Postfix(SentryGunFirstPerson __instance)
+    private static void Postfix(SentryGunFirstPerson __instance, bool __runOriginal)
     {
+        // Postfixes run even when a prefix skipped the original: when the Shift+E guard held your
+        // own placement back, nothing was placed and you're still aiming the sentry for the bot.
+        if (!__runOriginal) return;
         try
         {
             var localBackpack = PlayerBackpackManager.LocalBackpack;
