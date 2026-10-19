@@ -168,9 +168,9 @@ expect it to matter more for players who want to go deeper than the defaults, no
 **Consumable spawn odds** — they retune the weighted lottery that decides *which* consumable fills
 a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier` above). Setting one to
 0 removes that item, and its share goes to the rest; a loot table with every item disabled spawns
-nothing. They're skipped while GTFO.AbsurdItems decides the consumable loot: its *Consumables Are
-Kits* (a few small health, tool and ammo kits instead, plus Hand Grenades and Stim Packs with its
-Loot Mix on).
+nothing. GTFO.AbsurdItems' *Consumables Are Kits* replaces the items with a few small health, tool
+and ammo kits (plus Hand Grenades and Stim Packs with its Loot Mix on), and these odds with them;
+whenever its kits don't fill the tables, these odds still apply.
 
 | Stat | Vanilla | Default |
 |---|---|---|
@@ -469,7 +469,7 @@ either not multiplier-friendly or purely cosmetic/technical.
 - **GTFO.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
   Kits*) that used to be in this mod live there now, with the same settings, along with the Hand
   Grenade, Stim Pack and Loot Mix from GTFO.AbsurdWeapons. Its kit loot is applied after this mod's
-  data changes, and while it's on this mod's consumable spawn odds are skipped.
+  data changes and replaces this mod's consumable spawn odds along with the items.
 - **Turning a mod off:** every GTFO.* mod's `.cfg` starts with `[0. Mod] Enabled`; set it to
   `false` and that mod loads nothing, and the others treat it as not installed.
 - **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
@@ -530,6 +530,9 @@ others' prior work:
   off in its config counts as not installed.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
+- **Bug fix:** with GTFO.AbsurdItems' *Consumables Are Kits* on, this mod's consumable spawn odds were
+  skipped even when its kits didn't fill the loot tables (no kit items found, or an error), leaving
+  the vanilla consumables. The odds now always apply, and its kits replace them when they do fill.
 - **Bug fix:** pressing Insert or Delete twice while the first message was still waiting behind one of
   the game's own warden messages cut the game's message off. A new toggle message now only replaces
   one of ours that's actually on screen, and never drops a game message queued behind it.

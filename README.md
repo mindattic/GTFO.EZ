@@ -35,7 +35,8 @@ vanilla-vs-default table):
   default, so their share goes to the rest. Consumables as kits moved to
   [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems): with its *Consumables Are
   Kits* on (its Loot Mix adds Hand Grenades and Stim Packs to the kits), that mod decides the
-  consumable loot and this mod's per-item spawn odds are skipped.
+  consumable loot, replacing this mod's per-item spawn odds; if its kits don't fill the tables,
+  those odds still apply.
 - Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
   fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
   widening from 4 m to 25 m over 90 s each level. Tunable under `Fog Clearing`.

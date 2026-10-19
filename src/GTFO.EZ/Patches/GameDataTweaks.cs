@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
-using MindAttic.GTFO.Shared;
 using UnityEngine;
 
 namespace GTFO.EZ.Patches;
@@ -191,25 +190,18 @@ internal static class GameDataInit_Initialize_Patch
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, consumableMult);
 
-        var otherLoot = OtherModDecidesConsumables();
-        if (otherLoot != null) Plugin.Logger.LogInfo($"Loot: {otherLoot} decides which consumables spawn - the spawn odds here are skipped.");
-
+        // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling an
+        // item's weight retunes the odds between items rather than the total amount of loot (that's
+        // the SpawnsPerZone scale above). Both glow stick colors share one entry. Always applied: a
+        // GTFO.AbsurdItems kit run replaces the items (and these weights with them) after this, and
+        // when it doesn't fill the tables (switched off, no kit items found, an error) these stand.
+        // A table left with every item disabled is emptied later, once that run is done (see
+        // GameDataInit_EmptyDisabledLoot_Patch) - emptying it here would leave it empty under kits too.
         foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
         {
-            if (otherLoot != null || block.SpawnData == null || block.SpawnData.Count == 0) continue;
-
-            // Each consumable is drawn from a shared weighted lottery per spawn slot, so scaling
-            // an item's weight retunes the odds between items rather than the total amount of
-            // loot (that's the SpawnsPerZone scale above). Both glow stick colors share one entry.
-            var totalWeight = 0f;
+            if (block.SpawnData == null || block.SpawnData.Count == 0) continue;
             foreach (var entry in block.SpawnData)
-            {
                 if (ConsumableWeightMultipliers.TryGetValue(entry.ItemID, out var getMultiplier)) entry.Weight *= getMultiplier();
-                totalWeight += entry.Weight;
-            }
-
-            // Every item in this table disabled - spawn nothing rather than run an all-zero lottery.
-            if (totalWeight <= 0f) block.SpawnsPerZone = 0;
         }
 
         var bigPickupMult = Plugin.BigPickupSpawnMultiplier.Value;
@@ -217,21 +209,6 @@ internal static class GameDataInit_Initialize_Patch
         {
             block.SpawnsPerZone = ScaleUp(block.SpawnsPerZone, bigPickupMult);
         }
-    }
-
-    // GTFO.AbsurdItems' kit loot (Consumables Are Kits, with Loot Mix's Hand Grenades and Stim Packs)
-    // replaces every consumable table's items after this runs, so the item lists are left alone here
-    // while it's on: zeroing an all-disabled table's count would otherwise leave that table empty
-    // under its kits too. Its setting is read off its own config; a GTFO.AbsurdItems that's switched
-    // off ([0. Mod] Enabled) counts as not installed, and one without the setting counts as on (its
-    // default). Returns the deciding mod's setting, or null when this mod's spawn odds apply.
-    private const string AbsurdItemsGuid = "MindAttic.GTFO.AbsurdItems";
-
-    private static string? OtherModDecidesConsumables()
-    {
-        if (!SharedOwner.IsActive(AbsurdItemsGuid)) return null;
-        if (SharedOwner.TryGetSetting<bool>(AbsurdItemsGuid, "Loot", "Consumables Are Kits", out var kits) && !kits.Value) return null;
-        return "GTFO.AbsurdItems' Consumables Are Kits";
     }
 
     // ItemIDs confirmed by logging GameDataBlockBase<ItemDataBlock> entries referenced from
@@ -468,4 +445,37 @@ internal static class GameDataInit_Initialize_Patch
 
     // Less of this stat helps the player (enemy counts, spread), so a fractional result rounds down.
     private static int ScaleDown(int value, float multiplier) => BalanceMath.ScaleIntDown(value, multiplier);
+}
+
+// A consumable table where this mod's spawn odds disabled every item spawns nothing rather than run
+// an all-zero lottery. Runs after every other GTFO.* mod's GameDataInit work (GTFO.AbsurdItems' kit
+// loot replaces the items, and with them these weights): only a table that still has nothing left
+// to pick is emptied, so it's right whether or not that run filled the tables.
+[HarmonyPatch(typeof(GameDataInit), nameof(GameDataInit.Initialize))]
+internal static class GameDataInit_EmptyDisabledLoot_Patch
+{
+    [HarmonyPostfix]
+    [HarmonyAfter("MindAttic.GTFO.AbsurdItems")]
+    [HarmonyPriority(Priority.Last)]
+    private static void Postfix()
+    {
+        try
+        {
+            var emptied = 0;
+            foreach (var block in GameDataBlockBase<ConsumableDistributionDataBlock>.GetAllBlocks())
+            {
+                if (block?.SpawnData == null || block.SpawnData.Count == 0 || block.SpawnsPerZone == 0) continue;
+                var totalWeight = 0f;
+                foreach (var entry in block.SpawnData) totalWeight += entry.Weight;
+                if (totalWeight > 0f) continue;
+                block.SpawnsPerZone = 0;
+                emptied++;
+            }
+            if (emptied > 0) Plugin.Logger.LogInfo($"Loot: {emptied} consumable table(s) with every item disabled spawn nothing.");
+        }
+        catch (Exception e)
+        {
+            Plugin.Logger.LogError($"GTFO.EZ failed to empty all-disabled loot tables: {e}");
+        }
+    }
 }

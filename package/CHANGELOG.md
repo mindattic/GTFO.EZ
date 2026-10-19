@@ -12,6 +12,9 @@
   off in its config counts as not installed.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
+- **Bug fix:** with GTFO.AbsurdItems' *Consumables Are Kits* on, this mod's consumable spawn odds were
+  skipped even when its kits didn't fill the loot tables (no kit items found, or an error), leaving
+  the vanilla consumables. The odds now always apply, and its kits replace them when they do fill.
 - **Bug fix:** pressing Insert or Delete twice while the first message was still waiting behind one of
   the game's own warden messages cut the game's message off. A new toggle message now only replaces
   one of ours that's actually on screen, and never drops a game message queued behind it.
