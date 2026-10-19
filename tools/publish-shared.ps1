@@ -14,12 +14,12 @@
 .PARAMETER Check
     Change nothing; list every copy that's missing or differs from GTFO.EZ's, and exit 1 if any do.
 
-.PARAMETER Repo
-    Only these target repos (e.g. -Repo GTFO.AbsurdItems,GTFO.AbsurdMoves) - for when another repo is
+.PARAMETER Only
+    Only these target repos (e.g. -Only GTFO.AbsurdItems,GTFO.AbsurdMoves) - for when another repo is
     mid-change and mustn't be written to yet. Every target by default.
 #>
 [CmdletBinding()]
-param([switch]$Check, [string[]]$Repo)
+param([switch]$Check, [string[]]$Only)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
@@ -33,8 +33,8 @@ $targets = [ordered]@{
     'GTFO.AbsurdItems'      = $everyMod + @('KitLoot.cs')
     'GTFO.CrashTestDummies' = $everyMod
 }
-if ($Repo) {
-    $unknown = @($Repo | Where-Object { -not $targets.Contains($_) })
+if ($Only) {
+    $unknown = @($Only | Where-Object { -not $targets.Contains($_) })
     if ($unknown.Count -gt 0) { throw "Not a publish target: $($unknown -join ', ')" }
 }
 
@@ -42,7 +42,7 @@ $commit = (git -C $repoRoot rev-parse --short HEAD).Trim()
 $stale = @()
 
 foreach ($repo in $targets.Keys) {
-    if ($Repo -and $Repo -notcontains $repo) { continue }
+    if ($Only -and $Only -notcontains $repo) { continue }
     $dest = Join-Path $workspace "$repo\src\$repo\Shared"
     if (-not (Test-Path (Join-Path $workspace $repo))) { Write-Warning "$repo isn't in the workspace - skipped."; continue }
 

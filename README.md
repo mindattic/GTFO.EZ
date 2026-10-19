@@ -192,7 +192,7 @@ tools/
   this mod's build; it compiles in those two mods.
 
 After changing any of them, run `.\tools\publish-shared.ps1` and commit the copies in each repo
-(`-Repo <name>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy
+(`-Only <repo>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy
 that's out of date. The copies are never edited in place.
 
 ## Versioning
