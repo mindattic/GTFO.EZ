@@ -11,12 +11,13 @@ data = json.load(open(src, encoding="utf-8"))
 
 meshes, seen = [], set()
 for m in data["meshes"]:
-    size = m.get("size") or [0, 0, 0]
+    # A mesh catalog.py couldn't read has no size or vertex count: blank, not a real 0 x 0 x 0.
+    size = m.get("size") or ["", "", ""]
     key = (m["name"], tuple(size), m["file"])
     if key in seen:
         continue
     seen.add(key)
-    meshes.append([m["name"], m["file"], m.get("vertices", 0), *size])
+    meshes.append([m["name"], m["file"], m.get("vertices", ""), *size])
 roots, seen = [], set()
 for r in data["roots"]:
     key = (r["name"], r["file"])
