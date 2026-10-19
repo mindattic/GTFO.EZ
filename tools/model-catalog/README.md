@@ -2,8 +2,8 @@
 
 Lists every mesh and every top-level object (prefab or scene root) in GTFO's game data, read offline
 with [UnityPy](https://github.com/K0lb3/UnityPy). Use it to find a model worth borrowing in a mod.
-The output goes to `reference/gtfo-models.csv`, which stays local: `reference/` is git-ignored because
-it holds game data, which isn't redistributed. Only these scripts are committed.
+The output goes to `reference/gtfo-models.csv`, the one file in `reference/` that's committed (the
+rest of that folder is git-ignored). It never ships: `build.ps1` zips `package\*` only.
 
 It can't list load paths such as `Assets/AssetPrefabs/Items/Consumables/LockMelter/...prefab`, which
 `AssetShardManager.GetLoadedAsset` needs. The shard manifests holding those paths have no type
