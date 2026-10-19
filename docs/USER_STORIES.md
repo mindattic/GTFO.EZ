@@ -96,4 +96,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T73 | 2026-10-18 | fix | closed | Consumable spawn odds skipped whenever GTFO.AbsurdItems' Consumables Are Kits is on, even when its kit run doesn't fill the tables (no kit items, error): vanilla odds instead | — |
 | G.EZ-T74 | 2026-10-18 | docs | closed | README config-section list still named a Consumables section the code no longer binds | — |
 | G.EZ-T75 | 2026-10-18 | fix | closed | Shared infinite-health damage check can't throw inside the game's damage calls | — |
-| G.EZ-T76 | 2026-10-18 | chore | open | Absurd mods renamed to GTFO.EZ.AbsurdWeapons/Moves/Items: SharedOwner order, HarmonyAfter GUID, publish-shared targets and docs use the new names | — |
+| G.EZ-T76 | 2026-10-18 | chore | closed | Absurd mods renamed to GTFO.EZ.AbsurdWeapons/Moves/Items: SharedOwner order, HarmonyAfter GUID, publish-shared targets and docs use the new names | 948c927 |
