@@ -183,7 +183,10 @@ tools/
 - `SharedOwner.cs` - with several of the mods installed, picks the one that answers shared keys
   (the first installed of GTFO.EZ, GTFO.AbsurdWeapons, GTFO.AbsurdMoves, GTFO.AbsurdItems,
   GTFO.CrashTestDummies)
-  and holds state every copy must agree on once for the whole game process.
+  and holds state every copy must agree on once for the whole game process. A mod whose master
+  switch (`[0. Mod] Enabled`) is off counts as not installed. `SharedOwner.IsActive(guid)` and
+  `SharedOwner.TryGetSetting<T>(guid, section, key, out entry)` are how one mod checks another
+  (installed, loaded and switched on) and reads its settings.
 - `InfiniteToggles.cs` / `WardenMessage.cs` - Insert / Delete, infinite ammo and health, and the
   warden message they're announced with. Published to every other GTFO.* mod.
 - `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdItems (its *Consumables Are Kits*)
