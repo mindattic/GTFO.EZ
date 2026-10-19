@@ -34,8 +34,8 @@ vanilla-vs-default table):
 - Consumable loot: glow sticks, lock melters, C-foam, trip mines and fog repellers are disabled by
   default, so their share goes to the rest. Consumables as kits moved to
   [GTFO.AbsurdItems](https://github.com/mindattic/GTFO.AbsurdItems): with its *Consumables Are
-  Kits* on (or GTFO.AbsurdWeapons' Loot Mix), that mod decides the consumable loot and this mod's
-  per-item spawn odds are skipped.
+  Kits* on (its Loot Mix adds Hand Grenades and Stim Packs to the kits), that mod decides the
+  consumable loot and this mod's per-item spawn odds are skipped.
 - Fog: the fog's own enabled flag is switched off, and since fog still showed in play, a silent
   fog-clearing sphere (the Fog Repeller's, minus its light, sound and time limit) follows you,
   widening from 4 m to 25 m over 90 s each level. Tunable under `Fog Clearing`.
@@ -191,10 +191,9 @@ tools/
   (installed, loaded and switched on) and reads its settings.
 - `InfiniteToggles.cs` / `WardenMessage.cs` - Insert / Delete, infinite ammo and health, and the
   warden message they're announced with. Published to every other GTFO.* mod.
-- `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdItems (its *Consumables Are Kits*)
-  and GTFO.AbsurdWeapons (its Loot Mix, which adds Hand Grenades and Stim Packs to the mix), each
-  running it with its own settings. GTFO.EZ no longer uses it, so `GTFO.EZ.csproj` leaves it out of
-  this mod's build; it compiles in those two mods.
+- `KitLoot.cs` - kits as consumables. Published to GTFO.AbsurdItems only (its *Consumables Are
+  Kits*, with Loot Mix's Hand Grenades and Stim Packs as extras). GTFO.EZ doesn't use it, so
+  `GTFO.EZ.csproj` leaves it out of this mod's build; it compiles in GTFO.AbsurdItems.
 
 After changing any of them, run `.\tools\publish-shared.ps1` and commit the copies in each repo
 (`-Only <repo>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy

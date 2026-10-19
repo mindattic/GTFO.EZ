@@ -6,6 +6,10 @@
   it to `false` and the whole mod is off - nothing is patched, no tuning, no hotkeys. The other
   GTFO.* mods treat a GTFO.EZ switched off this way as not installed (Insert/Delete pass to the next
   installed mod), and this mod does the same for them.
+- Loot: GTFO.AbsurdWeapons' Loot Mix, Hand Grenade and Stim Pack moved to GTFO.AbsurdItems, so the
+  consumable spawn odds here are now skipped only while GTFO.AbsurdItems' *Consumables Are Kits* is
+  on (its Loot Mix adds the Hand Grenades and Stim Packs to those kits). A GTFO.AbsurdItems switched
+  off in its config counts as not installed.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
 - **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.AbsurdWeapons'

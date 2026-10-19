@@ -168,8 +168,9 @@ expect it to matter more for players who want to go deeper than the defaults, no
 **Consumable spawn odds** — they retune the weighted lottery that decides *which* consumable fills
 a spawn slot, not *how many* spawn (that's the `Consumable Spawn Multiplier` above). Setting one to
 0 removes that item, and its share goes to the rest; a loot table with every item disabled spawns
-nothing. They're skipped while another mod decides the consumable loot: GTFO.AbsurdItems'
-*Consumables Are Kits* (a few small health, tool and ammo kits instead) or GTFO.AbsurdWeapons' Loot Mix.
+nothing. They're skipped while GTFO.AbsurdItems decides the consumable loot: its *Consumables Are
+Kits* (a few small health, tool and ammo kits instead, plus Hand Grenades and Stim Packs with its
+Loot Mix on).
 
 | Stat | Vanilla | Default |
 |---|---|---|
@@ -463,12 +464,12 @@ either not multiplier-friendly or purely cosmetic/technical.
 ## Compatibility
 
 - **GTFO.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
-  mod's, so where the two clash it wins - notably loot: with its Loot Mix on, its mix of kits, Hand
-  Grenades and Stim Packs is the consumable loot, and this mod's consumable spawn odds are skipped.
-  Its keys (Home/PgUp/PgDn) don't overlap with this mod's (E, Shift+E, X, Z).
+  mod's, so where the two clash it wins. Its keys (Home/PgUp/PgDn) don't overlap with this mod's
+  (E, Shift+E, X, Z).
 - **GTFO.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
-  Kits*) that used to be in this mod live there now, with the same settings. Its kit loot is applied
-  after this mod's data changes, and while it's on this mod's consumable spawn odds are skipped.
+  Kits*) that used to be in this mod live there now, with the same settings, along with the Hand
+  Grenade, Stim Pack and Loot Mix from GTFO.AbsurdWeapons. Its kit loot is applied after this mod's
+  data changes, and while it's on this mod's consumable spawn odds are skipped.
 - **Turning a mod off:** every GTFO.* mod's `.cfg` starts with `[0. Mod] Enabled`; set it to
   `false` and that mod loads nothing, and the others treat it as not installed.
 - **GTFO.AbsurdMoves:** compatible - the dash that used to be in this mod lives there now, as its
@@ -523,6 +524,10 @@ others' prior work:
   it to `false` and the whole mod is off - nothing is patched, no tuning, no hotkeys. The other
   GTFO.* mods treat a GTFO.EZ switched off this way as not installed (Insert/Delete pass to the next
   installed mod), and this mod does the same for them.
+- Loot: GTFO.AbsurdWeapons' Loot Mix, Hand Grenade and Stim Pack moved to GTFO.AbsurdItems, so the
+  consumable spawn odds here are now skipped only while GTFO.AbsurdItems' *Consumables Are Kits* is
+  on (its Loot Mix adds the Hand Grenades and Stim Packs to those kits). A GTFO.AbsurdItems switched
+  off in its config counts as not installed.
 - New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
   messages, shared by every GTFO.* mod so they never clash when several are installed.
 - **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.AbsurdWeapons'

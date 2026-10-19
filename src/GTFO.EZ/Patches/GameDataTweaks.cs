@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using BepInEx.Unity.IL2CPP;
 using GameData;
 using GTFO.EZ.Core;
 using HarmonyLib;
+using MindAttic.GTFO.Shared;
 using UnityEngine;
 
 namespace GTFO.EZ.Patches;
@@ -219,38 +219,19 @@ internal static class GameDataInit_Initialize_Patch
         }
     }
 
-    // GTFO.AbsurdWeapons' Loot Mix (kits, Hand Grenades, Stim Packs) and GTFO.AbsurdItems'
-    // Consumables Are Kits each replace every consumable table's items after this runs, so the item
-    // lists are left alone here while either is on: zeroing an all-disabled table's count would
-    // otherwise leave that table empty under their kits too. Each setting is read off its own mod's
-    // config; if it can't be found, a loaded mod counts as on (both default to on). Returns the
-    // deciding mod's setting, or null when this mod's spawn odds apply.
-    private static readonly (string Guid, string Section, string Key, string Name)[] ConsumableLootOwners =
-    {
-        ("MindAttic.GTFO.AbsurdWeapons", "Loot", "Loot Mix Enabled", "GTFO.AbsurdWeapons' Loot Mix"),
-        ("MindAttic.GTFO.AbsurdItems", "Loot", "Consumables Are Kits", "GTFO.AbsurdItems' Consumables Are Kits"),
-    };
+    // GTFO.AbsurdItems' kit loot (Consumables Are Kits, with Loot Mix's Hand Grenades and Stim Packs)
+    // replaces every consumable table's items after this runs, so the item lists are left alone here
+    // while it's on: zeroing an all-disabled table's count would otherwise leave that table empty
+    // under its kits too. Its setting is read off its own config; a GTFO.AbsurdItems that's switched
+    // off ([0. Mod] Enabled) counts as not installed, and one without the setting counts as on (its
+    // default). Returns the deciding mod's setting, or null when this mod's spawn odds apply.
+    private const string AbsurdItemsGuid = "MindAttic.GTFO.AbsurdItems";
 
     private static string? OtherModDecidesConsumables()
     {
-        foreach (var (guid, section, key, name) in ConsumableLootOwners)
-        {
-            try
-            {
-                if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(guid, out var info)) continue;
-                if (info.Instance is BasePlugin plugin && plugin.Config.TryGetEntry<bool>(section, key, out var enabled))
-                {
-                    if (enabled.Value) return name;
-                    continue;
-                }
-                return name;
-            }
-            catch (Exception e)
-            {
-                Plugin.Logger.LogWarning($"Loot: couldn't check {name}, applying this mod's spawn odds. {e.Message}");
-            }
-        }
-        return null;
+        if (!SharedOwner.IsActive(AbsurdItemsGuid)) return null;
+        if (SharedOwner.TryGetSetting<bool>(AbsurdItemsGuid, "Loot", "Consumables Are Kits", out var kits) && !kits.Value) return null;
+        return "GTFO.AbsurdItems' Consumables Are Kits";
     }
 
     // ItemIDs confirmed by logging GameDataBlockBase<ItemDataBlock> entries referenced from
