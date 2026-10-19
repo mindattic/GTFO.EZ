@@ -6,7 +6,7 @@ who want to go deeper.
 
 ![Language](https://img.shields.io/badge/language-C%23%20(.NET%206)-blue)
 ![Platform](https://img.shields.io/badge/platform-BepInEx%20IL2CPP-informational)
-![Status](https://img.shields.io/badge/status-active%20(v14)-success)
+![Status](https://img.shields.io/badge/status-active%20(v13)-success)
 
 Try it: install from [Thunderstore](https://thunderstore.io/c/gtfo/p/MindAttic/GtfoEZ/) (listed
 there as `GtfoEZ`, since package names can't contain a period).
@@ -113,7 +113,8 @@ GameDataInit.Initialize (game boot)
         v
   GameDataTweaks postfix patch
         |
-        +--> ApplyPlayerTweaks / ApplyFallDamageTweaks / ApplyAmmoTweaks / ...
+        +--> ApplyPlayerTweaks (health, stamina, fall damage, ammo, movement...) /
+        |    ApplyFlashlightTweaks / ApplyDetectionTweaks / ApplyLootTweaks / ...
         |      (each of the 9 tweak categories runs in its own try/catch -
         |       one broken category logs and skips, the rest still apply)
         v
@@ -203,6 +204,10 @@ below; each works on its own too), and GTFO.CrashTestDummies carries the same sh
 - `KitLoot.cs` - kits as consumables. Published to GTFO.EZ.AbsurdItems only (its *Consumables Are
   Kits*, with Loot Mix's Hand Grenades and Stim Packs as extras). GTFO.EZ doesn't use it, so
   `GTFO.EZ.csproj` leaves it out of this mod's build; it compiles in GTFO.EZ.AbsurdItems.
+- `RemoteEvents.cs` - `RemoteEvents.Register<T>(name, handler)`, a GTFO-API network event whose
+  handler can't throw (an exception escaping one would hand GTFO-API's packet to the game's own
+  receive). Published to the mods that use GTFO-API - GTFO.EZ.AbsurdWeapons and GTFO.EZ.AbsurdMoves -
+  and, like `KitLoot.cs`, left out of this mod's build.
 
 After changing any of them, run `.\tools\publish-shared.ps1` and commit the copies in each repo
 (`-Only <repo>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy
@@ -213,7 +218,13 @@ that's out of date. The copies are never edited in place.
 v1, v2, v3... - major-only bumps, matching the convention across other MindAttic projects.
 Thunderstore requires `manifest.json`'s `version_number` to be strict `x.y.z`, so "v1" is `1.0.0`,
 "v2" is `2.0.0`, and so on (minor/patch stay 0). `package/CHANGELOG.md` headers use the short `vN`
-form; the manifest keeps the `N.0.0` form Thunderstore requires. Current release: v14.
+form; the manifest keeps the `N.0.0` form Thunderstore requires.
+
+The GTFO.EZ family - GTFO.EZ, GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and GTFO.EZ.AbsurdItems -
+shares one version number, so a matching set is easy to spot: they were aligned at **v13** (the
+companions were v1 before, and GTFO.EZ's in-development v14 was folded into v13), and a release of
+the family bumps all four together. GTFO.CrashTestDummies and GTFO.SkipDrop keep their own
+numbering. Current release: v13.
 
 ## Sharing with friends
 

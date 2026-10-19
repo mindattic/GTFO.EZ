@@ -471,8 +471,8 @@ built on this mod's core (they share its Insert/Delete toggles and on-screen mes
 without GTFO.EZ installed, too.
 
 - **GTFO.EZ.AbsurdWeapons:** compatible. Everything it changes in the game's data is applied after this
-  mod's, so where the two clash it wins. Its keys (Home/PgUp/PgDn) don't overlap with this mod's
-  (E, Shift+E, X, Z).
+  mod's, so where the two clash it wins. Its gear cycling (a slot's own select key, 1-4 by default,
+  pressed again while that slot is in hand) doesn't overlap with this mod's keys (E, Shift+E, X, Z).
 - **GTFO.EZ.AbsurdItems:** compatible - artifact buffs and consumables as kits (*Consumables Are
   Kits*) that used to be in this mod live there now, with the same settings, along with the Hand
   Grenade, Stim Pack and Loot Mix from GTFO.EZ.AbsurdWeapons. Its kit loot is applied after this mod's
@@ -525,121 +525,60 @@ others' prior work:
 
 ## Changelog
 
-### v14
+### v13
 
-- New **Sentries pass through each other** (Sentries, on by default): a sentry shoots and sees straight
-  through another one, players' and bots' bullets pass through sentries, and two can stand overlapping.
-- **Insert / Delete** now announce in the event log on the left, where they stack and can't cut off a
-  warden objective. Under the hood the shared warden-message code became **MessageHelper**, which any
-  GTFO.* mod can use to put a message in the warden panel, the event log, the line under the crosshair
-  or the subtitle line.
+- **Versioning:** the GTFO.EZ family - GTFO.EZ, GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and
+  GTFO.EZ.AbsurdItems - now shares one version number, starting at v13 for all four, so a matching
+  set is easy to spot. This release folds in everything briefly numbered v14 during development
+  (never released as such).
 - New **master switch**: `[0. Mod] Enabled` (default `true`) is the config file's first entry; set
   it to `false` and the whole mod is off - nothing is patched, no tuning, no hotkeys. The other
-  GTFO.* mods treat a GTFO.EZ switched off this way as not installed (Insert/Delete pass to the next
-  installed mod), and this mod does the same for them.
-- Loot: GTFO.EZ.AbsurdWeapons' Loot Mix, Hand Grenade and Stim Pack moved to GTFO.EZ.AbsurdItems, so the
-  consumable spawn odds here are now skipped only while GTFO.EZ.AbsurdItems' *Consumables Are Kits* is
-  on (its Loot Mix adds the Hand Grenades and Stim Packs to those kits). A GTFO.EZ.AbsurdItems switched
-  off in its config counts as not installed.
-- New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced as warden
-  messages, shared by every GTFO.* mod so they never clash when several are installed.
-- **Bug fix:** with GTFO.EZ.AbsurdItems' *Consumables Are Kits* on, this mod's consumable spawn odds were
-  skipped even when its kits didn't fill the loot tables (no kit items found, or an error), leaving
-  the vanilla consumables. The odds now always apply, and its kits replace them when they do fill.
-- **Bug fix:** pressing Insert or Delete twice while the first message was still waiting behind one of
-  the game's own warden messages cut the game's message off. A new toggle message now only replaces
-  one of ours that's actually on screen, and never drops a game message queued behind it.
-- **Bug fix:** a toggle message from one GTFO.* mod and a message from another (GTFO.EZ.AbsurdWeapons'
-  gear swap) replace each other without cutting the game's own objective messages short, even after
-  a level change; Insert/Delete keep working next to a mod build from before the shared toggles; and
-  with every kit weight at 0, *Consumables Are Kits* spawns no kits instead of the vanilla consumables.
-- **Bug fix:** with GTFO.EZ.AbsurdWeapons installed and *Consumables Are Kits* off, a loot table where
-  every item was disabled here stayed empty instead of getting AbsurdWeapons' mix. With its Loot Mix
-  on, this mod now leaves consumable loot entirely to it.
-- **Moved out:** artifact buffs (the Artifacts section) and *Consumables Are Kits* (with *Kit Loot
-  (%)*, *Kit Charges Min/Max* and the health/tool/ammo kit weights) now live in
-  [GTFO.EZ.AbsurdItems](https://github.com/mindattic/GTFO.EZ.AbsurdItems), with the same settings and
-  defaults; install it to keep them. Without it, consumable loot here is the vanilla items with this
-  mod's spawn odds (glow sticks, lock melters, C-foam, trip mines and fog repellers off). With its
-  *Consumables Are Kits* on, the spawn odds here are skipped, as they are for GTFO.EZ.AbsurdWeapons'
-  Loot Mix. The old settings stay in an existing `.cfg` as leftover lines that do nothing.
-- **Moved out:** the dash (hold Shift, double-tap W/A/S/D) now lives in GTFO.EZ.AbsurdMoves as its
-  **Dodge**, with a 0.5 s double-tap window (was 0.3 s here). This mod's Dash config section is gone;
-  install GTFO.EZ.AbsurdMoves to keep dashing.
-- New **artifact buffs**: picking up an artifact buffs whoever picked it up for the rest of the
-  level - each **Bold** +5% max health (healed too), each **Aggressive** +5% damage to enemies, each
-  **Muted** 5% harder for enemies to detect you (capped at 75%). A checkpoint restart that puts an
-  artifact back takes its buff off again. Tunable under the new Artifacts section.
-- **Moved out:** the Stim Pack - the I2-LP's overheal (+50% health past max, draining back down)
-  and its "Stim Pack" rename - now lives in GTFO.EZ.AbsurdWeapons, as a consumable of its own. The
-  I2-LP is a vanilla heal again here, and the Consumables settings for it (heal amount, buff
-  drain, display name) are gone.
-- New **Consumables Are Kits** (Loot, on by default): consumables found in lockers, boxes or lying
-  around are a few small health, tool and ammo kits of 1-2 charges each, adding about 20% to the
-  zone's normal resource packs (which spawn as usual), split the way the zone's resource budget
-  is. *Kit Loot (%)*, *Kit Charges Min/Max* and the per-kind weights are configurable. GTFO.EZ no longer turns
-  disabled consumables into syringes, and its two syringe spawn-odds settings are gone. With
-  GTFO.EZ.AbsurdWeapons installed its loot settings take precedence: kits at its odds and size, plus
-  Hand Grenades.
+  GTFO.* mods treat a GTFO.EZ switched off this way as not installed, and this mod does the same
+  for them.
+- New **Insert** (infinite ammo) and **Delete** (infinite health) toggles, announced in the event
+  log on the left, shared by every GTFO.* mod so they never clash when several are installed. The
+  shared on-screen message code (**MessageHelper**) lets any GTFO.* mod use the warden panel, the
+  event log, the line under the crosshair or the subtitle line.
+- New **Sentries pass through each other** (Sentries, on by default): a sentry shoots and sees
+  straight through another one, players' and bots' bullets pass through sentries, and two can
+  stand overlapping.
+- Sentry guns place and pick back up instantly - the hold-to-confirm charge is gone by default.
+  New *Deploy/Pickup Interaction Duration Multiplier* under Sentries, default 0; set it to 1.0 to
+  restore the vanilla hold time.
+- **Experimental (on by default):** while aiming your own equipped sentry at a valid spot,
+  **Shift+E** deploys the first bot with an undeployed tool there instead; **Z** recalls every
+  bot-placed tool still down straight back into its bot (both host-only - bots belong to the host);
+  **X** places your own sentry without pulling it out - at your aim if you're holding it,
+  otherwise on flat ground you can see just ahead of you (not while downed). Placing your own
+  sentry from your hands switches you back to the weapon you had before. These call the bot AI's
+  own methods directly; set *Bots Deploy On Shift+E (SPIKE)* under Experimental to false to turn
+  all three keys off.
 - New **Ping Anywhere** (Experimental, on by default): `PING <KEY>` from any terminal reaches an
   item anywhere in the level, not just the terminal's own zone; the marker shows for 10 s.
   Same-zone pings are left to the game's own PING, and any error falls back to it. Technique
   credit: BetterTerminal by AlexanderMakunin (MIT).
-- **Bug fix:** X (place your own sentry) left the yellow placement arrow on screen; it's hidden
-  once the sentry is down.
-- **Bug fix:** recalling bot sentries found nothing - a sentry placed with Shift+E isn't linked
-  back to its bot the way the recall looked it up. It now finds the placed sentries in the level
-  and matches each to its bot. Z is the recall key; Alt+E is gone.
-- **Bug fix:** Shift+E switched you off your sentry to your previous weapon even though your own
-  placement was held back for the bot's; you now keep aiming it.
-- **Bug fix:** on a client, Shift+E placed your own sentry. Shift+E and Z are host-only (bots
-  belong to the host); on a client Shift+E now does nothing instead.
-- **Bug fix:** X with your sentry put away could place it on floor behind a wall or closed door,
-  on a steep edge, or while you were downed. The spot ahead of you now has to be flat ground you
-  can see, and X does nothing while you're downed.
+- **Fog:** Fog Density Multiplier had no visible effect in-game however low it was set, so it's
+  replaced by **Disable Fog** (default on), which turns fog off via its Enabled flag. Fog still
+  showed in play, so a new **fog clearing** sphere follows you too - the same fog-system sphere
+  the Fog Repeller carves out, without its light, sound or 70 s limit. It starts at 4 m and widens
+  to 25 m over 90 s each level; its strength copies the vanilla Fog Repeller's own. Tunable under
+  the new Fog Clearing section.
+- **Loot:** this mod's consumable spawn odds (glow sticks, lock melters, C-foam, trip mines and
+  fog repellers off by default) always apply; GTFO.EZ.AbsurdItems' *Consumables Are Kits*, when
+  installed and on, replaces the items after them. A loot table where every item is disabled now
+  spawns nothing rather than running an all-zero lottery. Disabled consumables are no longer
+  turned into syringes, and the two syringe spawn-odds settings are gone.
+- **Moved to the companion mods:** the I2-LP overheal (now the **Stim Pack**, a consumable of its
+  own), the artifact buffs and *Consumables Are Kits* live in
+  [GTFO.EZ.AbsurdItems](https://github.com/mindattic/GTFO.EZ.AbsurdItems); the dash lives in
+  [GTFO.EZ.AbsurdMoves](https://github.com/mindattic/GTFO.EZ.AbsurdMoves) as its **Dodge**. The
+  I2-LP is a vanilla heal again here. Settings that moved stay in an existing `.cfg` as leftover
+  lines that do nothing; GTFO.EZ.AbsurdItems copies your artifact and kit settings over once.
 - **Bug fix:** a negative multiplier, range or percentage in the config applied as-is (negative
   health, damage or spawn counts); every such setting is now held at 0 or more. Defaults are
   unchanged.
-- **Bug fix:** if no Fog Repeller was loaded the first time fog clearing looked for one, it used
-  the fallback density for the rest of the session; it now looks again in the next level.
-- With GTFO.EZ.AbsurdWeapons installed, everything it changes in the game's data applies after this
-  mod's and wins where they clash - loot follows its own settings. See Compatibility.
-- The companion mods are now GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and GTFO.EZ.AbsurdItems
-  (renamed before release), built on this mod's core.
-
-### v13
-
-- **Bug fix:** Fog Density Multiplier (0.1 / -90%) turned out to have no visible effect in-game no
-  matter how low it was set - whatever actually drives fog's look isn't gated purely on that field.
-  Replaced with a Disable Fog toggle (default on) that turns fog off via its Enabled flag instead
-  of scaling a density value that didn't render differently.
-- **Bug fix:** if the I2-LP life buff was still holding max health raised (the overheal case where
-  native code's own cap had to be lifted) when a level ended, that raised cap stuck forever -
-  nothing restored it going into the next level, so max health could creep upward for the rest of
-  the expedition. Starting a new level now restores it first if it was still raised.
-- **Experimental (SPIKE), on by default:** while aiming your own equipped tool at a valid
-  placement spot (the normal green ghost/arrow), Shift+E deploys the first bot with an undeployed
-  tool there instead, reusing that same aim - your own plain-E placement is untouched. Placing
-  your own also switches you straight back to whatever you had equipped before pulling the tool
-  out, instead of leaving you empty-handed. Z instantly recalls every bot-placed tool
-  still down, straight back into whichever bot placed it. X places your own sentry without
-  pulling it out - at your aim if you're holding it, otherwise on the ground just ahead of you.
-  There's no vanilla order for "deploy now" to route through, so this
-  calls the bot AI's own placement/pickup methods directly; only confirmed to compile, not
-  confirmed safe by decompiling alone - set Shift+E deploy to false under Experimental to disable,
-  or report back if it needs reverting.
-- Sentry guns place and pick back up instantly now - the hold-to-confirm charge is gone by
-  default. New "Deploy/Pickup Interaction Duration Multiplier" under Sentries, default 0; set to
-  1.0 to restore the vanilla hold time.
-- New **dash**: hold Shift and double-tap W/A/S/D for a quick 6 m dash that way, mainly to
-  sidestep homing projectiles. Moves you through the game's own character
-  controller, so walls stop it short; 1.5 s cooldown. Distance, duration, cooldown, double-tap
-  window and an on/off toggle are under the new Dash config section.
-- New **fog clearing**: Disable Fog alone still left fog in play, so a silent, invisible
-  fog-clearing sphere now follows you - the same fog-system sphere the Fog Repeller item carves
-  out, without its light, sound or 70 s limit. It starts at 4 m and widens to 25 m over 90 s
-  each level, so the longer you're in, the less fog there is. Its strength copies the vanilla
-  Fog Repeller's own; tunable under the new Fog Clearing section.
+- With GTFO.EZ.AbsurdWeapons installed, its weapons are built after this mod's tuning of the
+  vanilla ones, so they start from the tuned values. See Compatibility.
 
 ### v11
 
