@@ -36,6 +36,8 @@
   and matches each to its bot. Z is the recall key; Alt+E is gone.
 - **Bug fix:** Shift+E switched you off your sentry to your previous weapon even though your own
   placement was held back for the bot's; you now keep aiming it.
+- **Bug fix:** on a client, Shift+E placed your own sentry. Shift+E and Z are host-only (bots
+  belong to the host); on a client Shift+E now does nothing instead.
 - With GTFO.AbsurdWeapons installed, everything it changes in the game's data applies after this
   mod's and wins where they clash - loot follows its own settings. See Compatibility.
 

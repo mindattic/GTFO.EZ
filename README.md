@@ -69,7 +69,8 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 - **Bot tool controls** (on by default): aim your own sentry's placement ghost and press
   **Shift+E** to drop the next bot's equipped tool there instead of yours; **Z**
   instantly recalls every bot-placed tool back into its bot; **X** places your own sentry without
-  pulling it out.
+  pulling it out. Shift+E and Z only work for the host (bots belong to the host); on a client,
+  Shift+E does nothing and never places your own sentry.
 - **Ping Anywhere** (on by default): `PING <KEY>` from any terminal reaches an item anywhere in
   the level, not just the terminal's own zone. Same-zone pings are left to the game's own PING.
   Technique credit: [BetterTerminal](https://github.com/AlexanderMakunin/BetterTerminal) by
@@ -78,10 +79,10 @@ weapon, and every ranged weapon archetype plus sentries - all left at vanilla by
 | Input | Action |
 |---|---|
 | E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
-| Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
+| Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead (host only) |
 | Insert | Infinite ammo on/off |
 | Delete | Infinite health on/off |
-| Z | Recall every bot-placed tool at once |
+| Z | Recall every bot-placed tool at once (host only) |
 | X | Place your own sentry without pulling it out (at your aim if holding it, else just ahead of you) |
 
 ## Quick start

@@ -28,10 +28,12 @@ internal static class DeployPickupHotkeys_Update_Patch
 
         // Bots belong to the host: a client running these would only move its own copy of the bot's
         // turret, leaving host and client disagreeing about it. X (your own sentry) works anywhere.
-        if (SNet.IsMaster && Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E))
+        // The guard is armed on a client too, so Shift+E means the same thing for everyone: never
+        // your own placement.
+        if (Hotkeys.ShiftHeld && Input.GetKeyDown(KeyCode.E))
         {
             Hotkeys.ShiftEPressedAt = Time.time;
-            BotDeployAtAim.TryDeployNext();
+            if (SNet.IsMaster) BotDeployAtAim.TryDeployNext();
         }
 
         if (SNet.IsMaster && Input.GetKeyDown(KeyCode.Z)) PickupAllBotTools.Activate();

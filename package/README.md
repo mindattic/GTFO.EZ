@@ -68,7 +68,8 @@ its own, each with its own config section and on/off switch:
 - **Bot tool controls**: aim your own sentry's placement ghost and press **Shift+E** to drop the
   next bot's equipped tool there instead of yours; **Z** recalls every bot-placed tool back into
   its bot; **X** places your own sentry without pulling it out (at your aim if you're holding it,
-  otherwise just ahead of you). One switch turns all three off.
+  otherwise just ahead of you). One switch turns all three off. Shift+E and Z only work for the
+  host (bots belong to the host); on a client, Shift+E does nothing and never places your own sentry.
 - **Ping Anywhere**: `PING <KEY>` from any terminal finds an item anywhere in the level, not just
   in that terminal's zone; the marker shows for 10 s. Same-zone pings are left to the game's own
   PING, and any error falls back to it.
@@ -76,10 +77,10 @@ its own, each with its own config section and on/off switch:
 | Input | Action |
 |---|---|
 | E (aiming your sentry) | Place your own sentry - instant, then back to your previous weapon |
-| Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead |
+| Shift+E (aiming your sentry) | Place the next bot's tool at your aim instead (host only) |
 | Insert | Infinite ammo on/off |
 | Delete | Infinite health on/off |
-| Z | Recall every bot-placed tool at once |
+| Z | Recall every bot-placed tool at once (host only) |
 | X | Place your own sentry without pulling it out |
 
 **Infinite ammo and health** — **Insert** toggles infinite ammo (every gun and tool stays full,
@@ -555,6 +556,8 @@ others' prior work:
   and matches each to its bot. Z is the recall key; Alt+E is gone.
 - **Bug fix:** Shift+E switched you off your sentry to your previous weapon even though your own
   placement was held back for the bot's; you now keep aiming it.
+- **Bug fix:** on a client, Shift+E placed your own sentry. Shift+E and Z are host-only (bots
+  belong to the host); on a client Shift+E now does nothing instead.
 - With GTFO.AbsurdWeapons installed, everything it changes in the game's data applies after this
   mod's and wins where they clash - loot follows its own settings. See Compatibility.
 
