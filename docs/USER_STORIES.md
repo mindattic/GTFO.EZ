@@ -93,3 +93,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T70 | 2026-10-18 | feature | closed | SharedOwner treats a GTFO.* mod whose [0. Mod] Enabled master switch is off as not installed, and exposes IsActive/TryGetSetting for cross-mod checks | 7494737 |
 | G.EZ-T71 | 2026-10-18 | feature | closed | Master switch: [0. Mod] Enabled is the cfg's first entry; false and GTFO.EZ loads nothing | 4809250 |
 | G.EZ-T72 | 2026-10-18 | fix | closed | Shared warden message: a second toggle while the first is queued behind a game message stops the game's running message and drops its queued ones | — |
+| G.EZ-T73 | 2026-10-18 | fix | closed | Consumable spawn odds skipped whenever GTFO.AbsurdItems' Consumables Are Kits is on, even when its kit run doesn't fill the tables (no kit items, error): vanilla odds instead | — |
