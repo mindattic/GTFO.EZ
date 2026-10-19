@@ -164,6 +164,9 @@ internal static class BotDeployAtAim
                 var backpack = bot?.Backpack;
                 if (backpack == null || !backpack.TryGetBackpackItem(InventorySlot.GearClass, out var backpackItem) || backpackItem == null) continue;
                 if (backpack.IsDeployed(InventorySlot.GearClass)) continue;
+                // Only a sentry: a bot carrying a mine deployer, C-foam launcher or bio tracker would
+                // fail the placement (or be marked deployed with nothing placed) ahead of a sentry bot.
+                if (backpackItem.Instance?.TryCast<SentryGunFirstPerson>() == null) continue;
 
                 var desc = new PlayerBotActionDeploySentryGun.Descriptor(bot) { InstallationPose = pose };
                 var action = new PlayerBotActionDeploySentryGun(desc) { m_backpackItem = backpackItem };
