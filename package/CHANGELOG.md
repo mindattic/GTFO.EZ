@@ -2,6 +2,8 @@
 
 ## v14
 
+- New **Sentries pass through each other** (Sentries, on by default): a sentry shoots and sees straight
+  through another one, players' and bots' bullets pass through sentries, and two can stand overlapping.
 - **Insert / Delete** now announce in the event log on the left, where they stack and can't cut off a
   warden objective. Under the hood the shared warden-message code became **MessageHelper**, which any
   GTFO.* mod can use to put a message in the warden panel, the event log, the line under the crosshair

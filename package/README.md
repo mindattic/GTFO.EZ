@@ -49,6 +49,9 @@ its own, each with its own config section and on/off switch:
   follows you, clearing 4 m around you at the start of a level and widening to 25 m over 90 s.
 - **Instant sentries** (`Sentries`): sentry guns place and pick back up with no hold-to-confirm,
   and placing your own switches you straight back to the weapon you had out.
+- **Sentries pass through each other** (`Sentries` › `Pass Through Each Other`, on by default): a
+  sentry shoots and sees straight through another one, players' and bots' bullets pass through
+  sentries, and two can stand overlapping. Picking one up works as usual.
 - **Bots Always Equip Sentry Gun** (`Bots`, *off* by default): forces every bot's tool slot to the
   basic Sentry Gun, whether it's filling an empty slot or replacing a player.
 
@@ -524,6 +527,8 @@ others' prior work:
 
 ### v14
 
+- New **Sentries pass through each other** (Sentries, on by default): a sentry shoots and sees straight
+  through another one, players' and bots' bullets pass through sentries, and two can stand overlapping.
 - **Insert / Delete** now announce in the event log on the left, where they stack and can't cut off a
   warden objective. Under the hood the shared warden-message code became **MessageHelper**, which any
   GTFO.* mod can use to put a message in the warden panel, the event log, the line under the crosshair

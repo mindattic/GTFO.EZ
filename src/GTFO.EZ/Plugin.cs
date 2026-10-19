@@ -189,6 +189,7 @@ public class Plugin : BasePlugin
     internal static ConfigEntry<float> SentryCostOfBulletTagMultiplier = null!;
     internal static ConfigEntry<float> SentryShotDelayTagMultiplier = null!;
     internal static ConfigEntry<float> SentryDeployPickupInteractionDurationMultiplier = null!;
+    internal static ConfigEntry<bool> SentriesPassThrough = null!;
 
     public override void Load()
     {
@@ -692,6 +693,11 @@ public class Plugin : BasePlugin
         SentryDeployPickupInteractionDurationMultiplier = BindNonNegative("Sentries", "Deploy/Pickup Interaction Duration Multiplier", 0.0f,
             "Multiplies how long you have to hold the interact key to place or retrieve a sentry gun. Default 0 " +
             "(instant) - no charge-up to place, no wait to pick back up. Set to 1.0 to keep vanilla timing.");
+
+        SentriesPassThrough = Config.Bind("Sentries", "Pass Through Each Other", true,
+            "On: placed sentries never block each other or anyone's bullets - a sentry shoots and sees straight " +
+            "through another one, players' and bots' bullets pass through them, and two can stand overlapping. " +
+            "Picking one up still works as usual. Off: vanilla sentry bodies.");
 
         TerminalPingAnywhere = Config.Bind("Experimental", "Ping Anywhere", true,
             "PING <KEY> from any terminal reaches an item anywhere in the level, not just in the terminal's own zone " +

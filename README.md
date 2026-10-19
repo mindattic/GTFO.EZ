@@ -125,7 +125,10 @@ No datablock JSON is shipped or copied. Everything is a multiplier (or toggle) a
 once, at load time, read from the BepInEx config. Additional Harmony patches cover behaviour that
 isn't a simple datablock field: one-time control
 defaults (`ControlDefaultsPatch`), revive speed, bot sentry equipping, instant sentry placement
-(`SentryInstantPlacementPatch`), the experimental bot tool controls
+(`SentryInstantPlacementPatch`), sentries passing through each other and bullets
+(`SentryPassThrough`: a live sentry's solid colliders move to a layer no bullet or sentry ray
+includes, picked at runtime from `LayerManager`'s masks, and live sentries ignore each other's
+colliders), the experimental bot tool controls
 (`DeployPickupHotkeys`), Ping Anywhere (`TerminalPingPatch`), and fog clearing (`FogClearPulse`).
 
 ## Configuration
