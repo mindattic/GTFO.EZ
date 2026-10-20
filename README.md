@@ -239,14 +239,14 @@ numbering. Current release: v14.
 
 ## Limitations
 
-- Ping Anywhere is compiled but not yet confirmed in play. An earlier attempt broke the terminal
+- Ping Anywhere is confirmed in play. An earlier attempt broke the terminal
   by letting the game also evaluate the PING it had already handled; this version owns the
   command fully (BetterTerminal's approach) and falls back to the game's PING on any error.
 - The bot tool controls call the bot AI's own placement/pickup methods directly (vanilla has no
   "deploy now" order). Shift+E, X (which does nothing on a spot the game wouldn't allow, behind a
-  wall or door, or while you're downed) and Z are confirmed working in play; the weapon
-  switch-back after placing your own is not yet.
-- Fog clearing is compiled but not yet confirmed in play; its density is read from the vanilla
+  wall or door, or while you're downed) and Z are confirmed working in play, as is the weapon
+  switch-back after placing your own.
+- Fog clearing is confirmed in play; its density is read from the vanilla
   Fog Repeller prefab at runtime (logged), with a Density Override if that doesn't clear fog.
 - Datablock patches can only be verified by launching the game; they have no automated test
   coverage (see Testing above).

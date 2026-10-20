@@ -726,8 +726,8 @@ public class Plugin : BasePlugin
         TerminalPingAnywhere = Config.Bind("Experimental", "Ping Anywhere", true,
             "PING <KEY> from any terminal reaches an item anywhere in the level, not just in the terminal's own zone " +
             "(the marker shows for 10 s). Same-zone pings and unknown keys are left to the game's own PING, and any " +
-            "error falls back to it too. Technique credit: BetterTerminal by AlexanderMakunin (MIT). Not yet confirmed " +
-            "in play - set to false if a terminal misbehaves.");
+            "error falls back to it too. Technique credit: BetterTerminal by AlexanderMakunin (MIT). Set to false if a " +
+            "terminal misbehaves.");
 
         BotsDeployOnShiftE = Config.Bind("Experimental", "Bots Deploy On Shift+E (SPIKE)", true,
             "G.EZ-T34 spike: while you're aiming your own equipped tool at a valid placement spot (the normal " +

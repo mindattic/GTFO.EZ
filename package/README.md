@@ -55,7 +55,7 @@ its own, each with its own config section and on/off switch:
 - **Bots Always Equip Sentry Gun** (`Bots`, *off* by default): forces every bot's tool slot to the
   basic Sentry Gun, whether it's filling an empty slot or replacing a player.
 
-**Experimental** (`Experimental`, on by default, not all confirmed in play yet):
+**Experimental** (`Experimental`, on by default):
 
 - **Bot tool controls**: aim your own sentry's placement ghost and press **Shift+E** to drop the
   next bot's equipped tool there instead of yours; **Z** recalls every bot-placed tool back into
