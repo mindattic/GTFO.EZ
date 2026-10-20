@@ -51,8 +51,9 @@ vanilla-vs-default table):
   announced in the event log; both start off. Every GTFO.* mod has these two keys, from one
   shared copy of the code (see Shared code below), and with several installed only one of them
   answers the keys, so a press never toggles twice.
-- A load confirmation: a "GTFO.EZ vN Active" line under the rundown title on the rundown-select
-  screen, and a short warden-intel message in-level once you spawn.
+- A load confirmation: under the rundown title on the rundown-select screen, one "<mod> vN Active"
+  line per GTFO.* mod that's installed and switched on, and the same list as a warden-intel message
+  in-level once you spawn.
 
 **Everything else** - 530+ further config entries covering flashlights, movement speed, friendly
 fire, battery drain, no-air damage, per-enemy health/damage, the full per-difficulty-tier
@@ -95,8 +96,8 @@ cd GTFO.EZ
 This builds against the Thunderstore Mod Manager profile named "Easy Mode DEV" by default
 (`.\build.ps1 -Profile MyProfile` to use another one), places the plugin straight into that
 profile's `BepInEx/plugins/GTFO.EZ/` folder so you can launch the game and test immediately, and
-also produces `dist/GTFO.EZ-<version>.zip` for sharing. A successful load shows "GTFO.EZ vN
-Active..." on the rundown-select screen and again as a warden-intel message in-level.
+also produces `dist/GTFO.EZ-<version>.zip` for sharing. A successful load lists "GTFO.EZ vN
+Active" (plus a line per other active GTFO.* mod) on the rundown-select screen and again as a warden-intel message in-level.
 
 If you're on the older r2modman app instead, its profiles live under a different path - point the
 build at it directly:

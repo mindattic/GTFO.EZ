@@ -80,8 +80,10 @@ no reloads) and **Delete** toggles infinite health (no damage to you; bots and t
 unaffected), each announced in the event log. Both start off. Every GTFO.* mod has the same two
 keys; with several installed, only one answers, so a press never toggles twice.
 
-**How you know it's loaded** — a "GTFO.EZ vN Active" line appears under the rundown title on the
-rundown-select screen, and a short warden-intel message shows in-level once you spawn.
+**How you know it's loaded** — under the rundown title on the rundown-select screen, one
+"&lt;mod&gt; vN Active" line appears for each GTFO.* mod (GTFO.EZ, its Absurd add-ons,
+CrashTestDummies, SkipDrop) that's installed and switched on. The same list shows as a
+warden-intel message in-level once you spawn.
 
 Every value above is a multiplier (or on/off switch) you can retune in the config file BepInEx
 generates after first launch (`BepInEx/config/MindAttic.GTFO.EZ.cfg`), without recompiling anything.

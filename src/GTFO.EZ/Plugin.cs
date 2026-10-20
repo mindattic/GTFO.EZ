@@ -17,10 +17,34 @@ public class Plugin : BasePlugin
     public const string NAME = "GTFO.EZ";
     public const string VERSION = "13.0.0";
 
+    private static readonly string[] FamilyGuids =
+    {
+        GUID,
+        "MindAttic.GTFO.EZ.AbsurdWeapons",
+        "MindAttic.GTFO.EZ.AbsurdMoves",
+        "MindAttic.GTFO.EZ.AbsurdItems",
+        "MindAttic.GTFO.CrashTestDummies",
+        "MindAttic.GTFO.SkipDrop",
+    };
+
     // Shared between the rundown-select header and the in-level warden-intel message so the two
-    // in-game surfaces never drift apart the way they did before this was pulled out. Major
-    // version only, per the project's vN convention, rather than the full x.y.z.
-    internal static readonly string EasterEggMessage = $"GTFO.EZ v{VERSION.Split('.')[0]} Active - Goo goo. Gah gah.";
+    // surfaces never drift apart. One line per family mod that's loaded with its master switch on,
+    // built on each call since sibling mods may load after this one. Major version only (vN).
+    internal static string EasterEggMessage
+    {
+        get
+        {
+            var lines = new List<string>();
+            foreach (var guid in FamilyGuids)
+            {
+                if (!MindAttic.GTFO.Shared.SharedOwner.IsActive(guid)) continue;
+                var meta = IL2CPPChainloader.Instance.Plugins[guid].Metadata;
+                lines.Add($"{meta.Name} v{meta.Version.Major} Active");
+            }
+            lines.Add("Goo goo. Gah gah.");
+            return string.Join("<br>", lines);
+        }
+    }
 
     internal static ManualLogSource Logger = null!;
 

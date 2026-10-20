@@ -35,6 +35,7 @@
     <Reference Include="$(BepInEx)\core\BepInEx.Unity.IL2CPP.dll" Private="false" />
     <Reference Include="$(BepInEx)\core\Il2CppInterop.Common.dll" Private="false" />
     <Reference Include="$(BepInEx)\core\Il2CppInterop.Runtime.dll" Private="false" />
+    <Reference Include="$(BepInEx)\core\SemanticVersioning.dll" Private="false" />
   </ItemGroup>
 
   <!-- Unhollowed/interop game assemblies (GameData, UnityEngine, etc.) -->
