@@ -527,6 +527,18 @@ others' prior work:
 
 ## Changelog
 
+### v14
+
+- **Load confirmation** now lists every GTFO.* mod that's installed and switched on - one
+  "&lt;mod&gt; vN Active" line each (GTFO.EZ, its Absurd add-ons, CrashTestDummies, SkipDrop) - under
+  the rundown title and in the in-level warden-intel message.
+- **Bug fix:** Shift+E could still place your own sentry when the sentry's update ran before the
+  hotkey that frame; the press itself now counts.
+- **Bug fix:** Shift+E picked any bot carrying an undeployed tool (mine deployer, C-foam, bio
+  tracker) ahead of a sentry bot; only sentry carriers are picked now.
+- Moves in step with the GTFO.EZ family's version number (GTFO.EZ, GTFO.EZ.AbsurdWeapons,
+  GTFO.EZ.AbsurdMoves and GTFO.EZ.AbsurdItems share one).
+
 ### v13
 
 - **Versioning:** the GTFO.EZ family - GTFO.EZ, GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and
