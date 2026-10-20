@@ -87,7 +87,7 @@ Requires the [.NET 6 SDK](https://dotnet.microsoft.com/) and `BepInExPack_GTFO` 
 and launched at least once ("Modded" start) in a Thunderstore Mod Manager or r2modman profile.
 
 ```powershell
-git clone https://github.com/mindattic/GTFO.EZ.git
+git clone --recurse-submodules https://github.com/mindattic/GTFO.EZ.git
 cd GTFO.EZ
 .\build.ps1
 ```
@@ -168,7 +168,6 @@ after `build.ps1`.
 
 ```text
 src/GTFO.EZ/          the plugin project (BepInEx/Il2Cpp - needs the game installed to build)
-  Shared/             code every GTFO.* mod carries a copy of - owned here, published by tools/
 src/GTFO.EZ.Core/     pure balance data/math the plugin uses, with no BepInEx/Il2Cpp dependency -
                       split out so it's unit-testable; ships alongside GTFO.EZ.dll at runtime
 tests/                GTFO.EZ.Core.Tests - NUnit, runs with plain `dotnet test`, no game needed
@@ -179,17 +178,21 @@ package/              exactly what ships to Thunderstore / gets zipped for shari
   icon.png            256x256, resized from reference/logo-1254x1254.png
 reference/            (gitignored) local-only: EasyMode's files, vanilla data dumps, notes
 build.ps1             builds the plugin and packages dist/GTFO.EZ-<version>.zip
-tools/
-  publish-shared.ps1  copies src/GTFO.EZ/Shared into the other GTFO.* mods (-Check: report drift)
+external/
+  GTFO.EZ.Shared/     git submodule: the code every GTFO.* mod compiles in (see Shared code)
 ```
 
 ## Shared code
 
 GTFO.EZ is the core of the GTFO.EZ family: GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves and
-GTFO.EZ.AbsurdItems are companion mods built on it (each carries a published copy of the code
-below; each works on its own too), and GTFO.CrashTestDummies carries the same shared code.
+GTFO.EZ.AbsurdItems are companion mods built on it (each compiles in the code below; each works
+on its own too), and GTFO.CrashTestDummies compiles in the same shared code.
 
-`src/GTFO.EZ/Shared/` is the one place the code shared by every GTFO.* mod is written:
+The code shared by every GTFO.* mod lives in its own repo,
+[GTFO.EZ.Shared](https://github.com/mindattic/GTFO.EZ.Shared). Each mod has it as a git submodule
+at `external/GTFO.EZ.Shared` and compiles the files it uses straight into its own DLL (linked
+`<Compile>` items in its `.csproj`, shown under `Shared\` in the IDE), so players install nothing
+extra. Clone with `--recurse-submodules`, or run `git submodule update --init` in an existing clone. The files:
 
 - `SharedOwner.cs` - with several of the mods installed, picks the one that answers shared keys
   (the first installed of GTFO.EZ, GTFO.EZ.AbsurdWeapons, GTFO.EZ.AbsurdMoves, GTFO.EZ.AbsurdItems,
@@ -200,18 +203,18 @@ below; each works on its own too), and GTFO.CrashTestDummies carries the same sh
   (installed, loaded and switched on) and reads its settings.
 - `InfiniteToggles.cs` - Insert / Delete, infinite ammo and health, announced in the event log.
 - `MessageHelper.cs` - on-screen messages for the local player, wherever they fit:
-  `MessageHelper.Show(text, MessageType.Warden | EventLog | Center | Subtitle, seconds)`. Published to every other GTFO.* mod.
-- `KitLoot.cs` - kits as consumables. Published to GTFO.EZ.AbsurdItems only (its *Consumables Are
+  `MessageHelper.Show(text, MessageType.Warden | EventLog | Center | Subtitle, seconds)`. Compiled by every GTFO.* mod.
+- `KitLoot.cs` - kits as consumables. Compiled by GTFO.EZ.AbsurdItems only (its *Consumables Are
   Kits*, with Loot Mix's Hand Grenades and Stim Packs as extras). GTFO.EZ doesn't use it, so
-  `GTFO.EZ.csproj` leaves it out of this mod's build; it compiles in GTFO.EZ.AbsurdItems.
+  `GTFO.EZ.csproj` leaves it out of this mod's build.
 - `RemoteEvents.cs` - `RemoteEvents.Register<T>(name, handler)`, a GTFO-API network event whose
   handler can't throw (an exception escaping one would hand GTFO-API's packet to the game's own
-  receive). Published to the mods that use GTFO-API - GTFO.EZ.AbsurdWeapons and GTFO.EZ.AbsurdMoves -
+  receive). Compiled by the mods that use GTFO-API - GTFO.EZ.AbsurdWeapons and GTFO.EZ.AbsurdMoves -
   and, like `KitLoot.cs`, left out of this mod's build.
 
-After changing any of them, run `.\tools\publish-shared.ps1` and commit the copies in each repo
-(`-Only <repo>,...` limits it to some of them); `.\tools\publish-shared.ps1 -Check` lists any copy
-that's out of date. The copies are never edited in place.
+To change any of them, commit and push to GTFO.EZ.Shared, then in each mod move the submodule to
+that commit (`git -C external/GTFO.EZ.Shared pull origin main`), rebuild and commit the new
+submodule pointer.
 
 ## Versioning
 
