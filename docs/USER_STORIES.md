@@ -6,7 +6,7 @@ layer: stories
 status: living
 updated: 2026-10-15
 ---
-<!-- GENERATED from MindAttic.Workflow/data/workflow.db by `workflow db render`. Do not edit: this file is rewritten from the database; change stories and tickets with the workflow CLI. -->
+<!-- GENERATED from MindAttic.Tickets/data/Tickets.db by `tickets db render`. Do not edit: this file is rewritten from the database; change stories and tickets with the tickets CLI. -->
 
 # GTFO.EZ — User Stories
 > ✅ done (shipped & tested) · 🟡 partial · ⬜ planned. Every ✅ cites the test.
@@ -114,3 +114,4 @@ _Nothing recorded yet._ (G.EZ-T5 closed — see Tickets below.)
 | G.EZ-T91 | 2026-10-19 | feature | closed | Load confirmation lists every active GTFO.* mod: one '<mod> vN Active' line per installed, switched-on family mod (GTFO.EZ, Absurd add-ons, CrashTestDummies, SkipDrop) on the rundown screen and in the warden-intel message (user approved for v14) | — |
 | G.EZ-T92 | 2026-10-19 | chore | closed | Bump GTFO.EZ to v14.0.0 with the GTFO.EZ family (user request) | — |
 | G.EZ-T93 | 2026-10-19 | docs | closed | Mark everything new as confirmed in play: drop the not-yet-confirmed notes from the READMEs and config text (user confirmed after in-game testing) | 4ab3632 |
+| G.EZ-T94 | 2026-10-20 | docs | open | Publish GTFO.EZ docs to GitHub Pages via the shared Toolkit DocFX pipeline: run adopt-docs-site.ps1 (README.md as home page, docs/*.md as articles, API reference only where the code builds in CI), enable Pages with build_type=workflow, set the repo homepage URL, retire tools/build-readme.ps1 and README.htm, confirm the docs Actions run is green and https://mindattic.github.io/GTFO.EZ/ returns 200. Depends on MAT-T8. | — |
